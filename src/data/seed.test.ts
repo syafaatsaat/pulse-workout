@@ -82,3 +82,13 @@ describe('ensureSeeded', () => {
     expect(await db.sessions.count()).toBeGreaterThan(0)
   })
 })
+
+test('demo sessions log exactly the work steps of the compiled workout', async () => {
+  const { compile } = await import('../engine/compile')
+  for (const s of generateDemoSessions(DEMO_WORKOUTS, NOW)) {
+    const work = compile(DEMO_WORKOUTS.find((w) => w.id === s.workoutId)!).filter((x) => x.kind === 'work')
+    expect(s.sets.map((x) => `${x.exerciseId}:${x.blockId}:${x.setIndex}`)).toEqual(
+      work.map((x) => `${x.exerciseId}:${x.blockId}:${x.setIndex}`),
+    )
+  }
+})

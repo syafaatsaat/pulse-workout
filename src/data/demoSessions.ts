@@ -1,3 +1,4 @@
+import { compile, tempoMs } from '../engine/compile'
 import type { Session, SessionSet, Workout } from './types'
 
 const WEEKS = 6
@@ -32,8 +33,7 @@ const WEEK_PATTERNS = [
 /**
  * ~6 weeks of plausible sessions ending before `now`: rotating workouts, evening start times,
  * reps that creep up week on week with some noise. The current week only gets days before today.
- *
- * TODO(Day 2): walk the compiled timeline from engine/compile.ts instead of the blocks directly.
+ * Sets follow the compiled timeline, so they match what the player would log.
  */
 export function generateDemoSessions(workouts: Workout[], now = new Date()): Session[] {
   const rand = rng(44)
@@ -59,32 +59,32 @@ export function generateDemoSessions(workouts: Workout[], now = new Date()): Ses
       let clock = startedAt
       const sets: SessionSet[] = []
 
-      for (const block of workout.blocks) {
-        const rounds = block.type === 'circuit' ? block.rounds : 1
-        for (let r = 0; r < rounds; r++) {
-          for (const item of block.items) {
-            const count = block.type === 'circuit' ? 1 : item.sets
-            for (let s = 0; s < count; s++) {
-              const noise = Math.round(rand() * 3) - 2 // −2…+1
-              const set: SessionSet = {
-                exerciseId: item.exerciseId,
-                blockId: block.id,
-                setIndex: block.type === 'circuit' ? r : s,
-                completedAt: 0,
-              }
-              if (item.mode === 'reps') {
-                set.reps = Math.max(1, Math.round(item.target * (0.85 + 0.3 * progress)) + noise)
-                clock += set.reps * 3000
-              } else {
-                set.seconds = Math.max(10, Math.round((item.target * (0.85 + 0.35 * progress)) / 5) * 5)
-                clock += set.seconds * 1000
-              }
-              set.completedAt = clock
-              sets.push(set)
-              clock += item.restAfter * 1000 + rand() * 8000
-            }
-          }
+      for (const step of compile(workout)) {
+        if (step.kind === 'rest') {
+          clock += step.durationMs + rand() * 8000
+          continue
         }
+        const set: SessionSet = {
+          exerciseId: step.exerciseId,
+          blockId: step.blockId,
+          setIndex: step.setIndex,
+          completedAt: 0,
+        }
+        if (step.mode === 'reps') {
+          const noise = Math.round(rand() * 3) - 2 // −2…+1
+          set.reps = Math.max(1, Math.round(step.target * (0.85 + 0.3 * progress)) + noise)
+          clock += set.reps * tempoMs(step.tempo)
+        } else {
+          // Warm-up / cool-down run to the clock; holds creep up with the weeks.
+          set.seconds =
+            step.phase === 'main'
+              ? Math.max(10, Math.round((step.target * (0.85 + 0.35 * progress)) / 5) * 5)
+              : step.target
+          clock += set.seconds * 1000
+        }
+        set.completedAt = clock
+        sets.push(set)
+        clock += 2000 + rand() * 4000 // getting into position
       }
 
       sessions.push({
