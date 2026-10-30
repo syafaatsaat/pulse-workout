@@ -1,0 +1,21 @@
+.track {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-1);
+  border-radius: var(--r-md);
+  background: var(--fill);
+}
+
+/* 36px visual height from F-Settings; the track padding brings the hit area to 44px. */
+.segment {
+  height: 36px;
+  border-radius: var(--r-sm);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.segment[aria-pressed='true'] {
+  background: var(--surface);
+  box-shadow: var(--card);
+}

@@ -1,0 +1,101 @@
+/* Desktop sidebar — DT-Today.dc.html. Shown at ≥1024px by Layout. */
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 28px var(--s-4) var(--s-5);
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 28px;
+}
+
+.mark {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--s-2);
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.item {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 0 var(--s-3);
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.item:hover {
+  color: var(--ink);
+}
+
+.item[aria-current='page'] {
+  background: var(--surface);
+  box-shadow: var(--card);
+  color: var(--ink);
+}
+
+.spacer {
+  flex-grow: 1;
+  min-height: var(--s-6);
+}
+
+.goal {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--card);
+}
+
+.goalText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.goalLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.goalValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+  text-transform: uppercase;
+}

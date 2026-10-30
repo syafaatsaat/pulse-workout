@@ -1,0 +1,42 @@
+/* Phone tab bar — F-Today.dc.html. Hidden at ≥1024px by Layout. */
+.bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 6px 8px max(6px, env(safe-area-inset-bottom));
+  padding-left: max(8px, env(safe-area-inset-left));
+  padding-right: max(8px, env(safe-area-inset-right));
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.item {
+  height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-1);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pill {
+  width: 56px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item[aria-current='page'] {
+  color: var(--ink);
+}
+
+.item[aria-current='page'] .pill {
+  background: var(--fill);
+}

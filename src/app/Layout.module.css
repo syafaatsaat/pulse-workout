@@ -1,0 +1,55 @@
+.shell {
+  min-height: 100dvh;
+}
+
+.sidebar {
+  display: none;
+}
+
+/* Phone: 20px gutter; top padding clears the status bar. */
+.main {
+  padding: calc(env(safe-area-inset-top) + var(--s-8)) max(var(--gutter), env(safe-area-inset-right))
+    var(--s-8) max(var(--gutter), env(safe-area-inset-left));
+}
+
+/* Leave room for the fixed tab bar: 56px items + 6px top padding + bottom inset. */
+.shell[data-tabbar='true'] .main {
+  padding-bottom: calc(56px + 6px + max(6px, env(safe-area-inset-bottom)) + var(--s-8));
+}
+
+/* 640–1023px: phone layout with wider margins. */
+@media (min-width: 640px) {
+  .main {
+    padding-left: max(48px, env(safe-area-inset-left));
+    padding-right: max(48px, env(safe-area-inset-right));
+  }
+}
+
+/* Desktop: 220px sidebar, 48px padding, content max-width 1160px. */
+@media (min-width: 1024px) {
+  .shell {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .sidebar {
+    display: block;
+  }
+
+  .tabbar {
+    display: none;
+  }
+
+  .main,
+  .shell[data-tabbar='true'] .main {
+    padding: 36px 48px 48px;
+  }
+}
+
+.content {
+  max-width: 1160px;
+}
+
+.fullscreen {
+  min-height: 100dvh;
+}
