@@ -37,6 +37,22 @@
   font-size: var(--t-small);
 }
 
+.workouts li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+/* Temporary entry point to the player until Today's Start button (Day 5). */
+.start {
+  height: 44px;
+  padding: 0 var(--s-4);
+  border-radius: var(--r-sm);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));

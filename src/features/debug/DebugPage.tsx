@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router'
 import { PageHeader } from '../../app/PageHeader'
+import { createSession } from '../../data/sessions'
 import { db } from '../../data/db'
 import { useLiveQuery } from '../../data/useLiveQuery'
 import styles from './DebugPage.module.css'
@@ -11,6 +13,8 @@ export function DebugPage() {
   const exercises = useLiveQuery(() => db.exercises.orderBy('name').toArray())
   const workouts = useLiveQuery(() => db.workouts.toArray())
   const sessions = useLiveQuery(() => db.sessions.orderBy('startedAt').reverse().toArray())
+  const navigate = useNavigate()
+  const start = async (workoutId: string) => navigate(`/session/${await createSession(workoutId)}`)
   const workoutName = new Map(workouts?.map((w) => [w.id, w.name]))
 
   return (
@@ -48,6 +52,9 @@ export function DebugPage() {
         <ul className={styles.workouts}>
           {workouts?.map((w) => (
             <li key={w.id}>
+              <button type="button" className={styles.start} onClick={() => void start(w.id)}>
+                Start
+              </button>{' '}
               <strong>{w.name}</strong> — {w.blocks.map((b) => `${b.name} (${b.items.length})`).join(' · ')}
             </li>
           ))}

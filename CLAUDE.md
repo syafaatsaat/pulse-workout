@@ -79,3 +79,4 @@ scripts/
   relative to today. To reseed in the browser, delete the `field-manual` IndexedDB database.
 - Theme is in localStorage (`fm-theme`) until Settings moves to Dexie; `index.html` applies it pre-paint.
 - Read Dexie in components with `useLiveQuery` from `src/data/useLiveQuery.ts`.
+- Until Today has a Start button (Day 5), start a workout from `/debug`.

@@ -1,0 +1,100 @@
+/* Player dialogs sit on the app surface (theme colours), not on the orange / blue ground. */
+.dialog {
+  width: min(440px, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100dvh - 2 * var(--gutter));
+  padding: var(--s-6) var(--s-5) var(--s-5);
+  border: 0;
+  border-radius: var(--r-xl);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--card);
+}
+
+.dialog::backdrop {
+  background: color-mix(in srgb, var(--accent-ink) 55%, transparent);
+}
+
+.form {
+  width: min(560px, calc(100vw - 2 * var(--gutter)));
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.body {
+  margin-top: var(--s-2);
+  color: var(--muted);
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: var(--s-6);
+}
+
+.buttons button {
+  flex: 1;
+  height: 56px;
+  border-radius: var(--r-md);
+  font-size: var(--t-body);
+  font-weight: 600;
+}
+
+.primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.secondary {
+  background: var(--fill);
+}
+
+.photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+}
+
+.photo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.photo img,
+.placeholder {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--s-4);
+  font-size: var(--t-small);
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  padding: var(--s-2) 0;
+  border-top: 1px solid var(--line);
+}
+
+.steps li:first-child {
+  border-top: 0;
+}
+
+.stepNo {
+  font-family: var(--font-mono);
+  color: var(--muted);
+}

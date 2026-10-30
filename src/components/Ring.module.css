@@ -1,14 +1,13 @@
 .track,
 .arc {
   fill: none;
-  stroke-width: 4;
 }
 
 .track {
-  stroke: var(--line);
+  stroke: var(--ring-track, var(--line));
 }
 
 .arc {
-  stroke: var(--accent);
+  stroke: var(--ring-arc, var(--accent));
   stroke-linecap: round;
 }

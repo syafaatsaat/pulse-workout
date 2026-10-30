@@ -1,0 +1,377 @@
+/* Player: --work ground with --work-ink, --rest-bg with --rest-ink. Same in both themes.
+   Tints are derived from the ink (currentColor) at the mock-up's opacities. */
+
+.player {
+  --tint: var(--work-tint);
+  min-height: 100dvh;
+  display: flex;
+  background: var(--work);
+  color: var(--work-ink);
+  padding: calc(env(safe-area-inset-top) + var(--s-6)) max(var(--gutter), env(safe-area-inset-right))
+    max(var(--s-6), calc(env(safe-area-inset-bottom) + var(--s-2)))
+    max(var(--gutter), env(safe-area-inset-left));
+  transition: background-color 250ms ease;
+}
+
+.player[data-mode='rest'] {
+  --tint: var(--rest-tint);
+  background: var(--rest-bg);
+  color: var(--rest-ink);
+}
+
+.inner {
+  flex: 1;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header: close · position + elapsed · form */
+.header {
+  margin-top: var(--s-3);
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.headerTitle {
+  font-weight: 600;
+}
+
+.headerSub {
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.round {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titleBlock {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+/* Pill: ink ground with the screen colour as text (orange on ink / blue on white). */
+.pill {
+  height: 26px;
+  padding: 0 var(--s-3);
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--work-ink);
+  color: var(--work);
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.player[data-mode='rest'] .pill {
+  background: var(--rest-ink);
+  color: var(--rest-bg);
+}
+
+.pillDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 0.95;
+  text-align: center;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.name[data-long] {
+  font-size: min(56px, 11vw);
+}
+
+/* Centre stage: counter, ticks, adjust — or the rest ring. */
+.stage {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-4) 0;
+}
+
+.counter {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(120px, 28dvh, var(--t-counter));
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+  margin: -0.076em 0 -0.093em;
+}
+
+/* m:ss for warm-up / cool-down countdowns: same weight, sized to fit the width. */
+.counter[data-long] {
+  font-size: clamp(100px, min(20dvh, 36vw), 180px);
+}
+
+.counterSub {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.adjust {
+  margin-top: var(--s-5);
+  height: 52px;
+  border-radius: 26px;
+  background: var(--tint);
+  display: grid;
+  grid-template-columns: 64px 100px 64px;
+  align-items: center;
+}
+
+.adjust button {
+  height: 52px;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.adjust span {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Info panel: tempo · last time · next */
+.info {
+  margin: 0;
+  display: grid;
+  border-radius: 16px;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.info > div {
+  padding: var(--s-3) 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.info > div + div {
+  border-left: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.info dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.info dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Bottom buttons */
+.actions {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.primary,
+.secondary {
+  height: 64px;
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary {
+  gap: 10px;
+  background: var(--work-ink);
+  color: var(--work);
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.player[data-mode='rest'] .primary {
+  background: var(--rest-ink);
+  color: var(--rest-bg);
+}
+
+.secondary {
+  background: var(--tint);
+}
+
+.addTime {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Rest ring */
+.restRing {
+  position: relative;
+  width: min(280px, 72vw, 36dvh);
+  aspect-ratio: 1;
+}
+
+.restRingSvg {
+  --ring-track: color-mix(in srgb, currentColor 18%, transparent);
+  --ring-arc: currentColor;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.restRingText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.restCount {
+  font-family: var(--font-display);
+  font-size: min(120px, 30vw, 15dvh);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.restOf {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+/* Up next card (rest) */
+.upNext {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: var(--s-3);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.upNextThumb {
+  --ph-hatch: color-mix(in srgb, currentColor 8%, transparent);
+  --ph-fill: color-mix(in srgb, currentColor 10%, transparent);
+  --ph-ink: color-mix(in srgb, currentColor 70%, transparent);
+  width: 76px;
+  height: 76px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.upNextText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.upNextEyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.upNextName {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upNextDetail {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.message {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  align-items: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player {
+    transition: none;
+  }
+}
