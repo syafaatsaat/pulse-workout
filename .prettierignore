@@ -1,0 +1,10 @@
+dist
+public
+docs/design-reference
+src/data/exercises.json
+package-lock.json
+docs
+prompts
+CLAUDE.md
+README.md
+src/styles/tokens.css
