@@ -21,6 +21,8 @@ interface WorkViewProps {
   dispatch: Dispatch<PlayerAction>
   onEnd: () => void
   onForm: () => void
+  /** One-line hint under the header, e.g. when the screen can't be kept awake. */
+  notice?: string
 }
 
 const PHASE_LABEL = { warmup: 'Warm-up', main: 'Work', cooldown: 'Cool-down' } as const
@@ -48,6 +50,7 @@ export function WorkView({
   dispatch,
   onEnd,
   onForm,
+  notice,
 }: WorkViewProps) {
   const paused = state.status === 'paused'
   const name = exercise?.name ?? step.exerciseId
@@ -97,6 +100,7 @@ export function WorkView({
             </button>
           }
         />
+        {notice && <p className={styles.notice}>{notice}</p>}
 
         <div className={styles.titleBlock}>
           <Pill>{PHASE_LABEL[step.phase]}</Pill>

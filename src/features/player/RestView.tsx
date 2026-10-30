@@ -18,9 +18,11 @@ interface RestViewProps {
   nextExercise?: Exercise
   dispatch: Dispatch<PlayerAction>
   onEnd: () => void
+  /** One-line hint under the header, e.g. when the screen can't be kept awake. */
+  notice?: string
 }
 
-export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd }: RestViewProps) {
+export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd, notice }: RestViewProps) {
   const remaining = remainingMs(state, now) ?? 0
   const done = `Set ${step.setIndex + 1} of ${step.setCount} done`
   const nextName = nextExercise?.name ?? next?.exerciseId ?? ''
@@ -47,6 +49,7 @@ export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd
           title={done}
           sub={`${state.status === 'paused' ? 'Paused · ' : ''}${elapsed(elapsedMs(state, now))} elapsed`}
         />
+        {notice && <p className={styles.notice}>{notice}</p>}
 
         <div className={styles.titleBlock}>
           <Pill>Rest</Pill>

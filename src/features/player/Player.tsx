@@ -21,6 +21,7 @@ import styles from './Player.module.css'
 import { RestView } from './RestView'
 import { useCues } from './useCues'
 import { useNow } from './useNow'
+import { useWakeLock } from './useWakeLock'
 import { WorkView } from './WorkView'
 
 export interface PlayerProps {
@@ -71,6 +72,8 @@ export function Player({ sessionId, session, steps, moveCount, exercises, lastTi
   }, [state.status, remaining, step, endsAt])
 
   useCues(state, settings?.beeps ?? true)
+  const wakeLock = useWakeLock((settings?.wakeLock ?? true) && state.status !== 'finished')
+  const notice = wakeLock === 'unavailable' ? "Screen may sleep: this browser can't keep it awake" : undefined
 
   // Save every completed set immediately.
   const { sets, startedAt, status, endedAt } = state
@@ -104,7 +107,7 @@ export function Player({ sessionId, session, steps, moveCount, exercises, lastTi
 
   const exercise = exercises.get(step.exerciseId)
   const next = state.steps[state.index + 1]
-  const common = { state, step, now, moveCount, dispatch }
+  const common = { state, step, now, moveCount, dispatch, notice }
 
   return (
     <>
