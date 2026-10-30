@@ -71,7 +71,7 @@ export function WorkView({
         <Header
           left={<CloseButton onClick={onEnd} />}
           title={position}
-          sub={paused ? 'Paused' : `${elapsed(elapsedMs(state, now))} elapsed`}
+          sub={`${paused ? 'Paused · ' : ''}${elapsed(elapsedMs(state, now))} elapsed`}
           right={
             <button
               type="button"

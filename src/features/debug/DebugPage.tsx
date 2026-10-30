@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { PageHeader } from '../../app/PageHeader'
 import { createSession } from '../../data/sessions'
 import { db } from '../../data/db'
@@ -14,7 +14,8 @@ export function DebugPage() {
   const workouts = useLiveQuery(() => db.workouts.toArray())
   const sessions = useLiveQuery(() => db.sessions.orderBy('startedAt').reverse().toArray())
   const navigate = useNavigate()
-  const start = async (workoutId: string) => navigate(`/session/${await createSession(workoutId)}`)
+  const start = async (workoutId: string) =>
+    navigate(`/session/${await createSession(workoutId)}`, { state: { start: true } })
   const workoutName = new Map(workouts?.map((w) => [w.id, w.name]))
 
   return (
@@ -37,7 +38,15 @@ export function DebugPage() {
             {sessions?.map((s) => (
               <tr key={s.id}>
                 <td>{dateFmt.format(s.startedAt)}</td>
-                <td>{workoutName.get(s.workoutId) ?? s.workoutId}</td>
+                <td>
+                  {workoutName.get(s.workoutId) ?? s.workoutId}
+                  {s.endedAt === undefined && (
+                    <>
+                      {' · '}
+                      <Link to={`/session/${s.id}`}>Resume</Link>
+                    </>
+                  )}
+                </td>
                 <td>{s.endedAt ? Math.round((s.endedAt - s.startedAt) / 60000) : '–'}</td>
                 <td>{s.sets.length}</td>
                 <td>{s.sets.reduce((sum, x) => sum + (x.reps ?? 0), 0)}</td>

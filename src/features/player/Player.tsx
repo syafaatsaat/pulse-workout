@@ -1,9 +1,15 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { finishSession, saveSets } from '../../data/sessions'
-import type { Exercise } from '../../data/types'
+import type { Exercise, SessionSet } from '../../data/types'
 import type { Step } from '../../engine/compile'
-import { currentStep, initPlayer, playerReducer, remainingMs } from '../../engine/playerReducer'
+import {
+  currentStep,
+  initPlayer,
+  playerReducer,
+  remainingMs,
+  restorePlayer,
+} from '../../engine/playerReducer'
 import type { SetValue } from '../../engine/stats'
 import { EndDialog } from './EndDialog'
 import { FormDialog } from './FormDialog'
@@ -14,6 +20,8 @@ import { WorkView } from './WorkView'
 
 export interface PlayerProps {
   sessionId: string
+  /** Saved progress to restore; null for a fresh start from the Start tap. */
+  session: { sets: SessionSet[]; startedAt: number; openedAt: number } | null
   workoutName: string
   steps: Step[]
   moveCount: number
@@ -21,8 +29,11 @@ export interface PlayerProps {
   lastTimes: Map<string, SetValue>
 }
 
-export function Player({ sessionId, steps, moveCount, exercises, lastTimes }: PlayerProps) {
-  const [state, dispatch] = useReducer(playerReducer, steps, initPlayer)
+export function Player({ sessionId, session, steps, moveCount, exercises, lastTimes }: PlayerProps) {
+  const [state, dispatch] = useReducer(playerReducer, null, () =>
+    session ? restorePlayer(steps, session.sets, session.startedAt, session.openedAt) : initPlayer(steps),
+  )
+  const location = useLocation()
   const [dialog, setDialog] = useState<'end' | 'form' | null>(null)
   const pausedForDialog = useRef(false)
   const navigate = useNavigate()
@@ -30,14 +41,22 @@ export function Player({ sessionId, steps, moveCount, exercises, lastTimes }: Pl
   const step = currentStep(state)
   const remaining = remainingMs(state, now)
 
-  // The Start tap happened on the previous screen: begin straight away.
-  useEffect(() => dispatch({ type: 'start', now: Date.now() }), [])
-
-  // Timers reaching zero: timed work completes itself, rest moves on.
+  // Fresh start: the Start tap happened on the previous screen, so begin straight away, then drop
+  // the flag so a reload restores instead of starting over. (The reducer ignores a second start.)
+  const fresh = session === null
   useEffect(() => {
-    if (state.status !== 'running' || remaining !== 0 || !step) return
-    dispatch(step.kind === 'rest' ? { type: 'skipRest', now } : { type: 'setDone', now })
-  }, [state.status, remaining, step, now])
+    if (!fresh) return
+    dispatch({ type: 'start', now: Date.now() })
+    navigate(location.pathname, { replace: true, state: null })
+  }, [fresh, navigate, location.pathname])
+
+  // Timers reaching zero: timed work completes itself, rest moves on — at endsAt exactly, so a
+  // late frame (or a backgrounded tab) doesn't push the rest of the timeline back.
+  const { endsAt } = state
+  useEffect(() => {
+    if (state.status !== 'running' || remaining !== 0 || !step || endsAt === null) return
+    dispatch(step.kind === 'rest' ? { type: 'skipRest', now: endsAt } : { type: 'setDone', now: endsAt })
+  }, [state.status, remaining, step, endsAt])
 
   // Save every completed set immediately.
   const { sets, startedAt, status, endedAt } = state

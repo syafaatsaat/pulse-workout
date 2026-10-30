@@ -5,6 +5,7 @@ import {
   initPlayer,
   playerReducer,
   remainingMs,
+  restorePlayer,
   type PlayerAction,
   type PlayerState,
 } from './playerReducer'
@@ -188,5 +189,47 @@ describe('end', () => {
     const done = run({ type: 'start', now: T0 }, { type: 'end', now: T0 + 1 })
     expect(playerReducer(done, { type: 'resume', now: T0 + 2 })).toBe(done)
     expect(playerReducer(done, { type: 'start', now: T0 + 2 })).toBe(done)
+  })
+})
+
+describe('restorePlayer', () => {
+  const saved = (exerciseId: string, completedAt: number, v: { reps?: number; seconds?: number }) => ({
+    exerciseId,
+    blockId: 'a',
+    setIndex: 0,
+    completedAt,
+    ...v,
+  })
+
+  test('reopens paused on the work step after the last saved set, skipping the rest in between', () => {
+    const s = restorePlayer(STEPS, [saved('Pushups', T0 + 30_000, { reps: 10 })], T0, T0 + 600_000)
+    expect(s).toMatchObject({ status: 'paused', index: 2, endsAt: null, remainingMs: 40_000, stepMs: 40_000 })
+    expect(s.sets).toEqual([
+      { stepIndex: 0, exerciseId: 'Pushups', blockId: 'a', setIndex: 0, reps: 10, completedAt: T0 + 30_000 },
+    ])
+  })
+
+  test('elapsed stops at the last saved set; resuming carries on from there', () => {
+    const s = restorePlayer(STEPS, [saved('Pushups', T0 + 30_000, { reps: 10 })], T0, T0 + 600_000)
+    expect(elapsedMs(s, T0 + 900_000)).toBe(30_000)
+    const resumed = playerReducer(s, { type: 'resume', now: T0 + 700_000 })
+    expect(resumed.endsAt).toBe(T0 + 740_000)
+    expect(elapsedMs(resumed, T0 + 705_000)).toBe(35_000)
+  })
+
+  test('with no sets saved it waits at the first step with reps preset', () => {
+    const s = restorePlayer(STEPS, [], T0, T0 + 5000)
+    expect(s).toMatchObject({ status: 'paused', index: 0, reps: 12, startedAt: T0 })
+    expect(elapsedMs(s, T0 + 9000)).toBe(0)
+  })
+
+  test('with every set saved it is finished at the last set', () => {
+    const s = restorePlayer(
+      STEPS,
+      [saved('Pushups', T0 + 30_000, { reps: 10 }), saved('Plank', T0 + 80_000, { seconds: 40 })],
+      T0,
+      T0 + 600_000,
+    )
+    expect(s).toMatchObject({ status: 'finished', endedAt: T0 + 80_000 })
   })
 })

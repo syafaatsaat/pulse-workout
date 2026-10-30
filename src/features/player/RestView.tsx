@@ -45,7 +45,7 @@ export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd
         <Header
           left={<CloseButton onClick={onEnd} />}
           title={done}
-          sub={state.status === 'paused' ? 'Paused' : `${elapsed(elapsedMs(state, now))} elapsed`}
+          sub={`${state.status === 'paused' ? 'Paused · ' : ''}${elapsed(elapsedMs(state, now))} elapsed`}
         />
 
         <div className={styles.titleBlock}>

@@ -62,6 +62,39 @@ export function initPlayer(steps: Step[]): PlayerState {
   }
 }
 
+/**
+ * Rebuilds the state of an interrupted session from its saved sets (saved in timeline order).
+ * It reopens paused on the next work step — a rest that was running is skipped — with elapsed
+ * frozen at the last saved set, so the Resume tap carries on from there.
+ */
+export function restorePlayer(
+  steps: Step[],
+  saved: Omit<LoggedSet, 'stepIndex'>[],
+  startedAt: number,
+  now: number,
+): PlayerState {
+  const workIndexes = steps.flatMap((s, i) => (s.kind === 'work' ? [i] : []))
+  const sets: LoggedSet[] = saved
+    .slice(0, workIndexes.length)
+    .map((set, i) => ({ ...set, stepIndex: workIndexes[i]! }))
+  const lastActivity = sets.at(-1)?.completedAt ?? startedAt
+  const base: PlayerState = { ...initPlayer(steps), startedAt, sets }
+  const nextIndex = workIndexes[sets.length]
+
+  if (nextIndex === undefined) {
+    return { ...base, index: steps.length, status: 'finished', endedAt: lastActivity }
+  }
+  const entered = enter(base, nextIndex, now)
+  return {
+    ...entered,
+    status: 'paused',
+    pausedAt: now,
+    pausedMs: now - lastActivity,
+    remainingMs: entered.endsAt === null ? null : entered.stepMs,
+    endsAt: null,
+  }
+}
+
 export function currentStep(state: PlayerState): Step | undefined {
   return state.steps[state.index]
 }

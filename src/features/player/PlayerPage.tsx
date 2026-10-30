@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 import { db } from '../../data/db'
 import { compile, moveCount } from '../../engine/compile'
 import { lastTime, type SetValue } from '../../engine/stats'
@@ -21,11 +21,14 @@ async function load(sessionId: string) {
     const v = lastTime(history, id, sessionId)
     if (v) lastTimes.set(id, v)
   }
-  return { session, workout, steps, exercises, lastTimes }
+  // Restore time is taken here, not during render.
+  return { session, workout, steps, exercises, lastTimes, openedAt: Date.now() }
 }
 
 export function PlayerPage() {
   const { id = '' } = useParams()
+  // Set by the Start tap. A reload or a later visit has no flag and restores from the saved sets.
+  const autoStart = (useLocation().state as { start?: boolean } | null)?.start === true
   // Loaded once, not live: from here the player owns the state and writes sets back.
   const [data, setData] = useState<{ id: string; d: Awaited<ReturnType<typeof load>> }>()
   useEffect(() => {
@@ -50,11 +53,12 @@ export function PlayerPage() {
     )
   }
 
-  const { workout, steps, exercises, lastTimes } = data.d
+  const { session, workout, steps, exercises, lastTimes, openedAt } = data.d
   return (
     <Player
       key={id}
       sessionId={id}
+      session={autoStart ? null : { sets: session.sets, startedAt: session.startedAt, openedAt }}
       workoutName={workout.name}
       steps={steps}
       moveCount={moveCount(workout)}
