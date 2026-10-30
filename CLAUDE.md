@@ -64,5 +64,18 @@ scripts/
 - Ask before adding any dependency not listed above.
 
 ## Commands
-(fill in after Day 1 scaffold)
-- `npm run dev` · `npm run build` · `npm run test` · `npm run e2e` · `npm run import:exercises`
+- `npm run dev` — Vite dev server
+- `npm run build` — type-check (`tsc -b`) + production build to `dist/`
+- `npm run preview` — serve `dist/`
+- `npm run test` — Vitest once (jsdom; Dexie tests use `fake-indexeddb/auto`) · `npm run test:watch`
+- `npm run lint` — ESLint · `npm run format` — Prettier (skips docs/, prompts/, CLAUDE.md, README, tokens.css)
+- `npm run import:exercises` — re-import free-exercise-db (pinned commit, cached in `.cache/`) into
+  `src/data/exercises.json` + `public/exercises/`. `-- --list` prints the kept ids without writing.
+  Tune the filter in `scripts/exercise-overrides.json`.
+- `npm run e2e` — Playwright, added on Day 7
+
+## Dev notes
+- Demo data is seeded on first load by `ensureSeeded()` (`src/data/seed.ts`); demo sessions are dated
+  relative to today. To reseed in the browser, delete the `field-manual` IndexedDB database.
+- Theme is in localStorage (`fm-theme`) until Settings moves to Dexie; `index.html` applies it pre-paint.
+- Read Dexie in components with `useLiveQuery` from `src/data/useLiveQuery.ts`.
