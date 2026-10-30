@@ -1,6 +1,8 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
+import { db } from '../../data/db'
 import { finishSession, saveSets } from '../../data/sessions'
+import { useLiveQuery } from '../../data/useLiveQuery'
 import type { Exercise, SessionSet } from '../../data/types'
 import type { Step } from '../../engine/compile'
 import {
@@ -9,12 +11,15 @@ import {
   playerReducer,
   remainingMs,
   restorePlayer,
+  type PlayerAction,
 } from '../../engine/playerReducer'
 import type { SetValue } from '../../engine/stats'
+import { unlockAudio } from './audio'
 import { EndDialog } from './EndDialog'
 import { FormDialog } from './FormDialog'
 import styles from './Player.module.css'
 import { RestView } from './RestView'
+import { useCues } from './useCues'
 import { useNow } from './useNow'
 import { WorkView } from './WorkView'
 
@@ -30,10 +35,17 @@ export interface PlayerProps {
 }
 
 export function Player({ sessionId, session, steps, moveCount, exercises, lastTimes }: PlayerProps) {
-  const [state, dispatch] = useReducer(playerReducer, null, () =>
+  const [state, rawDispatch] = useReducer(playerReducer, null, () =>
     session ? restorePlayer(steps, session.sets, session.startedAt, session.openedAt) : initPlayer(steps),
   )
   const location = useLocation()
+  const settings = useLiveQuery(() => db.settings.get('settings'))
+
+  // Starting or resuming is a user gesture: the moment iOS lets audio unlock.
+  const dispatch = (action: PlayerAction) => {
+    if (action.type === 'start' || action.type === 'resume') unlockAudio()
+    rawDispatch(action)
+  }
   const [dialog, setDialog] = useState<'end' | 'form' | null>(null)
   const pausedForDialog = useRef(false)
   const navigate = useNavigate()
@@ -46,7 +58,7 @@ export function Player({ sessionId, session, steps, moveCount, exercises, lastTi
   const fresh = session === null
   useEffect(() => {
     if (!fresh) return
-    dispatch({ type: 'start', now: Date.now() })
+    rawDispatch({ type: 'start', now: Date.now() })
     navigate(location.pathname, { replace: true, state: null })
   }, [fresh, navigate, location.pathname])
 
@@ -55,8 +67,10 @@ export function Player({ sessionId, session, steps, moveCount, exercises, lastTi
   const { endsAt } = state
   useEffect(() => {
     if (state.status !== 'running' || remaining !== 0 || !step || endsAt === null) return
-    dispatch(step.kind === 'rest' ? { type: 'skipRest', now: endsAt } : { type: 'setDone', now: endsAt })
+    rawDispatch(step.kind === 'rest' ? { type: 'skipRest', now: endsAt } : { type: 'setDone', now: endsAt })
   }, [state.status, remaining, step, endsAt])
+
+  useCues(state, settings?.beeps ?? true)
 
   // Save every completed set immediately.
   const { sets, startedAt, status, endedAt } = state
