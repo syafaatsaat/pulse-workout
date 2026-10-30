@@ -3,11 +3,18 @@ import type { Block, ItemMode, Workout, WorkoutItem } from './types'
 // The 5 ready-made workouts. Every exerciseId is a free-exercise-db id kept by the import.
 
 let n = 0
-function item(exerciseId: string, mode: ItemMode, target: number, sets = 1, restAfter = 30): WorkoutItem {
-  return { id: `i${++n}`, exerciseId, mode, target, sets, restAfter }
+function item(
+  exerciseId: string,
+  mode: ItemMode,
+  target: number,
+  sets = 1,
+  restAfter = 30,
+  tempo?: string,
+): WorkoutItem {
+  return { id: `i${++n}`, exerciseId, mode, target, sets, restAfter, ...(tempo ? { tempo } : {}) }
 }
-const reps = (id: string, target: number, sets?: number, rest?: number) =>
-  item(id, 'reps', target, sets, rest)
+const reps = (id: string, target: number, sets?: number, rest?: number, tempo?: string) =>
+  item(id, 'reps', target, sets, rest, tempo)
 const time = (id: string, seconds: number, sets?: number, rest?: number) =>
   item(id, 'time', seconds, sets, rest)
 
@@ -17,32 +24,21 @@ function block(id: string, name: string, items: WorkoutItem[], opts: Partial<Blo
 
 export const DEMO_WORKOUTS: Workout[] = [
   {
+    // Matches F-Today / F-Player: 9 moves; warm-up and cool-down are one step each; block B runs
+    // each move's 4 sets back to back (player: Push-up set 2 → rest → set 3 → next move).
     id: 'push-and-core',
     name: 'Push & Core',
     focus: 'Upper',
     blocks: [
-      block('warm', 'Warm-up', [time('Arm_Circles', 45, 1, 0), reps('Inchworm', 6, 1, 0)], {
-        phase: 'warmup',
-      }),
-      block('a', 'Warm', [reps('Incline_Push-Up', 10, 2), reps('Dead_Bug', 12, 2)]),
-      block(
-        'b',
-        'Main circuit',
-        [reps('Pushups', 12), reps('Push-Ups_With_Feet_Elevated', 8), time('Plank', 40)],
-        {
-          type: 'circuit',
-          rounds: 4,
-        },
-      ),
-      block('c', 'Finisher', [reps('Bench_Dips', 10, 3), time('Flutter_Kicks', 30, 3)]),
-      block(
-        'cool',
-        'Cool-down',
-        [time('Childs_Pose', 60, 1, 0), time('Chest_And_Front_Of_Shoulder_Stretch', 60, 1, 0)],
-        {
-          phase: 'cooldown',
-        },
-      ),
+      block('warm', 'Warm-up', [time('Inchworm', 180, 1, 15)], { phase: 'warmup' }),
+      block('a', 'Warm', [reps('Incline_Push-Up', 10, 2, 30, '2·0·1'), reps('Dead_Bug', 12, 2, 30)]),
+      block('b', 'Main circuit', [
+        reps('Pushups', 12, 4, 30, '2·0·1'),
+        reps('Push-Ups_With_Feet_Elevated', 8, 4, 30, '2·0·1'),
+        time('Plank', 40, 4, 30),
+      ]),
+      block('c', 'Finisher', [reps('Bench_Dips', 10, 3, 30, '2·0·1'), time('Flutter_Kicks', 30, 3)]),
+      block('cool', 'Cool-down', [time('Childs_Pose', 240, 1, 0)], { phase: 'cooldown' }),
     ],
   },
   {
@@ -110,11 +106,9 @@ export const DEMO_WORKOUTS: Workout[] = [
     name: 'Legs & glutes',
     focus: 'Lower',
     blocks: [
-      block('warm', 'Warm-up', [time('Standing_Hip_Circles', 45, 1, 0), reps('Bodyweight_Squat', 10, 1, 0)], {
-        phase: 'warmup',
-      }),
+      block('warm', 'Warm-up', [time('Standing_Hip_Circles', 120, 1, 15)], { phase: 'warmup' }),
       block('a', 'Strength', [
-        reps('Goblet_Squat', 12, 4, 45),
+        reps('Goblet_Squat', 12, 4, 45, '3·1·1'),
         reps('Single_Leg_Glute_Bridge', 12, 3),
         reps('Bodyweight_Walking_Lunge', 12, 3),
       ]),
@@ -124,14 +118,7 @@ export const DEMO_WORKOUTS: Workout[] = [
         [reps('Glute_Kickback', 15), reps('Step-up_with_Knee_Raise', 10), reps('Freehand_Jump_Squat', 10)],
         { type: 'circuit', rounds: 3 },
       ),
-      block(
-        'cool',
-        'Cool-down',
-        [time('Hamstring_Stretch', 60, 1, 0), time('Kneeling_Hip_Flexor', 60, 1, 0)],
-        {
-          phase: 'cooldown',
-        },
-      ),
+      block('cool', 'Cool-down', [time('Hamstring_Stretch', 180, 1, 0)], { phase: 'cooldown' }),
     ],
   },
 ]

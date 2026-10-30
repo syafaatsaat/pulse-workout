@@ -14,6 +14,8 @@ export interface WorkoutItem {
   sets: number
   /** Rest after each set of this item, in seconds. */
   restAfter: number
+  /** Seconds per phase, e.g. "2·0·1" (down · hold · up). Shown in the player; drives the time estimate. */
+  tempo?: string
 }
 
 export interface Block {
