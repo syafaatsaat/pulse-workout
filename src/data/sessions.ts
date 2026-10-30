@@ -2,9 +2,20 @@ import type { LoggedSet } from '../engine/playerReducer'
 import { db } from './db'
 import type { SessionSet } from './types'
 
+/**
+ * crypto.randomUUID only exists in secure contexts; a phone on the dev server's LAN address
+ * (plain http) doesn't have it. getRandomValues works everywhere.
+ */
+function newId(): string {
+  if (typeof crypto.randomUUID === 'function') return crypto.randomUUID()
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join(
+    '',
+  )
+}
+
 /** Creates the session row the player route points at. */
 export async function createSession(workoutId: string, now = Date.now()): Promise<string> {
-  const id = crypto.randomUUID()
+  const id = newId()
   await db.sessions.add({ id, workoutId, startedAt: now, sets: [] })
   return id
 }

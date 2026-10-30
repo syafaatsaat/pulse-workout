@@ -80,3 +80,5 @@ scripts/
 - Theme is in localStorage (`fm-theme`) until Settings moves to Dexie; `index.html` applies it pre-paint.
 - Read Dexie in components with `useLiveQuery` from `src/data/useLiveQuery.ts`.
 - Until Today has a Start button (Day 5), start a workout from `/debug`.
+- Phone testing: `npm run dev -- --host`, open the LAN address. Plain http is not a secure context, so
+  Wake Lock is unavailable there (the player shows its hint); everything else works.
