@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Field Manual — Today</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.th-light{--bg:#F4F3EF;--ink:#111113;--muted:#66666D;--line:#DCDAD3;--line2:#C9C6BE;--fill:#E9E7E1;--dim:#9C9AA1;--rest:#CFCCC4;--bar:#BDBAB2;--surface:#FFFFFF;--danger:#B42318;--card:0 1px 2px rgba(17,17,19,0.05),0 0 0 1px rgba(17,17,19,0.06);--hatch:rgba(17,17,19,0.06);color-scheme:light}
+.th-dark{--bg:#121214;--ink:#EDEBE6;--muted:#9D9CA3;--line:#2A2A2E;--line2:#3A3A40;--fill:#232328;--dim:#6C6C73;--rest:#3A3A40;--bar:#4A4A50;--surface:#1A1A1D;--danger:#FF7A6B;--card:0 0 0 1px rgba(255,255,255,0.07);--hatch:rgba(255,255,255,0.05);color-scheme:dark}
+a{color:var(--ink)}a:hover{color:var(--muted)}
+</style>
+</helmet>
+<div class="th-{{theme}}" style="width: 390px; height: 844px; box-sizing: border-box; background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="flex-grow: 1; min-height: 0; padding: 56px 20px 0; display: flex; flex-direction: column">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--muted)">THURSDAY 29 OCT</span>
+        <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 36px; line-height: 1; text-transform: uppercase">Today</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px" role="img" aria-label="Weekly goal: 2 of 4 sessions">
+        <div style="display: flex; flex-direction: column; align-items: flex-end">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--muted)">WEEK</span>
+          <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 20px; line-height: 1">2 OF 4</span>
+        </div>
+        <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="none" stroke="var(--line)" stroke-width="4"></circle><circle cx="20" cy="20" r="16" fill="none" stroke="#FF5A1F" stroke-width="4" stroke-linecap="round" stroke-dasharray="50.3 100.5" transform="rotate(-90 20 20)"></circle></svg>
+      </div>
+    </div>
+
+    <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr))" role="img" aria-label="This week: Monday and Wednesday done, today Thursday">
+      <sc-for list="{{week}}" as="d" hint-placeholder-count="7">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; color: var(--muted)">{{d.label}}</span>
+          <span style="width: 36px; height: 36px; box-sizing: border-box; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{d.bg}}; color: {{d.ink}}; box-shadow: inset 0 0 0 {{d.ring}}px #FF5A1F; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums">{{d.date}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <section style="margin-top: 22px; background: var(--surface); border-radius: 20px; box-shadow: var(--card); padding: 20px; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--muted)">UP NEXT · SESSION 03 · UPPER</span>
+      <h1 style="margin: 8px 0 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 52px; line-height: 0.92; letter-spacing: -0.5px; text-transform: uppercase">Push &amp; Core</h1>
+      <div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap">
+        <sc-for list="{{meta}}" as="m" hint-placeholder-count="3">
+          <span style="height: 28px; padding: 0 10px; border-radius: 14px; background: var(--fill); display: flex; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.04em">{{m}}</span>
+        </sc-for>
+      </div>
+      <div style="margin-top: 18px; display: flex; gap: 3px; height: 30px; align-items: flex-end" role="img" aria-label="Session shape: warm-up, three blocks of work and rest, cool-down">
+        <sc-for list="{{shape}}" as="s" hint-placeholder-count="18">
+          <span style="flex-grow: {{s.grow}}; flex-basis: 0; height: {{s.h}}px; border-radius: 3px; background: {{s.fill}}"></span>
+        </sc-for>
+      </div>
+      <div style="margin-top: 6px; display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.06em; color: var(--muted)"><span>WARM</span><span>A</span><span>B · ×4</span><span>C</span><span>COOL</span></div>
+      <div style="margin-top: 18px; display: grid; grid-template-columns: minmax(0, 1fr) 56px; gap: 8px">
+        <a href="F-Player.dc.html" style="height: 56px; border-radius: 14px; background: #FF5A1F; color: #111113; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 0.5px">
+          START SESSION
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg>
+        </a>
+        <a href="F-Builder.dc.html" aria-label="Edit workout" style="height: 56px; border-radius: 14px; background: var(--fill); display: flex; align-items: center; justify-content: center; text-decoration: none">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path><path d="M13.5 6.5l4 4"></path></svg>
+        </a>
+      </div>
+    </section>
+
+    <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: baseline">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--muted)">QUICK START</span>
+      <a href="F-Library.dc.html" style="font-size: 13px; font-weight: 500; text-decoration: none; color: var(--muted)">See all</a>
+    </div>
+    <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{quick}}" as="q" hint-placeholder-count="3">
+        <a href="F-Player.dc.html" style="min-height: 104px; box-sizing: border-box; background: var(--surface); border-radius: 16px; box-shadow: var(--card); padding: 12px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--muted)">{{q.meta}}</span>
+          <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 20px; line-height: 1; text-transform: uppercase">{{q.name}}</span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+
+  <nav aria-label="Main" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 6px 8px 30px; border-top: 1px solid var(--line); background: var(--bg)">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+      <a href="{{t.href}}" aria-current="{{t.current}}" style="height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: {{t.color}}; font-size: 11px; font-weight: 600">
+        <span style="width: 56px; height: 30px; border-radius: 15px; background: {{t.pill}}; display: flex; align-items: center; justify-content: center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.d}}"></path></svg>
+        </span>{{t.label}}
+      </a>
+    </sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return Object.assign(this.baseVals(), { theme: this.props.theme === 'dark' ? 'dark' : 'light' });
+  }
+  baseVals() {
+    const labels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const dates = ['26', '27', '28', '29', '30', '31', '1'];
+    const done = [true, false, true, false, false, false, false];
+    const week = labels.map((label, i) => ({
+      label, date: dates[i],
+      bg: done[i] ? 'var(--ink)' : 'transparent',
+      ink: done[i] ? 'var(--bg)' : (i > 3 ? 'var(--dim)' : 'var(--ink)'),
+      ring: i === 3 ? 2 : 0
+    }));
+    const meta = ['9 MOVES', '28 MIN', 'NO EQUIPMENT'];
+    const grows = [4, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3];
+    const shape = grows.map((g, i) => {
+      if (i === 0 || i === grows.length - 1) return { grow: g, h: 16, fill: 'var(--dim)' };
+      return i % 2 === 1 ? { grow: g, h: 30, fill: 'var(--ink)' } : { grow: g, h: 10, fill: 'var(--rest)' };
+    });
+    const quick = [
+      { name: '10-min core', meta: '6 MOVES' },
+      { name: '20-min full body', meta: '8 MOVES' },
+      { name: 'Mobility reset', meta: '12 MIN' }
+    ];
+    const T = [
+      ['Today', 'F-Today.dc.html', 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z'],
+      ['Library', 'F-Library.dc.html', 'M4 19.5V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-1.5zM8 7h7M8 11h5'],
+      ['Log', 'F-Log.dc.html', 'M3 20h18M6 20V11M11 20V5M16 20v-6M21 20V9'],
+      ['Settings', 'F-Settings.dc.html', 'M4 7h9M17 7h3M15 4v6M4 17h3M11 17h9M9 14v6']
+    ];
+    const active = 0;
+    const tabs = T.map(([label, href, d], i) => ({ label, href, d, current: i === active ? 'page' : 'false', color: i === active ? 'var(--ink)' : 'var(--muted)', pill: i === active ? 'var(--fill)' : 'transparent' }));
+    return { week, meta, shape, quick, tabs };
+  }
+}
+</script>
+</body>
+</html>

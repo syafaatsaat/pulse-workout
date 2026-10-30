@@ -1,0 +1,90 @@
+/* Field Manual design tokens — from the approved canvas.
+   Theme: data-theme="light" | "dark" on <html>; with no attribute, follows the OS. */
+
+:root {
+  /* Fonts */
+  --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif; /* headings, numbers — uppercase */
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;          /* labels, eyebrows, data */
+
+  /* Accent + player (same in both themes) */
+  --accent: #FF5A1F;
+  --accent-ink: #111113;
+  --work: #FF5A1F;
+  --work-ink: #111113;
+  --work-tint: rgba(17, 17, 19, 0.12);
+  --rest-bg: #1E3FAE;
+  --rest-ink: #FFFFFF;
+  --rest-tint: rgba(255, 255, 255, 0.14);
+
+  /* Radii */
+  --r-sm: 10px;   /* small buttons, steppers */
+  --r-md: 14px;   /* primary buttons, inputs, segmented */
+  --r-lg: 18px;   /* list cards */
+  --r-xl: 20px;   /* hero cards */
+  --r-pill: 999px;
+
+  /* Spacing (8pt-ish) */
+  --gutter: 20px;
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-8: 32px;
+
+  /* Type scale */
+  --t-eyebrow: 11px;  /* mono, 500, letter-spacing 0.08em, uppercase */
+  --t-small: 13px;
+  --t-body: 15px;
+  --t-title: 36px;    /* tab page titles */
+  --t-hero: 52px;     /* session name on Today */
+  --t-counter: 236px; /* player rep counter (phone) */
+
+  /* Light (default) */
+  --bg: #F4F3EF;
+  --ink: #111113;
+  --muted: #66666D;
+  --line: #DCDAD3;
+  --line2: #C9C6BE;
+  --fill: #E9E7E1;
+  --dim: #9C9AA1;
+  --rest: #CFCCC4;      /* rest segments in the session bar */
+  --bar: #BDBAB2;       /* past values in sparklines */
+  --surface: #FFFFFF;
+  --danger: #B42318;
+  --card: 0 1px 2px rgba(17, 17, 19, 0.05), 0 0 0 1px rgba(17, 17, 19, 0.06);
+  --hatch: rgba(17, 17, 19, 0.06);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121214;
+    --ink: #EDEBE6;
+    --muted: #9D9CA3;
+    --line: #2A2A2E;
+    --line2: #3A3A40;
+    --fill: #232328;
+    --dim: #6C6C73;
+    --rest: #3A3A40;
+    --bar: #4A4A50;
+    --surface: #1A1A1D;
+    --danger: #FF7A6B;
+    --card: 0 0 0 1px rgba(255, 255, 255, 0.07);
+    --hatch: rgba(255, 255, 255, 0.05);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #121214;
+  --ink: #EDEBE6;
+  --muted: #9D9CA3;
+  --line: #2A2A2E;
+  --line2: #3A3A40;
+  --fill: #232328;
+  --dim: #6C6C73;
+  --rest: #3A3A40;
+  --bar: #4A4A50;
+  --surface: #1A1A1D;
+  --danger: #FF7A6B;
+  --card: 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --hatch: rgba(255, 255, 255, 0.05);
+  color-scheme: dark;
+}

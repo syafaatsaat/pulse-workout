@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Field Manual — Desktop Library</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.th-light{--bg:#F4F3EF;--ink:#111113;--muted:#66666D;--line:#DCDAD3;--line2:#C9C6BE;--fill:#E9E7E1;--dim:#9C9AA1;--rest:#CFCCC4;--bar:#BDBAB2;--surface:#FFFFFF;--danger:#B42318;--card:0 1px 2px rgba(17,17,19,0.05),0 0 0 1px rgba(17,17,19,0.06);--hatch:rgba(17,17,19,0.06);color-scheme:light}
+.th-dark{--bg:#121214;--ink:#EDEBE6;--muted:#9D9CA3;--line:#2A2A2E;--line2:#3A3A40;--fill:#232328;--dim:#6C6C73;--rest:#3A3A40;--bar:#4A4A50;--surface:#1A1A1D;--danger:#FF7A6B;--card:0 0 0 1px rgba(255,255,255,0.07);--hatch:rgba(255,255,255,0.05);color-scheme:dark}
+a{color:var(--ink)}a:hover{color:var(--muted)}
+input::placeholder{color:var(--muted)}
+</style>
+</helmet>
+<div class="th-{{theme}}" style="min-height: 100vh; box-sizing: border-box; background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-wrap: wrap">
+  <nav aria-label="Main" style="flex: 1 1 220px; box-sizing: border-box; border-right: 1px solid var(--line); padding: 28px 16px 20px; display: flex; flex-direction: column; gap: 2px">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 10px 28px">
+      <span style="width: 28px; height: 28px; border-radius: 8px; background: #FF5A1F; color: #111113; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 16px">FM</span>
+      <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.5px">FIELD MANUAL</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="4">
+      <a href="{{n.href}}" aria-current="{{n.current}}" style="height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; text-decoration: none; background: {{n.bg}}; box-shadow: {{n.shadow}}; color: {{n.color}}; font-size: 14px; font-weight: 600">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.d}}"></path></svg>{{n.label}}
+      </a>
+    </sc-for>
+  </nav>
+
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-wrap: wrap">
+    <section aria-label="Exercise list" style="flex: 1 1 360px; max-width: 440px; box-sizing: border-box; border-right: 1px solid var(--line); padding: 28px 24px; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--muted)">FREE-EXERCISE-DB</span>
+      <h1 style="margin: 2px 0 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 44px; line-height: 1; text-transform: uppercase">Library</h1>
+      <label for="dt-search" style="margin-top: 18px; height: 46px; border-radius: 14px; background: var(--surface); box-shadow: var(--card); display: flex; align-items: center; gap: 10px; padding: 0 12px 0 14px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color: var(--muted); flex-shrink: 0" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="20" y1="20" x2="16" y2="16"></line></svg>
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search exercises</span>
+        <input id="dt-search" type="search" placeholder="Search 800+ exercises" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-family: 'IBM Plex Sans', sans-serif; font-size: 15px; color: var(--ink)">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--muted); background: var(--fill); border-radius: 6px; padding: 2px 7px">/</span>
+      </label>
+      <div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap">
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="6">
+          <button onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="height: 34px; padding: 0 13px; border-radius: 17px; border: none; background: {{c.bg}}; box-shadow: {{c.shadow}}; color: {{c.ink}}; font-size: 13px; font-weight: 600">{{c.label}}</button>
+        </sc-for>
+      </div>
+      <div style="margin-top: 16px; background: var(--surface); border-radius: 18px; box-shadow: var(--card); padding: 6px" role="listbox" aria-label="Exercises">
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+          <button onClick="{{r.pick}}" role="option" aria-selected="{{r.selected}}" style="width: 100%; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 10px; border: none; border-radius: 12px; background: {{r.bg}}; color: var(--ink); text-align: left">
+            <span aria-hidden="true" style="width: 44px; height: 44px; border-radius: 10px; background: repeating-linear-gradient(135deg, var(--hatch) 0 6px, transparent 6px 12px), var(--fill); box-shadow: inset 0 0 0 {{r.ring}}px #FF5A1F"></span>
+            <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0">
+              <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 19px; line-height: 1.1; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.name}}</span>
+              <span style="font-size: 13px; color: var(--muted)">{{r.meta}}</span>
+            </span>
+            <span style="height: 22px; padding: 0 8px; border-radius: 11px; background: {{r.tagBg}}; display: flex; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600">{{r.level}}</span>
+          </button>
+        </sc-for>
+      </div>
+    </section>
+
+    <section aria-label="Exercise detail" style="flex: 999 1 440px; min-width: 0; box-sizing: border-box; padding: 28px 40px 40px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{frames}}" as="f" hint-placeholder-count="2">
+          <div role="img" aria-label="Photo placeholder: {{sel.name}}, {{f.label}} position" style="position: relative; aspect-ratio: 4 / 3; border-radius: 20px; background: repeating-linear-gradient(135deg, var(--hatch) 0 10px, transparent 10px 20px), var(--fill); box-shadow: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--muted)">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="6" r="2"></circle><path d="M3 17h4l4-3 6 1M11 14l-1-5 5 1"></path></svg>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px">{{sel.file}}/{{f.file}}</span>
+            <span style="position: absolute; left: 14px; top: 14px; height: 26px; padding: 0 10px; border-radius: 13px; background: var(--surface); box-shadow: var(--card); color: var(--ink); display: flex; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.08em">{{f.label}}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h2 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 60px; line-height: 0.9; text-transform: uppercase">{{sel.name}}</h2>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap">
+            <span style="height: 26px; padding: 0 10px; border-radius: 13px; background: #FF5A1F; color: #111113; display: flex; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.06em">BEST 12 REPS</span>
+            <sc-for list="{{tags}}" as="g" hint-placeholder-count="4">
+              <span style="height: 26px; padding: 0 10px; border-radius: 13px; background: var(--fill); display: flex; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.06em">{{g}}</span>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <a href="DT-Player.dc.html" style="height: 48px; padding: 0 18px; border-radius: 14px; background: var(--surface); box-shadow: var(--card); display: flex; align-items: center; text-decoration: none; font-size: 14px; font-weight: 600">Try it now</a>
+          <button style="height: 48px; padding: 0 20px; border-radius: 14px; border: none; background: var(--ink); color: var(--bg); font-size: 14px; font-weight: 600">+ Add to workout</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px">
+        <ol style="flex: 3 1 340px; min-width: 0; margin: 0; padding: 6px 20px; list-style: none; background: var(--surface); border-radius: 20px; box-shadow: var(--card)">
+          <sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
+            <li style="display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: start; padding: 14px 0; border-top: {{s.line}}; font-size: 15px; line-height: 1.5">
+              <span style="width: 24px; height: 24px; border-radius: 50%; background: var(--fill); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600">{{s.n}}</span><span>{{s.t}}</span>
+            </li>
+          </sc-for>
+        </ol>
+        <div style="flex: 2 1 240px; min-width: 0; background: var(--surface); border-radius: 20px; box-shadow: var(--card); padding: 20px; display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; color: var(--muted)">MUSCLES</span>
+            <span style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--ink)"></span><span style="color: var(--muted); width: 64px">Primary</span>Chest</span>
+            <span style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--ink)"></span><span style="color: var(--muted); width: 64px">Also</span>Shoulders, Triceps</span>
+          </div>
+          <div style="border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 8px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; color: var(--muted)">YOUR BEST SET · 6 WEEKS</span>
+            <div style="display: flex; gap: 4px; align-items: flex-end; height: 52px" role="img" aria-label="Best set over six weeks: 8, 8, 9, 10, 10, 12">
+              <sc-for list="{{trend}}" as="t" hint-placeholder-count="6"><span style="flex: 1; height: {{t.h}}px; border-radius: 3px; background: {{t.fill}}"></span></sc-for>
+            </div>
+            <span style="font-size: 13px; color: var(--muted)">Last session: 10 reps on 22 Oct</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { sel: 0, chips: { 'Body only': true, 'Chest': true } }; }
+  renderVals() {
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const N = [
+      ['Today', 'DT-Today.dc.html', 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z'],
+      ['Library', 'DT-Library.dc.html', 'M4 19.5V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-1.5zM8 7h7M8 11h5'],
+      ['Log', 'F-Log.dc.html', 'M3 20h18M6 20V11M11 20V5M16 20v-6M21 20V9'],
+      ['Settings', 'F-Settings.dc.html', 'M4 7h9M17 7h3M15 4v6M4 17h3M11 17h9M9 14v6']
+    ];
+    const active = 1;
+    const nav = N.map(([label, href, d], i) => ({ label, href, d, current: i === active ? 'page' : 'false', bg: i === active ? 'var(--surface)' : 'transparent', shadow: i === active ? 'var(--card)' : 'none', color: i === active ? 'var(--ink)' : 'var(--muted)' }));
+    const chips = ['Body only', 'Dumbbell', 'Bands', 'Chest', 'Core', 'Legs'].map((label) => {
+      const on = !!this.state.chips[label];
+      return { label, pressed: on ? 'true' : 'false', bg: on ? 'var(--ink)' : 'var(--surface)', ink: on ? 'var(--bg)' : 'var(--ink)', shadow: on ? 'none' : 'var(--card)', pick: () => this.setState({ chips: { ...this.state.chips, [label]: !on } }) };
+    });
+    const data = [
+      { name: 'Pushups', file: 'Pushups', meta: 'Chest · Triceps', level: 'BEG', full: 'BEGINNER' },
+      { name: 'Incline push-up', file: 'Incline_Push-Up', meta: 'Chest · Shoulders', level: 'BEG', full: 'BEGINNER' },
+      { name: 'Decline push-up', file: 'Decline_Push-Up', meta: 'Chest · Shoulders', level: 'INT', full: 'INTERMEDIATE' },
+      { name: 'Wide-grip push-up', file: 'Push-Up_Wide', meta: 'Chest · Triceps', level: 'BEG', full: 'BEGINNER' },
+      { name: 'Clapping push-up', file: 'Plyo_Push-up', meta: 'Chest · Triceps', level: 'EXP', full: 'EXPERT' },
+      { name: 'Push-up to side plank', file: 'Push_Up_to_Side_Plank', meta: 'Chest · Core', level: 'INT', full: 'INTERMEDIATE' },
+      { name: 'Close-grip push-up', file: 'Close-Grip_Push-Up', meta: 'Triceps · Chest', level: 'BEG', full: 'BEGINNER' },
+      { name: 'Chair dip', file: 'Bench_Dips', meta: 'Triceps · Chest', level: 'BEG', full: 'BEGINNER' }
+    ];
+    const rows = data.map((d, i) => {
+      const on = this.state.sel === i;
+      return { name: d.name, meta: d.meta, level: d.level, selected: on ? 'true' : 'false', bg: on ? 'var(--fill)' : 'transparent', tagBg: on ? 'var(--surface)' : 'var(--fill)', ring: on ? 2 : 0, pick: () => this.setState({ sel: i }) };
+    });
+    const s = data[this.state.sel];
+    const frames = [{ label: 'START', file: '0.jpg' }, { label: 'END', file: '1.jpg' }];
+    const tags = [s.full, 'PUSH', 'COMPOUND', 'BODY ONLY'];
+    const steps = [
+      { n: '1', t: 'Hands just wider than shoulders, body in one straight line from head to heels.' },
+      { n: '2', t: 'Lower until your chest is a fist above the floor, elbows about 45° from your body.' },
+      { n: '3', t: 'Press back up without letting your hips sag. Breathe out on the way up.' }
+    ].map((x, i) => ({ ...x, line: i === 0 ? 'none' : '1px solid var(--line)' }));
+    const vals = [8, 8, 9, 10, 10, 12];
+    const trend = vals.map((v, i) => ({ h: Math.round(v / 12 * 52), fill: i === vals.length - 1 ? '#FF5A1F' : 'var(--bar)' }));
+    return { theme, nav, chips, rows, sel: s, frames, tags, steps, trend };
+  }
+}
+</script>
+</body>
+</html>

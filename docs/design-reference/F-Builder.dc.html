@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Field Manual — Workout builder</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.th-light{--bg:#F4F3EF;--ink:#111113;--muted:#66666D;--line:#DCDAD3;--line2:#C9C6BE;--fill:#E9E7E1;--dim:#9C9AA1;--rest:#CFCCC4;--bar:#BDBAB2;--surface:#FFFFFF;--danger:#B42318;--card:0 1px 2px rgba(17,17,19,0.05),0 0 0 1px rgba(17,17,19,0.06);--hatch:rgba(17,17,19,0.06);color-scheme:light}
+.th-dark{--bg:#121214;--ink:#EDEBE6;--muted:#9D9CA3;--line:#2A2A2E;--line2:#3A3A40;--fill:#232328;--dim:#6C6C73;--rest:#3A3A40;--bar:#4A4A50;--surface:#1A1A1D;--danger:#FF7A6B;--card:0 0 0 1px rgba(255,255,255,0.07);--hatch:rgba(255,255,255,0.05);color-scheme:dark}
+a{color:var(--ink)}a:hover{color:var(--muted)}
+</style>
+</helmet>
+<div class="th-{{theme}}" style="width: 390px; height: 844px; box-sizing: border-box; background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column; padding: 56px 20px 0; overflow: hidden">
+  <div style="display: grid; grid-template-columns: 72px minmax(0, 1fr) 72px; align-items: center">
+    <a href="F-Today.dc.html" style="font-size: 15px; font-weight: 500; text-decoration: none; color: var(--muted); padding: 12px 0">Cancel</a>
+    <span style="text-align: center; font-size: 15px; font-weight: 600">Edit workout</span>
+    <a href="F-Today.dc.html" style="justify-self: end; height: 36px; padding: 0 16px; border-radius: 18px; background: var(--ink); color: var(--bg); display: flex; align-items: center; text-decoration: none; font-size: 14px; font-weight: 600">Save</a>
+  </div>
+
+  <div style="margin-top: 14px; background: var(--surface); border-radius: 20px; box-shadow: var(--card); padding: 16px">
+    <label for="wk-name" style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; color: var(--muted)">NAME</label>
+    <input id="wk-name" type="text" value="PUSH &amp; CORE" style="display: block; width: 100%; box-sizing: border-box; margin-top: 2px; border: none; background: transparent; padding: 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 34px; color: var(--ink); outline: none">
+    <div style="margin-top: 12px; display: flex; gap: 3px; height: 22px; align-items: flex-end" role="img" aria-label="Session shape preview">
+      <sc-for list="{{shape}}" as="s" hint-placeholder-count="18">
+        <span style="flex-grow: {{s.grow}}; flex-basis: 0; height: {{s.h}}px; border-radius: 3px; background: {{s.fill}}"></span>
+      </sc-for>
+    </div>
+    <div style="margin-top: 8px; display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.04em; color: var(--muted)"><span>9 MOVES · 3 BLOCKS</span><span style="color: var(--ink); font-weight: 600">≈ 28 MIN</span></div>
+  </div>
+
+  <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px">
+    <sc-for list="{{blocks}}" as="b" hint-placeholder-count="3">
+      <section style="background: var(--surface); border-radius: 18px; box-shadow: var(--card); padding: 0 14px">
+        <div style="display: flex; align-items: center; gap: 10px; min-height: 48px">
+          <span style="width: 26px; height: 26px; border-radius: 8px; background: var(--ink); color: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 16px">{{b.letter}}</span>
+          <span style="font-size: 15px; font-weight: 600">{{b.title}}</span>
+          <span style="margin-left: auto; height: 24px; padding: 0 10px; border-radius: 12px; background: var(--fill); display: flex; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.04em">{{b.meta}}</span>
+        </div>
+        <sc-for list="{{b.rows}}" as="r" hint-placeholder-count="2">
+          <div style="display: grid; grid-template-columns: 18px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; min-height: 50px; border-top: 1px solid var(--line)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color: var(--dim)" role="img" aria-label="Drag to reorder"><circle cx="9" cy="6" r="1.8"></circle><circle cx="15" cy="6" r="1.8"></circle><circle cx="9" cy="12" r="1.8"></circle><circle cx="15" cy="12" r="1.8"></circle><circle cx="9" cy="18" r="1.8"></circle><circle cx="15" cy="18" r="1.8"></circle></svg>
+            <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 19px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.name}}</span>
+            <button aria-label="Sets and reps for {{r.name}}" style="height: 32px; padding: 0 10px; border-radius: 10px; border: none; background: var(--fill); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600">{{r.dose}}</button>
+            <button aria-label="Rest after {{r.name}}" style="height: 32px; padding: 0 8px; border-radius: 10px; border: none; background: transparent; color: var(--muted); display: flex; align-items: center; gap: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2M10 2h4"></path></svg>{{r.rest}}
+            </button>
+          </div>
+        </sc-for>
+      </section>
+    </sc-for>
+  </div>
+
+  <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+    <a href="F-Library.dc.html" style="height: 48px; border-radius: 14px; box-shadow: inset 0 0 0 1.5px var(--line2); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 14px; font-weight: 600">+ Exercise</a>
+    <button style="height: 48px; border-radius: 14px; border: none; background: transparent; box-shadow: inset 0 0 0 1.5px var(--line2); color: var(--ink); font-size: 14px; font-weight: 600">+ Block</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return Object.assign(this.baseVals(), { theme: this.props.theme === 'dark' ? 'dark' : 'light' });
+  }
+  baseVals() {
+    const grows = [4, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3];
+    const shape = grows.map((g, i) => {
+      if (i === 0 || i === grows.length - 1) return { grow: g, h: 12, fill: 'var(--dim)' };
+      return i % 2 === 1 ? { grow: g, h: 22, fill: 'var(--ink)' } : { grow: g, h: 8, fill: 'var(--rest)' };
+    });
+    const blocks = [
+      { letter: 'A', title: 'Warm-up', meta: 'STRAIGHT', rows: [
+        { name: 'Incline push-up', dose: '2×10', rest: '0:20' },
+        { name: 'Dead bug', dose: '2×12', rest: '0:20' }
+      ] },
+      { letter: 'B', title: 'Main', meta: 'CIRCUIT ×4', rows: [
+        { name: 'Pushups', dose: '12', rest: '—' },
+        { name: 'Pike push-up', dose: '8', rest: '—' },
+        { name: 'Plank', dose: '0:40', rest: '0:30' }
+      ] },
+      { letter: 'C', title: 'Finisher', meta: 'STRAIGHT', rows: [
+        { name: 'Chair dip', dose: '3×10', rest: '0:30' }
+      ] }
+    ];
+    return { shape, blocks };
+  }
+}
+</script>
+</body>
+</html>
