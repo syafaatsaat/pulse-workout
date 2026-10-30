@@ -1,12 +1,6 @@
 import type { Step } from '../engine/compile'
 import styles from './SessionBar.module.css'
-
-/** Segment weights from DESIGN_SYSTEM.md: work 3, rest 1, warm-up 4, cool-down 3. */
-function stepWeight(step: Step): number {
-  if (step.phase === 'warmup') return 4
-  if (step.phase === 'cooldown') return 3
-  return step.kind === 'rest' ? 1 : 3
-}
+import { stepWeight } from './stepWeight'
 
 interface SessionBarProps {
   steps: Step[]

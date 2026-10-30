@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
+import { useMediaQuery } from '../../app/useMediaQuery'
 import { useLocation, useNavigate } from 'react-router'
 import { db } from '../../data/db'
 import { finishSession, saveSets } from '../../data/sessions'
@@ -15,6 +16,7 @@ import {
 } from '../../engine/playerReducer'
 import type { SetValue } from '../../engine/stats'
 import { unlockAudio } from './audio'
+import { DesktopView } from './DesktopView'
 import { EndDialog } from './EndDialog'
 import { FormDialog } from './FormDialog'
 import styles from './Player.module.css'
@@ -29,13 +31,16 @@ export interface PlayerProps {
   /** Saved progress to restore; null for a fresh start from the Start tap. */
   session: { sets: SessionSet[]; startedAt: number; openedAt: number } | null
   workoutName: string
+  /** Labels under the desktop session bar. */
+  blocks: { blockId: string; label: string }[]
   steps: Step[]
   moveCount: number
   exercises: Map<string, Exercise>
   lastTimes: Map<string, SetValue>
 }
 
-export function Player({ sessionId, session, steps, moveCount, exercises, lastTimes }: PlayerProps) {
+export function Player(props: PlayerProps) {
+  const { sessionId, session, workoutName, blocks, steps, moveCount, exercises, lastTimes } = props
   const [state, rawDispatch] = useReducer(playerReducer, null, () =>
     session ? restorePlayer(steps, session.sets, session.startedAt, session.openedAt) : initPlayer(steps),
   )
@@ -103,6 +108,51 @@ export function Player({ sessionId, session, steps, moveCount, exercises, lastTi
     pausedForDialog.current = false
   }
 
+  // Keyboard (DT-Player): Space = set done / skip rest (resume when paused), P = pause,
+  // ← → = adjust reps, ↑ = +15 s, Esc = end. Off while a dialog is open; it handles its own keys.
+  const onKey = useRef<(e: KeyboardEvent) => void>(undefined)
+  useEffect(() => {
+    onKey.current = (e) => {
+      if (dialog || !step || e.metaKey || e.ctrlKey || e.altKey) return
+      if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return
+      const paused = state.status === 'paused'
+      const now = Date.now()
+      switch (e.key) {
+        case ' ':
+          e.preventDefault() // also stops a focused button from clicking a second time
+          if (e.repeat) return
+          if (paused) dispatch({ type: 'resume', now })
+          else dispatch(step.kind === 'rest' ? { type: 'skipRest', now } : { type: 'setDone', now })
+          break
+        case 'p':
+        case 'P':
+          if (!e.repeat) dispatch({ type: paused ? 'resume' : 'pause', now })
+          break
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          e.preventDefault()
+          dispatch({ type: 'adjustReps', delta: e.key === 'ArrowLeft' ? -1 : 1 })
+          break
+        case 'ArrowUp':
+          e.preventDefault()
+          dispatch({ type: 'addTime', ms: 15_000 })
+          break
+        case 'Escape':
+          // Without this the same key press's default "close request" cancels the dialog it opens.
+          e.preventDefault()
+          openEnd()
+          break
+      }
+    }
+  })
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => onKey.current?.(e)
+    window.addEventListener('keydown', listener)
+    return () => window.removeEventListener('keydown', listener)
+  }, [])
+
+  const desktop = useMediaQuery('(min-width: 1024px)')
+
   if (!step) return <div className={styles.player} data-mode="work" />
 
   const exercise = exercises.get(step.exerciseId)
@@ -111,7 +161,16 @@ export function Player({ sessionId, session, steps, moveCount, exercises, lastTi
 
   return (
     <>
-      {step.kind === 'rest' ? (
+      {desktop ? (
+        <DesktopView
+          {...common}
+          onEnd={openEnd}
+          workoutName={workoutName}
+          blocks={blocks}
+          exercises={exercises}
+          lastTimes={lastTimes}
+        />
+      ) : step.kind === 'rest' ? (
         <RestView
           {...common}
           onEnd={openEnd}

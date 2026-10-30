@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from 'react-router'
 import { db } from '../../data/db'
 import { compile, moveCount } from '../../engine/compile'
 import { lastTime, type SetValue } from '../../engine/stats'
+import { blockLabels } from './blockLabels'
 import { Player } from './Player'
 import styles from './Player.module.css'
 
@@ -60,6 +61,7 @@ export function PlayerPage() {
       sessionId={id}
       session={autoStart ? null : { sets: session.sets, startedAt: session.startedAt, openedAt }}
       workoutName={workout.name}
+      blocks={blockLabels(workout)}
       steps={steps}
       moveCount={moveCount(workout)}
       exercises={exercises}
