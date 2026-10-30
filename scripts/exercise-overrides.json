@@ -1,0 +1,32 @@
+{
+  "$comment": "Manual fixes on top of the rules in import-exercises.ts. ids are free-exercise-db ids.",
+  "include": [
+    "Behind_Head_Chest_Stretch",
+    "Chair_Leg_Extended_Stretch",
+    "Chair_Upper_Body_Stretch",
+    "Chest_And_Front_Of_Shoulder_Stretch",
+    "IT_Band_and_Glute_Stretch",
+    "Intermediate_Groin_Stretch",
+    "Intermediate_Hip_Flexor_and_Quad_Stretch",
+    "Lying_Bent_Leg_Groin",
+    "Lying_Hamstring",
+    "On-Your-Back_Quad_Stretch",
+    "Peroneals_Stretch",
+    "Posterior_Tibialis_Stretch",
+    "Quad_Stretch",
+    "Round_The_World_Shoulder_Stretch",
+    "Seated_Hamstring_and_Calf_Stretch",
+    "Side_Hop-Sprint",
+    "Single-Leg_Hop_Progression",
+    "Single-Leg_Lateral_Hop",
+    "Single-Leg_Stride_Jump",
+    "Skating",
+    "Standing_Biceps_Stretch",
+    "Standing_Elevated_Quad_Stretch",
+    "Standing_Hamstring_and_Calf_Stretch",
+    "Stride_Jump_Crossover"
+  ],
+  "exclude": ["Inverted_Row", "Scapular_Pull-Up", "Trail_Running_Walking", "Linear_3-Part_Start_Technique"],
+  "rename": {},
+  "equipment": {}
+}
