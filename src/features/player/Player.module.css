@@ -30,7 +30,7 @@
   flex-direction: column;
 }
 
-/* Header: close · position + elapsed · form */
+/* Header: close · set position · how-to */
 .header {
   margin-top: var(--s-3);
   display: grid;
@@ -117,7 +117,19 @@
   background: currentColor;
 }
 
+.photo {
+  --ph-hatch: color-mix(in srgb, currentColor 8%, transparent);
+  --ph-fill: color-mix(in srgb, currentColor 10%, transparent);
+  --ph-ink: color-mix(in srgb, currentColor 70%, transparent);
+  margin-top: var(--s-4);
+  width: 100%;
+  height: min(calc(min(100vw - 2 * var(--gutter), 520px) * 3 / 4), 34dvh);
+  flex-shrink: 0;
+  border-radius: var(--r-xl);
+}
+
 .name {
+  margin-top: var(--s-4);
   font-family: var(--font-display);
   font-size: 56px;
   font-weight: 800;
@@ -144,7 +156,7 @@
 .counter {
   display: block;
   font-family: var(--font-display);
-  font-size: clamp(120px, 28dvh, var(--t-counter));
+  font-size: clamp(88px, 16dvh, var(--t-counter));
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.025em;
@@ -152,9 +164,43 @@
   margin: -0.076em 0 -0.093em;
 }
 
-/* m:ss for warm-up / cool-down countdowns: same weight, sized to fit the width. */
-.counter[data-long] {
-  font-size: clamp(100px, min(20dvh, 36vw), 180px);
+/* Reps: − count + in one row. */
+.repRow {
+  display: grid;
+  grid-template-columns: 56px auto 56px;
+  gap: var(--s-6);
+  align-items: center;
+}
+
+.repAdjust {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--tint);
+  font-size: 30px;
+  line-height: 1;
+}
+
+.getReady {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--s-2);
+}
+
+/* Last time · Next */
+.meta {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .counterSub {

@@ -10,6 +10,7 @@ import {
   currentStep,
   elapsedMs,
   initPlayer,
+  leadInMs,
   playerReducer,
   remainingMs,
   restorePlayer,
@@ -113,7 +114,7 @@ export function Player(props: PlayerProps) {
     pausedForDialog.current = false
   }
 
-  // Keyboard (DT-Player): Space = set done / skip rest (resume when paused), P = pause,
+  // Keyboard (DT-Player): Space = set done / skip rest / start now (resume when paused), P = pause,
   // ← → = adjust reps, ↑ = +15 s, Esc = end. Off while a dialog is open; it handles its own keys.
   const onKey = useRef<(e: KeyboardEvent) => void>(undefined)
   useEffect(() => {
@@ -127,7 +128,8 @@ export function Player(props: PlayerProps) {
           e.preventDefault() // also stops a focused button from clicking a second time
           if (e.repeat) return
           if (paused) dispatch({ type: 'resume', now })
-          else dispatch(step.kind === 'rest' ? { type: 'skipRest', now } : { type: 'setDone', now })
+          else if (step.kind === 'rest') dispatch({ type: 'skipRest', now })
+          else dispatch(leadInMs(state, now) > 0 ? { type: 'startNow', now } : { type: 'setDone', now })
           break
         case 'p':
         case 'P':

@@ -1,12 +1,12 @@
 import type { Dispatch } from 'react'
-import { RepTicks } from '../../components/RepTicks'
+import { ExerciseSlideshow } from '../../components/ExerciseSlideshow'
 import { SessionBar } from '../../components/SessionBar'
 import type { Exercise } from '../../data/types'
 import type { Step } from '../../engine/compile'
-import { elapsedMs, remainingMs, type PlayerAction, type PlayerState } from '../../engine/playerReducer'
+import { leadInMs, remainingMs, type PlayerAction, type PlayerState } from '../../engine/playerReducer'
 import type { SetValue } from '../../engine/stats'
-import { clock, elapsed, seconds } from './format'
-import { CloseButton, Header, PauseButton, Pill } from './parts'
+import { seconds, timer } from './format'
+import { CloseButton, Header, PauseButton } from './parts'
 import styles from './Player.module.css'
 
 interface WorkViewProps {
@@ -25,10 +25,7 @@ interface WorkViewProps {
   notice?: string
 }
 
-const PHASE_LABEL = { warmup: 'Warm-up', main: 'Work', cooldown: 'Cool-down' } as const
-
-function describe(last: SetValue | undefined): string {
-  if (!last) return '—'
+function describe(last: SetValue): string {
   return last.reps !== undefined ? `${last.reps} reps` : seconds(last.seconds ?? 0)
 }
 
@@ -42,7 +39,6 @@ export function WorkView({
   state,
   step,
   now,
-  moveCount,
   exercise,
   next,
   nextExercise,
@@ -55,109 +51,102 @@ export function WorkView({
   const paused = state.status === 'paused'
   const name = exercise?.name ?? step.exerciseId
   const remaining = remainingMs(state, now) ?? 0
+  const leadIn = leadInMs(state, now)
   const isReps = step.mode === 'reps'
-  const long = !isReps && step.target >= 60
-  const counter = isReps
-    ? String(state.reps).padStart(2, '0')
-    : long
-      ? clock(remaining)
-      : String(Math.ceil(remaining / 1000)).padStart(2, '0')
+  const position = `Set ${step.setIndex + 1} of ${step.setCount}`
   // Warm-up / cool-down run to the clock: "last time" says nothing there.
-  const showLast = step.phase === 'main'
-  const columns = 1 + (step.tempo ? 1 : 0) + (showLast ? 1 : 0)
-  const position = `Move ${step.moveIndex + 1} of ${moveCount} · Set ${step.setIndex + 1} of ${step.setCount}`
+  const meta = [
+    step.phase === 'main' && last && `Last time ${describe(last)}`,
+    `Next ${nextLabel(next, nextExercise)}`,
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
   return (
     <div className={styles.player} data-mode="work">
       <div className={styles.inner}>
-        <SessionBar steps={state.steps} current={state.index} label={`Session progress: ${position}`} />
+        <SessionBar
+          steps={state.steps}
+          current={state.index}
+          label={`Session progress: move ${step.moveIndex + 1}, ${position.toLowerCase()}`}
+        />
         <Header
           left={<CloseButton onClick={onEnd} />}
           title={position}
-          sub={`${paused ? 'Paused · ' : ''}${elapsed(elapsedMs(state, now))} elapsed`}
           right={
-            <button
-              type="button"
-              className={styles.round}
-              aria-label={`Check form for ${name}`}
-              onClick={onForm}
-            >
+            <button type="button" className={styles.round} aria-label={`How to do ${name}`} onClick={onForm}>
               <svg
                 width="20"
                 height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.8"
+                strokeWidth="2"
                 strokeLinecap="round"
-                strokeLinejoin="round"
                 aria-hidden="true"
               >
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <circle cx="9" cy="10" r="2" />
-                <path d="M21 16l-5-5-8 8" />
+                <circle cx="12" cy="12" r="9" />
+                <line x1="12" y1="11" x2="12" y2="16.5" />
+                <circle cx="12" cy="7.6" r="0.6" fill="currentColor" />
               </svg>
             </button>
           }
         />
         {notice && <p className={styles.notice}>{notice}</p>}
 
-        <div className={styles.titleBlock}>
-          <Pill>{PHASE_LABEL[step.phase]}</Pill>
-          <h1 className={styles.name} data-long={name.length > 14 || undefined}>
-            {name}
-          </h1>
-        </div>
+        <ExerciseSlideshow
+          className={styles.photo}
+          images={exercise?.images}
+          alt={`${name} demonstration`}
+          still={paused}
+        />
+
+        <h1 className={styles.name} data-long={name.length > 14 || undefined}>
+          {name}
+        </h1>
 
         <div className={styles.stage}>
-          <span className={styles.counter} data-long={long || undefined} aria-live="off">
-            {counter}
-          </span>
-          <span className={styles.counterSub}>
-            {isReps ? `of ${step.target} reps` : `of ${seconds(step.target)}`}
-          </span>
-          {isReps && (
+          {isReps ? (
+            <div className={styles.repRow}>
+              <button
+                type="button"
+                className={styles.repAdjust}
+                aria-label="One rep fewer"
+                onClick={() => dispatch({ type: 'adjustReps', delta: -1 })}
+              >
+                −
+              </button>
+              <span className={styles.counter} aria-label={`${state.reps} reps`}>
+                {String(state.reps).padStart(2, '0')}
+              </span>
+              <button
+                type="button"
+                className={styles.repAdjust}
+                aria-label="One rep more"
+                onClick={() => dispatch({ type: 'adjustReps', delta: 1 })}
+              >
+                +
+              </button>
+            </div>
+          ) : (
             <>
-              <RepTicks value={state.reps} target={step.target} best={last?.reps} />
-              <div className={styles.adjust}>
-                <button
-                  type="button"
-                  aria-label="One rep fewer"
-                  onClick={() => dispatch({ type: 'adjustReps', delta: -1 })}
-                >
-                  −
-                </button>
-                <span>Adjust</span>
-                <button
-                  type="button"
-                  aria-label="One rep more"
-                  onClick={() => dispatch({ type: 'adjustReps', delta: 1 })}
-                >
-                  +
-                </button>
-              </div>
+              {leadIn > 0 && <span className={styles.getReady}>Get into position</span>}
+              <span
+                className={styles.counter}
+                role="timer"
+                aria-label={
+                  leadIn > 0
+                    ? `Starting in ${Math.ceil(leadIn / 1000)} seconds`
+                    : `${Math.ceil(remaining / 1000)} seconds left`
+                }
+              >
+                {timer(leadIn > 0 ? leadIn : remaining)}
+              </span>
             </>
           )}
         </div>
 
-        <dl className={styles.info} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
-          {step.tempo && (
-            <div>
-              <dt>Tempo</dt>
-              <dd>{step.tempo}</dd>
-            </div>
-          )}
-          {showLast && (
-            <div>
-              <dt>Last time</dt>
-              <dd>{describe(last)}</dd>
-            </div>
-          )}
-          <div>
-            <dt>Next</dt>
-            <dd>{nextLabel(next, nextExercise)}</dd>
-          </div>
-        </dl>
+        <p className={styles.meta}>{meta}</p>
 
         <div className={styles.actions} style={{ gridTemplateColumns: '64px minmax(0, 1fr)' }}>
           <PauseButton
@@ -171,6 +160,14 @@ export function WorkView({
               onClick={() => dispatch({ type: 'resume', now: Date.now() })}
             >
               Resume
+            </button>
+          ) : leadIn > 0 ? (
+            <button
+              type="button"
+              className={styles.primary}
+              onClick={() => dispatch({ type: 'startNow', now: Date.now() })}
+            >
+              Start now
             </button>
           ) : (
             <button

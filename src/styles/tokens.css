@@ -34,7 +34,7 @@
   --t-body: 15px;
   --t-title: 36px;    /* tab page titles */
   --t-hero: 52px;     /* session name on Today */
-  --t-counter: 236px; /* player rep counter (phone) */
+  --t-counter: 140px; /* player counter and timers (phone) */
 
   /* Light (default) */
   --bg: #F4F3EF;

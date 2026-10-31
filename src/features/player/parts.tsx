@@ -61,7 +61,7 @@ export function Header({
 }: {
   left: ReactNode
   title: string
-  sub: string
+  sub?: string
   right?: ReactNode
 }) {
   return (
@@ -69,7 +69,7 @@ export function Header({
       {left}
       <div className={styles.headerText}>
         <span className={styles.headerTitle}>{title}</span>
-        <span className={styles.headerSub}>{sub}</span>
+        {sub && <span className={styles.headerSub}>{sub}</span>}
       </div>
       {right ?? <span />}
     </div>
