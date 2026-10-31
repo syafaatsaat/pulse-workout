@@ -1,0 +1,249 @@
+/* Exercise detail (F-Detail). Lean build: Try it only; Add to workout is an add-on. */
+
+.page {
+  /* Room for the fixed bottom bar. */
+  padding-bottom: calc(56px + var(--s-3) + max(var(--s-6), env(safe-area-inset-bottom)));
+}
+
+.top {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  text-align: center;
+}
+
+.back {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Photos: START / END crossfade */
+.media {
+  margin-top: 14px;
+  position: relative;
+  aspect-ratio: 3 / 2;
+  max-height: 360px;
+  width: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--fill);
+  box-shadow: var(--card);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.photo[data-shown],
+div.photo {
+  opacity: 1;
+}
+
+.frames {
+  position: absolute;
+  left: 50%;
+  bottom: var(--s-3);
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(2, 76px);
+  gap: 2px;
+  padding: 3px;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--card);
+}
+
+.frames button {
+  height: 38px;
+  border-radius: 9px;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.frames button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.name {
+  margin-top: 18px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.missing {
+  margin-top: var(--s-3);
+}
+
+.tags {
+  margin-top: 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tags li {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 13px;
+  background: var(--fill);
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.tags li[data-best] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.muscles {
+  margin: 14px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) 18px;
+  font-size: 14px;
+}
+
+.muscles > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.muscles dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.muscles dd {
+  margin: 0;
+}
+
+.dot,
+.ring {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot {
+  background: var(--ink);
+}
+
+.ring {
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.steps {
+  margin-top: var(--s-4);
+  padding: var(--s-1) var(--s-4);
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--card);
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  padding: var(--s-3) 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.steps li + li {
+  border-top: 1px solid var(--line);
+}
+
+.stepNumber {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--fill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+}
+
+/* Bottom bar */
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: var(--s-3) max(var(--gutter), env(safe-area-inset-right))
+    max(var(--s-6), env(safe-area-inset-bottom)) max(var(--gutter), env(safe-area-inset-left));
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.try {
+  width: 100%;
+  height: 56px;
+  border-radius: var(--r-md);
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+@media (min-width: 640px) {
+  .bar {
+    padding-left: max(48px, env(safe-area-inset-left));
+    padding-right: max(48px, env(safe-area-inset-right));
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    max-width: 640px;
+  }
+
+  .bar {
+    left: 220px; /* clear the sidebar */
+    padding-left: 48px;
+  }
+
+  .try {
+    max-width: 640px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo {
+    transition: none;
+  }
+}
