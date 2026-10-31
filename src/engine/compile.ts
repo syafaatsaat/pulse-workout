@@ -97,7 +97,13 @@ function* order(block: Block) {
   }
 }
 
-/** Planned total length of a timeline. */
+/** "Get into position" countdown the player runs before every timed work set. */
+export const LEAD_IN_MS = 5000
+
+/** Planned total length of a timeline, including the lead-ins. */
 export function estimateMs(steps: Step[]): number {
-  return steps.reduce((ms, s) => ms + s.durationMs, 0)
+  return steps.reduce(
+    (ms, s) => ms + s.durationMs + (s.kind === 'work' && s.mode === 'time' ? LEAD_IN_MS : 0),
+    0,
+  )
 }

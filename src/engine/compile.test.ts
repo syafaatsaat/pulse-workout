@@ -1,6 +1,6 @@
 import { DEMO_WORKOUTS } from '../data/demoWorkouts'
 import type { Workout } from '../data/types'
-import { compile, estimateMs, moveCount, REP_MS_DEFAULT, tempoMs } from './compile'
+import { compile, estimateMs, LEAD_IN_MS, moveCount, REP_MS_DEFAULT, tempoMs, type Step } from './compile'
 
 const straight: Workout = {
   id: 'w',
@@ -122,5 +122,24 @@ describe('tempoMs', () => {
     expect(tempoMs('3-1-1')).toBe(5000)
     expect(tempoMs(undefined)).toBe(REP_MS_DEFAULT)
     expect(tempoMs('fast')).toBe(REP_MS_DEFAULT)
+  })
+})
+
+describe('estimateMs', () => {
+  test('sums step lengths plus a lead-in before each timed work set', () => {
+    const base = {
+      exerciseId: 'x',
+      setIndex: 0,
+      setCount: 1,
+      blockId: 'a',
+      phase: 'main',
+      moveIndex: 0,
+    } as const
+    const steps: Step[] = [
+      { ...base, kind: 'work', mode: 'reps', target: 10, durationMs: 30_000 },
+      { ...base, kind: 'rest', mode: 'time', target: 30, durationMs: 30_000 },
+      { ...base, kind: 'work', mode: 'time', target: 40, durationMs: 40_000 },
+    ]
+    expect(estimateMs(steps)).toBe(100_000 + LEAD_IN_MS)
   })
 })

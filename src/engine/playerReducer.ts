@@ -1,4 +1,4 @@
-import type { Step } from './compile'
+import { LEAD_IN_MS, type Step } from './compile'
 
 // Pure player state machine over a compiled timeline. No React, no side effects:
 // every action that depends on time carries `now`, and timers are stored as timestamps.
@@ -21,7 +21,10 @@ export interface PlayerState {
   index: number
   startedAt: number | null
   endedAt: number | null
-  /** Timed step (rest or time work) while running: when it hits zero. */
+  /**
+   * Timed step (rest or time work) while running: when it hits zero. Time work also includes the
+   * lead-in, so anything left beyond `stepMs` is the "get into position" countdown.
+   */
   endsAt: number | null
   /** Timed step while paused: what was left at the pause. */
   remainingMs: number | null
@@ -40,6 +43,7 @@ export type PlayerAction =
   | { type: 'setDone'; now: number }
   | { type: 'adjustReps'; delta: number }
   | { type: 'skipRest'; now: number }
+  | { type: 'startNow'; now: number }
   | { type: 'addTime'; ms: number }
   | { type: 'pause'; now: number }
   | { type: 'resume'; now: number }
@@ -90,7 +94,7 @@ export function restorePlayer(
     status: 'paused',
     pausedAt: now,
     pausedMs: now - lastActivity,
-    remainingMs: entered.endsAt === null ? null : entered.stepMs,
+    remainingMs: entered.endsAt === null ? null : entered.endsAt - now,
     endsAt: null,
   }
 }
@@ -108,6 +112,13 @@ export function remainingMs(state: PlayerState, now: number): number | null {
   return null
 }
 
+/** What is left of the "get into position" lead-in of a timed work set; 0 otherwise. */
+export function leadInMs(state: PlayerState, now: number): number {
+  const step = currentStep(state)
+  if (step?.kind !== 'work' || step.mode !== 'time') return 0
+  return Math.max(0, (remainingMs(state, now) ?? 0) - state.stepMs)
+}
+
 /** Session time so far, excluding pauses. */
 export function elapsedMs(state: PlayerState, now: number): number {
   if (state.startedAt === null) return 0
@@ -122,10 +133,11 @@ function enter(state: PlayerState, index: number, now: number): PlayerState {
     return { ...state, index, status: 'finished', endedAt: now, endsAt: null, remainingMs: null, stepMs: 0 }
   }
   const timed = isTimed(step)
+  const leadIn = step.kind === 'work' && timed ? LEAD_IN_MS : 0
   return {
     ...state,
     index,
-    endsAt: timed ? now + step.durationMs : null,
+    endsAt: timed ? now + leadIn + step.durationMs : null,
     remainingMs: null,
     stepMs: timed ? step.durationMs : 0,
     reps: step.kind === 'work' && step.mode === 'reps' ? step.target : 0,
@@ -151,7 +163,7 @@ export function playerReducer(state: PlayerState, action: PlayerAction): PlayerS
         completedAt: action.now,
       }
       if (step.mode === 'reps') set.reps = state.reps
-      else set.seconds = Math.round((state.stepMs - (remainingMs(state, action.now) ?? 0)) / 1000)
+      else set.seconds = Math.round(Math.max(0, state.stepMs - (remainingMs(state, action.now) ?? 0)) / 1000)
       return enter({ ...state, sets: [...state.sets, set] }, state.index + 1, action.now)
     }
 
@@ -164,6 +176,11 @@ export function playerReducer(state: PlayerState, action: PlayerAction): PlayerS
     case 'skipRest': {
       if (state.status !== 'running' || step?.kind !== 'rest') return state
       return enter(state, state.index + 1, action.now)
+    }
+
+    case 'startNow': {
+      if (state.status !== 'running' || leadInMs(state, action.now) === 0) return state
+      return { ...state, endsAt: action.now + state.stepMs }
     }
 
     case 'addTime': {

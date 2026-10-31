@@ -1,8 +1,9 @@
-import type { Step } from './compile'
+import { LEAD_IN_MS, type Step } from './compile'
 import {
   currentStep,
   elapsedMs,
   initPlayer,
+  leadInMs,
   playerReducer,
   remainingMs,
   restorePlayer,
@@ -81,9 +82,9 @@ describe('rest', () => {
     expect(s.endsAt).toBe(T0 + 75_000)
   })
 
-  test('skipRest moves on to the next work step', () => {
+  test('skipRest moves on to the next work step; a timed one starts with the lead-in', () => {
     const s = playerReducer(resting(), { type: 'skipRest', now: T0 + 40_000 })
-    expect(s).toMatchObject({ index: 2, endsAt: T0 + 80_000 })
+    expect(s).toMatchObject({ index: 2, endsAt: T0 + 40_000 + LEAD_IN_MS + 40_000, stepMs: 40_000 })
   })
 
   test('setDone and adjustReps do nothing during rest', () => {
@@ -102,13 +103,13 @@ describe('time work', () => {
     )
 
   test('setDone at zero logs the full target in seconds and finishes the session after the last step', () => {
-    const s = playerReducer(planking(), { type: 'setDone', now: T0 + 80_000 })
+    const s = playerReducer(planking(), { type: 'setDone', now: T0 + 85_000 })
     expect(s.sets.at(-1)).toMatchObject({ exerciseId: 'Plank', seconds: 40 })
-    expect(s).toMatchObject({ status: 'finished', endedAt: T0 + 80_000 })
+    expect(s).toMatchObject({ status: 'finished', endedAt: T0 + 85_000 })
   })
 
   test('setDone early logs the seconds actually held', () => {
-    const s = playerReducer(planking(), { type: 'setDone', now: T0 + 65_000 })
+    const s = playerReducer(planking(), { type: 'setDone', now: T0 + 70_000 })
     expect(s.sets.at(-1)).toMatchObject({ seconds: 25 })
   })
 
@@ -118,9 +119,63 @@ describe('time work', () => {
       { type: 'setDone', now: T0 + 30_000 },
       { type: 'skipRest', now: T0 + 40_000 },
       { type: 'addTime', ms: 15_000 },
-      { type: 'setDone', now: T0 + 95_000 },
+      { type: 'setDone', now: T0 + 100_000 },
     )
     expect(s.sets.at(-1)).toMatchObject({ seconds: 55 })
+  })
+})
+
+describe('lead-in', () => {
+  const planking = () =>
+    run(
+      { type: 'start', now: T0 },
+      { type: 'setDone', now: T0 + 30_000 },
+      { type: 'skipRest', now: T0 + 40_000 },
+    )
+
+  test('a timed work set gets a 5 s lead-in before its own countdown', () => {
+    const s = planking()
+    expect(leadInMs(s, T0 + 40_000)).toBe(LEAD_IN_MS)
+    expect(leadInMs(s, T0 + 43_000)).toBe(2000)
+    expect(remainingMs(s, T0 + 43_000)).toBe(42_000)
+    expect(leadInMs(s, T0 + 45_000)).toBe(0)
+    expect(remainingMs(s, T0 + 45_000)).toBe(40_000)
+  })
+
+  test('reps and rest steps have no lead-in', () => {
+    const work = run({ type: 'start', now: T0 })
+    expect(leadInMs(work, T0)).toBe(0)
+    const rest = playerReducer(work, { type: 'setDone', now: T0 + 30_000 })
+    expect(leadInMs(rest, T0 + 30_000)).toBe(0)
+    expect(rest.endsAt).toBe(T0 + 60_000)
+  })
+
+  test('a timed first step also starts with the lead-in', () => {
+    const s = playerReducer(initPlayer(STEPS.slice(2)), { type: 'start', now: T0 })
+    expect(s.endsAt).toBe(T0 + LEAD_IN_MS + 40_000)
+  })
+
+  test('startNow skips what is left of the lead-in, and only during it', () => {
+    const s = playerReducer(planking(), { type: 'startNow', now: T0 + 42_000 })
+    expect(s.endsAt).toBe(T0 + 82_000)
+    expect(leadInMs(s, T0 + 42_000)).toBe(0)
+    expect(playerReducer(s, { type: 'startNow', now: T0 + 50_000 })).toBe(s)
+    const reps = run({ type: 'start', now: T0 })
+    expect(playerReducer(reps, { type: 'startNow', now: T0 + 1 })).toBe(reps)
+  })
+
+  test('set done during the lead-in logs 0 seconds', () => {
+    const s = playerReducer(planking(), { type: 'setDone', now: T0 + 42_000 })
+    expect(s.sets.at(-1)).toMatchObject({ exerciseId: 'Plank', seconds: 0 })
+  })
+
+  test('pausing in the lead-in keeps it; added time goes to the hold', () => {
+    let s = playerReducer(planking(), { type: 'pause', now: T0 + 42_000 })
+    expect(leadInMs(s, T0 + 99_000)).toBe(3000)
+    s = playerReducer(s, { type: 'addTime', ms: 15_000 })
+    expect(leadInMs(s, T0 + 99_000)).toBe(3000)
+    s = playerReducer(s, { type: 'resume', now: T0 + 100_000 })
+    expect(s.endsAt).toBe(T0 + 103_000 + 55_000)
   })
 })
 
@@ -209,7 +264,13 @@ describe('restorePlayer', () => {
 
   test('reopens paused on the work step after the last saved set, skipping the rest in between', () => {
     const s = restorePlayer(STEPS, [saved('Pushups', T0 + 30_000, { reps: 10 })], T0, T0 + 600_000)
-    expect(s).toMatchObject({ status: 'paused', index: 2, endsAt: null, remainingMs: 40_000, stepMs: 40_000 })
+    expect(s).toMatchObject({
+      status: 'paused',
+      index: 2,
+      endsAt: null,
+      remainingMs: LEAD_IN_MS + 40_000,
+      stepMs: 40_000,
+    })
     expect(s.sets).toEqual([
       { stepIndex: 0, exerciseId: 'Pushups', blockId: 'a', setIndex: 0, reps: 10, completedAt: T0 + 30_000 },
     ])
@@ -219,7 +280,7 @@ describe('restorePlayer', () => {
     const s = restorePlayer(STEPS, [saved('Pushups', T0 + 30_000, { reps: 10 })], T0, T0 + 600_000)
     expect(elapsedMs(s, T0 + 900_000)).toBe(30_000)
     const resumed = playerReducer(s, { type: 'resume', now: T0 + 700_000 })
-    expect(resumed.endsAt).toBe(T0 + 740_000)
+    expect(resumed.endsAt).toBe(T0 + 700_000 + LEAD_IN_MS + 40_000)
     expect(elapsedMs(resumed, T0 + 705_000)).toBe(35_000)
   })
 
