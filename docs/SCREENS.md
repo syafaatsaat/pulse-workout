@@ -27,9 +27,10 @@ Rest:
 - Blue screen, "Set 1 of 4 done", MM:SS countdown in a draining ring.
 - Next card: "Next · Set 2 of 4", name, dose, slideshow of the next move. Buttons: Pause, +15s, Skip rest
   (Resume while paused).
-Desktop: full screen, numbers scale with viewport, side panel (form photos crossfading, last time / next +
-target, up next 3); same removals, MM:SS and lead-in as the phone. Keyboard: Space = set done / skip rest /
-start now, P = pause, ← → = adjust reps, ↑ = +15s, Esc = end.
+Desktop: full screen on one 4-column grid (replaces the DT-Player side panel): name + counter | large
+slideshow (the next move during a rest); cards: last time | up next, then, then; pause (+15s on a rest) |
+primary action. Same removals, MM:SS and lead-in as the phone. Keyboard: Space = set done / skip rest /
+start now, P = pause, ← → = adjust reps, ↑ = +15s (rests only), Esc = end. +15s exists on rests only.
 After the last step → Summary.
 
 ## 3. Summary — `/session/:id/summary` (F-Summary)
