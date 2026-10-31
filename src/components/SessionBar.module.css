@@ -27,8 +27,29 @@
   background: color-mix(in srgb, currentColor 16%, transparent);
 }
 
+/* Preview (F-Today): heights carry the shape; colours are fixed, not currentColor. */
+.bar[data-variant='preview'] {
+  height: 30px;
+  align-items: flex-end;
+}
+
+.bar[data-variant='preview'] .segment {
+  height: 30px;
+  background: var(--ink);
+}
+
+.bar[data-variant='preview'] .segment[data-kind='rest'] {
+  height: 10px;
+  background: var(--rest);
+}
+
+.bar[data-variant='preview'] .segment:is([data-kind='warmup'], [data-kind='cooldown']) {
+  height: 16px;
+  background: var(--dim);
+}
+
 @media (min-width: 1024px) {
-  .bar {
+  .bar:not([data-variant='preview']) {
     gap: var(--s-1);
     height: 10px;
   }

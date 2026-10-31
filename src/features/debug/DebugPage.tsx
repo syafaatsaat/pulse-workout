@@ -1,7 +1,6 @@
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { PageHeader } from '../../app/PageHeader'
-import { createSession } from '../../data/sessions'
-import { unlockAudio } from '../player/audio'
+import { useStartWorkout } from '../player/useStartWorkout'
 import { db } from '../../data/db'
 import { useLiveQuery } from '../../data/useLiveQuery'
 import styles from './DebugPage.module.css'
@@ -14,12 +13,7 @@ export function DebugPage() {
   const exercises = useLiveQuery(() => db.exercises.orderBy('name').toArray())
   const workouts = useLiveQuery(() => db.workouts.toArray())
   const sessions = useLiveQuery(() => db.sessions.orderBy('startedAt').reverse().toArray())
-  const navigate = useNavigate()
-  // The Start tap unlocks audio for the player's beeps (iOS needs a gesture).
-  const start = async (workoutId: string) => {
-    unlockAudio()
-    navigate(`/session/${await createSession(workoutId)}`, { state: { start: true } })
-  }
+  const start = useStartWorkout()
   const workoutName = new Map(workouts?.map((w) => [w.id, w.name]))
 
   return (

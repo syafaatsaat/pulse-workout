@@ -34,6 +34,8 @@ export interface Workout {
   /** Short eyebrow tag, e.g. "Upper". */
   focus: string
   blocks: Block[]
+  /** Single-exercise workout made by "Try it" on Exercise detail; kept out of Today's lists. */
+  adHoc?: true
 }
 
 export interface SessionSet {

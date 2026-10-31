@@ -1,0 +1,291 @@
+/* Today (F-Today). Lean build: one column at every width; the two-column desktop is an add-on. */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.goal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.goalText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.goalValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Week strip */
+.week {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.weekDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.dow {
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.date {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+
+.date[data-done] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.date[data-today] {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.date[data-future] {
+  color: var(--dim);
+}
+
+/* Unfinished session */
+.resume {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--card);
+  padding: 14px var(--s-4);
+}
+
+.resumeText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resumeName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resumeButton {
+  height: 44px;
+  padding: 0 var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--ink);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Up next */
+.next {
+  margin-top: 22px;
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  box-shadow: var(--card);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+}
+
+.resume + .next {
+  margin-top: 10px;
+}
+
+.nextName {
+  margin-top: var(--s-2);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--t-hero);
+  line-height: 0.92;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+}
+
+.pills {
+  margin-top: var(--s-3);
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pills li {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 14px;
+  background: var(--fill);
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.shape {
+  margin-top: 18px;
+}
+
+.blockLabels {
+  margin-top: 6px;
+  display: flex;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.blockLabels span {
+  flex-basis: 0;
+  min-width: 0;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.blockLabels span:first-child {
+  text-align: left;
+}
+
+.blockLabels span:last-child {
+  text-align: right;
+}
+
+.blockLabels span:only-child {
+  text-align: left;
+}
+
+.start {
+  margin-top: 18px;
+  height: 56px;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Quick start */
+.quickHead {
+  margin-top: var(--s-6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.seeAll {
+  min-height: 44px;
+  min-width: 44px;
+  font-size: var(--t-small);
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.quick {
+  margin-top: var(--s-1);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+
+.quickCard {
+  width: 100%;
+  height: 100%;
+  min-height: 104px;
+  background: var(--surface);
+  border-radius: var(--s-4);
+  box-shadow: var(--card);
+  padding: var(--s-3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--s-3);
+  text-align: left;
+}
+
+.quickMeta {
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.quickName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+@media (min-width: 1024px) {
+  .header,
+  .week,
+  .resume,
+  .next,
+  .quickHead,
+  .quick {
+    max-width: 520px;
+  }
+}
