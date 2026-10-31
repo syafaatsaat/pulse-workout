@@ -64,7 +64,11 @@ Done when: a stranger opens the link and finishes a workout without instructions
 | Offline + installable | 1 | vite-plugin-pwa manifest, icons, caching app + data + images; works in airplane mode |
 | Desktop layouts | 1 | Two-pane Library, sidebar Today, side-by-side Log |
 | Trends + effort | 0.5 | 6-week sparklines in Log, 1–5 effort rating on Summary |
-| Voice + full Settings | 0.5 | Spoken cues, 3-second lead-in, equipment owned, export JSON |
+| Voice + full Settings | 0.5 | Spoken cues, ~~3-second lead-in~~, equipment owned, export JSON |
+
+Pulled in before Day 7 (after real-phone testing): **player redesign** — exercise photo slideshow on the
+work and rest screens, fewer labels, MM:SS timers, and a **5-second get-into-position lead-in** before every
+timed work set (done; it replaces the 3-second lead-in above).
 
 ## Risks
 

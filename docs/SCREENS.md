@@ -12,18 +12,23 @@ Lean scope = screens 1–6 and 8. Screen 7 (Builder) is an add-on.
 - Desktop: two columns — up-next card (with full move list) | This week, Quick start, Recent bests.
 
 ## 2. Player — `/session/:id` (F-Player work, F-Rest rest, DT-Player)
+Redesigned after real-phone testing, inspired by other fitness apps; where the F-Player / F-Rest
+mock-ups differ, this list wins. All player timers are MM:SS (`00:05`); no totals ("of 0:40") or elapsed time.
 Work:
-- Session bar (progress), close / end (→ confirm → Today), "Move 4 of 9 · Set 2 of 4", elapsed time,
-  Form button (→ exercise detail overlay).
-- WORK pill, exercise name, big rep counter, "OF 12 REPS", rep ticks (ring on last best), − / + adjust.
-- Info panel: tempo, last time, next. Buttons: Pause, Set done (→ rest or next work).
-- Time-based exercises: counter shows a countdown instead of reps; Set done auto-fires at zero.
+- Session bar, close / end (→ confirm → Today), "Set 2 of 4", (i) how-to button (→ form overlay: photos, steps).
+- Exercise slideshow: start ⇄ end photo every second (still while paused or with reduced motion).
+- Exercise name; big counter (140px): reps with − / + beside it, or the MM:SS countdown for timed moves.
+- One line: "Last time 10 reps · Next Rest 0:45" (last time in the main phase only).
+- Buttons: Pause, Set done (→ rest or next work). Timed moves: Set done auto-fires at 00:00.
+- Timed moves start with a 5 s lead-in: "Get into position" over a 00:05 countdown and a Start now button
+  that skips it; beeps 3-2-1-go at the end of the lead-in and of the hold.
 Rest:
-- Blue screen, REST pill, countdown in a draining ring, "OF 0:30".
-- Up-next card with thumbnail. Buttons: Pause, +15s, Skip rest (Resume while paused). Pause was added after
-  real-phone testing; it is not in the F-Rest mock-up.
-Desktop: full screen, numbers scale with viewport, side panel (form photo, tempo/last time, up next 3),
-keyboard: Space = set done / skip rest, P = pause, ← → = adjust reps, ↑ = +15s, Esc = end.
+- Blue screen, "Set 1 of 4 done", MM:SS countdown in a draining ring.
+- Next card: "Next · Set 2 of 4", name, dose, slideshow of the next move. Buttons: Pause, +15s, Skip rest
+  (Resume while paused).
+Desktop: full screen, numbers scale with viewport, side panel (form photos crossfading, last time / next +
+target, up next 3); same removals, MM:SS and lead-in as the phone. Keyboard: Space = set done / skip rest /
+start now, P = pause, ← → = adjust reps, ↑ = +15s, Esc = end.
 After the last step → Summary.
 
 ## 3. Summary — `/session/:id/summary` (F-Summary)
