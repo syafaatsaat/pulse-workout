@@ -47,9 +47,9 @@ Done when: a finished session appears in Log and a new best is detected.
 Done when: any exercise is 3 taps away and any ready-made workout starts from Today.
 
 ### Day 6 — Settings and hardening
-- [ ] Minimal Settings: theme, default rest, weekly goal, beeps, wake lock, reset demo data
-- [ ] Accessibility pass: keyboard paths, focus rings, labels, contrast in both themes
-- [ ] Empty and error states; fix issues from real-phone tests
+- [x] Minimal Settings: theme, default rest, weekly goal, beeps, wake lock, reset demo data
+- [x] Accessibility pass: keyboard paths, focus rings, labels, contrast in both themes
+- [x] Empty and error states; fix issues from real-phone tests
 
 ### Day 7 — Ship
 - [ ] Lighthouse 90+ on all four scores; one Playwright test (start → finish → see it in Log)
