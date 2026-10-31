@@ -74,145 +74,154 @@ export function LogPage() {
         title="Log"
       />
 
-      <section className={styles.calendar} aria-labelledby="log-month">
-        <div className={styles.monthBar}>
-          <button
-            type="button"
-            className={styles.monthButton}
-            aria-label="Previous month"
-            disabled={!before(monthOf(earliest), shown)}
-            onClick={() => go(-1)}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+      <div className={styles.columns}>
+        <section className={styles.calendar} aria-labelledby="log-month">
+          <div className={styles.monthBar}>
+            <button
+              type="button"
+              className={styles.monthButton}
+              aria-label="Previous month"
+              disabled={!before(monthOf(earliest), shown)}
+              onClick={() => go(-1)}
             >
-              <polyline points="15 6 9 12 15 18" />
-            </svg>
-          </button>
-          <h2 id="log-month" className={styles.monthTitle} aria-live="polite">
-            {monthFmt.format(first)}
-          </h2>
-          <button
-            type="button"
-            className={styles.monthButton}
-            aria-label="Next month"
-            disabled={!before(shown, current)}
-            onClick={() => go(1)}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <polyline points="9 6 15 12 9 18" />
-            </svg>
-          </button>
-        </div>
-        <div className={styles.grid}>
-          {DOW.map((d, i) => (
-            <span key={i} className={styles.dow} aria-hidden="true">
-              {d}
-            </span>
-          ))}
-          {Array.from({ length: blanks }, (_, i) => (
-            <span key={`blank-${i}`} />
-          ))}
-          {Array.from({ length: daysInMonth }, (_, i) => {
-            const day = i + 1
-            const date = new Date(shown.year, shown.month, day)
-            const sessionId = stats.days.get(day)
-            const isToday = isThisMonth && day === today.getDate()
-            const future = date.getTime() > now
-            const label = `${dayFmt.format(date)}${sessionId ? ', session logged' : ''}${isToday ? ', today' : ''}`
-            const circle = (
-              <span
-                className={styles.day}
-                data-done={!!sessionId || undefined}
-                data-today={isToday || undefined}
-                data-future={future || undefined}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
               >
-                {day}
+                <polyline points="15 6 9 12 15 18" />
+              </svg>
+            </button>
+            <h2 id="log-month" className={styles.monthTitle} aria-live="polite">
+              {monthFmt.format(first)}
+            </h2>
+            <button
+              type="button"
+              className={styles.monthButton}
+              aria-label="Next month"
+              disabled={!before(shown, current)}
+              onClick={() => go(1)}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="9 6 15 12 9 18" />
+              </svg>
+            </button>
+          </div>
+          <div className={styles.grid}>
+            {DOW.map((d, i) => (
+              <span key={i} className={styles.dow} aria-hidden="true">
+                {d}
               </span>
-            )
-            return sessionId ? (
-              <Link key={day} to={`/session/${sessionId}/summary`} className={styles.cell} aria-label={label}>
-                {circle}
-              </Link>
-            ) : (
-              <span key={day} className={styles.cell} aria-label={label} role="img">
-                {circle}
-              </span>
-            )
-          })}
-        </div>
-      </section>
-
-      <dl className={styles.stats}>
-        <div>
-          <dt>Streak</dt>
-          <dd>{plural(weeks, 'wk', 'wks')}</dd>
-        </div>
-        <div>
-          <dt>
-            Avg / wk<span className="visually-hidden"> this month</span>
-          </dt>
-          <dd>{Number(stats.avgPerWeek.toFixed(1))}</dd>
-        </div>
-        <div>
-          <dt>
-            Goal wks<span className="visually-hidden"> this month, of {goal} sessions</span>
-          </dt>
-          <dd>
-            {stats.goalWeeks}/{stats.weeks}
-          </dd>
-        </div>
-      </dl>
-
-      <section aria-labelledby="log-bests">
-        <div className={styles.bestsHead}>
-          <h2 id="log-bests" className="eyebrow">
-            Personal bests · 6 weeks
-          </h2>
-          <Link to="/library" className={styles.all}>
-            All
-          </Link>
-        </div>
-        {bests.length > 0 ? (
-          <ul className={styles.bests}>
-            {bests.map((b) => (
-              <li key={b.exerciseId}>
-                <Link to={`/library/${b.exerciseId}`} className={styles.best}>
-                  <span className={styles.bestName}>{names.get(b.exerciseId) ?? b.exerciseId}</span>
-                  <span className={styles.bestValue}>
-                    <span className={styles.bestNumber}>
-                      {b.best.measure === 'reps' ? b.best.value : clock(b.best.value * 1000)}
-                    </span>
-                    <span className={styles.bestGain}>{gain(b.best, b.previous!)}</span>
-                  </span>
-                </Link>
-              </li>
             ))}
-          </ul>
-        ) : (
-          <p className={styles.empty}>
-            No new bests in the last 6 weeks. Beat a number and it shows up here.
-          </p>
-        )}
-      </section>
+            {Array.from({ length: blanks }, (_, i) => (
+              <span key={`blank-${i}`} />
+            ))}
+            {Array.from({ length: daysInMonth }, (_, i) => {
+              const day = i + 1
+              const date = new Date(shown.year, shown.month, day)
+              const sessionId = stats.days.get(day)
+              const isToday = isThisMonth && day === today.getDate()
+              const future = date.getTime() > now
+              const label = `${dayFmt.format(date)}${sessionId ? ', session logged' : ''}${isToday ? ', today' : ''}`
+              const circle = (
+                <span
+                  className={styles.day}
+                  data-done={!!sessionId || undefined}
+                  data-today={isToday || undefined}
+                  data-future={future || undefined}
+                >
+                  {day}
+                </span>
+              )
+              return sessionId ? (
+                <Link
+                  key={day}
+                  to={`/session/${sessionId}/summary`}
+                  className={styles.cell}
+                  aria-label={label}
+                >
+                  {circle}
+                </Link>
+              ) : (
+                <span key={day} className={styles.cell} aria-label={label} role="img">
+                  {circle}
+                </span>
+              )
+            })}
+          </div>
+        </section>
+
+        <div className={styles.side}>
+          <dl className={styles.stats}>
+            <div>
+              <dt>Streak</dt>
+              <dd>{plural(weeks, 'wk', 'wks')}</dd>
+            </div>
+            <div>
+              <dt>
+                Avg / wk<span className="visually-hidden"> this month</span>
+              </dt>
+              <dd>{Number(stats.avgPerWeek.toFixed(1))}</dd>
+            </div>
+            <div>
+              <dt>
+                Goal wks<span className="visually-hidden"> this month, of {goal} sessions</span>
+              </dt>
+              <dd>
+                {stats.goalWeeks}/{stats.weeks}
+              </dd>
+            </div>
+          </dl>
+
+          <section aria-labelledby="log-bests">
+            <div className={styles.bestsHead}>
+              <h2 id="log-bests" className="eyebrow">
+                Personal bests · 6 weeks
+              </h2>
+              <Link to="/library" className={styles.all}>
+                All
+              </Link>
+            </div>
+            {bests.length > 0 ? (
+              <ul className={styles.bests}>
+                {bests.map((b) => (
+                  <li key={b.exerciseId}>
+                    <Link to={`/library/${b.exerciseId}`} className={styles.best}>
+                      <span className={styles.bestName}>{names.get(b.exerciseId) ?? b.exerciseId}</span>
+                      <span className={styles.bestValue}>
+                        <span className={styles.bestNumber}>
+                          {b.best.measure === 'reps' ? b.best.value : clock(b.best.value * 1000)}
+                        </span>
+                        <span className={styles.bestGain}>{gain(b.best, b.previous!)}</span>
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className={styles.empty}>
+                No new bests in the last 6 weeks. Beat a number and it shows up here.
+              </p>
+            )}
+          </section>
+        </div>
+      </div>
     </>
   )
 }
