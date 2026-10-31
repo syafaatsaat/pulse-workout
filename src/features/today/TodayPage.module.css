@@ -77,7 +77,7 @@
 }
 
 .date[data-future] {
-  color: var(--dim);
+  color: var(--muted); /* --dim is below 4.5:1 for text */
 }
 
 /* Unfinished session */

@@ -3,6 +3,7 @@
 
 .player {
   --tint: var(--work-tint);
+  --focus-ring: var(--work-ink);
   min-height: 100dvh;
   display: flex;
   background: var(--work);
@@ -15,6 +16,7 @@
 
 .player[data-mode='rest'] {
   --tint: var(--rest-tint);
+  --focus-ring: var(--rest-ink);
   background: var(--rest-bg);
   color: var(--rest-ink);
 }
@@ -54,7 +56,7 @@
 
 .headerSub {
   font-weight: 500;
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 .round {
@@ -75,7 +77,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 .titleBlock {
@@ -215,7 +217,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.75;
+  opacity: 0.9;
 }
 
 .info dd {
@@ -314,7 +316,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 /* Up next card (rest) */
@@ -351,7 +353,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .upNextName {

@@ -1,5 +1,6 @@
 /* Player dialogs sit on the app surface (theme colours), not on the orange / blue ground. */
 .dialog {
+  --focus-ring: var(--ink); /* back on the theme surface */
   width: min(440px, calc(100vw - 2 * var(--gutter)));
   max-height: calc(100dvh - 2 * var(--gutter));
   padding: var(--s-6) var(--s-5) var(--s-5);

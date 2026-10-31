@@ -67,8 +67,9 @@ a {
   text-decoration: none;
 }
 
+/* --focus-ring: the player grounds set their own ink (orange / blue are fixed in both themes). */
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--focus-ring, var(--ink));
   outline-offset: 2px;
 }
 

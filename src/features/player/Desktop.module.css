@@ -2,6 +2,7 @@
    ink (currentColor) at the mock-up's opacities. */
 
 .desk {
+  --focus-ring: var(--work-ink);
   --chip: color-mix(in srgb, currentColor 10%, transparent);
   --hair: color-mix(in srgb, currentColor 15%, transparent);
   min-height: 100dvh;
@@ -15,6 +16,7 @@
 }
 
 .desk[data-mode='rest'] {
+  --focus-ring: var(--rest-ink);
   --chip: color-mix(in srgb, currentColor 12%, transparent);
   --hair: color-mix(in srgb, currentColor 20%, transparent);
   background: var(--rest-bg);
@@ -90,7 +92,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 .blocks span {
@@ -114,7 +116,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 /* Main: stage | side panel */
@@ -226,7 +228,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  opacity: 0.7;
+  opacity: 0.9;
 }
 
 /* Side panel */
@@ -327,7 +329,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.75;
+  opacity: 0.9;
 }
 
 .facts dd {
