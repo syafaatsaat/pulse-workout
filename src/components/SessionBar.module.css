@@ -49,6 +49,25 @@
 }
 
 @media (min-width: 1024px) {
+  /* DT-Today shape: taller bars. */
+  .bar[data-variant='preview'] {
+    height: 44px;
+    gap: var(--s-1);
+  }
+
+  .bar[data-variant='preview'] .segment {
+    height: 44px;
+    border-radius: var(--s-1);
+  }
+
+  .bar[data-variant='preview'] .segment[data-kind='rest'] {
+    height: 14px;
+  }
+
+  .bar[data-variant='preview'] .segment:is([data-kind='warmup'], [data-kind='cooldown']) {
+    height: 22px;
+  }
+
   .bar:not([data-variant='preview']) {
     gap: var(--s-1);
     height: 10px;

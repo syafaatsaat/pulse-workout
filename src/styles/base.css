@@ -113,3 +113,10 @@ a {
     scroll-behavior: auto !important;
   }
 }
+
+/* DT-Today / DT-Library: page titles grow on desktop. */
+@media (min-width: 1024px) {
+  .page-title {
+    font-size: 44px;
+  }
+}

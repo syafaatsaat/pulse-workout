@@ -1,5 +1,5 @@
 import type { Exercise, Session, Workout } from '../../data/types'
-import { equipmentLabel, shortBlockLabels, upNextWorkout, weekDays } from './today'
+import { equipmentLabel, isoWeek, moveDoses, shortBlockLabels, upNextWorkout, weekDays } from './today'
 
 const workout = (id: string, extra: Partial<Workout> = {}): Workout => ({
   id,
@@ -124,5 +124,62 @@ describe('shortBlockLabels', () => {
       { blockId: 'b', label: 'B ×3', weight: 9 },
       { blockId: 'cool', label: 'Cool', weight: 3 },
     ])
+  })
+})
+
+describe('moveDoses', () => {
+  const item = (exerciseId: string, mode: 'reps' | 'time', target: number, sets: number) => ({
+    id: exerciseId,
+    exerciseId,
+    mode,
+    target,
+    sets,
+    restAfter: 30,
+  })
+
+  test('sets × reps or time per move, circuits use their rounds, long single holds in minutes', () => {
+    const w = workout('w', {
+      blocks: [
+        { id: 'a', name: 'A', type: 'straight', rounds: 1, items: [item('Pushups', 'reps', 10, 2)] },
+        {
+          id: 'b',
+          name: 'B',
+          type: 'circuit',
+          rounds: 4,
+          items: [item('Plank', 'time', 40, 1), item('Squat', 'reps', 12, 1)],
+        },
+        {
+          id: 'c',
+          name: 'Cool-down',
+          type: 'straight',
+          rounds: 1,
+          phase: 'cooldown',
+          items: [
+            item('Stretch', 'time', 240, 1),
+            item('Hold', 'time', 30, 1),
+            item('Dip', 'reps', 8, 1),
+            item('Long', 'time', 90, 1),
+          ],
+        },
+      ],
+    })
+    expect(moveDoses(w).map((m) => `${m.exerciseId} ${m.dose}`)).toEqual([
+      'Pushups 2×10',
+      'Plank 4×0:40',
+      'Squat 4×12',
+      'Stretch 4 min',
+      'Hold 0:30',
+      'Dip 8 reps',
+      'Long 1:30',
+    ])
+  })
+})
+
+describe('isoWeek', () => {
+  test('ISO 8601 week numbers, including the year edges', () => {
+    expect(isoWeek(new Date(2026, 9, 29))).toBe(44)
+    expect(isoWeek(new Date(2026, 0, 1))).toBe(1)
+    expect(isoWeek(new Date(2027, 0, 1))).toBe(53)
+    expect(isoWeek(new Date(2024, 11, 30))).toBe(1)
   })
 })

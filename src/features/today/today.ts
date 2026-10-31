@@ -72,3 +72,34 @@ export function shortBlockLabels(workout: Workout): { blockId: string; label: st
     return { blockId: block.id, label: `${String.fromCharCode(65 + letter++)}${times}`, weight }
   })
 }
+
+const mss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
+
+/**
+ * Per move, in order: "2×10", "4×0:40" (circuits count rounds), or for a single set "8 reps",
+ * "0:30", "1:30", and whole minutes as "4 min".
+ */
+export function moveDoses(workout: Workout): { exerciseId: string; dose: string }[] {
+  return workout.blocks.flatMap((block) =>
+    block.items.map((item) => {
+      const sets = block.type === 'circuit' ? block.rounds : item.sets
+      const value = item.mode === 'reps' ? String(item.target) : mss(item.target)
+      let dose = `${sets}×${value}`
+      if (sets <= 1) {
+        if (item.mode === 'reps') dose = `${item.target} reps`
+        else if (item.target >= 60 && item.target % 60 === 0) dose = `${item.target / 60} min`
+        else dose = value
+      }
+      return { exerciseId: item.exerciseId, dose }
+    }),
+  )
+}
+
+/** ISO 8601 week number (weeks start Monday; week 1 holds the year's first Thursday). */
+export function isoWeek(date: Date): number {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+  const day = d.getUTCDay() || 7
+  d.setUTCDate(d.getUTCDate() + 4 - day) // the Thursday of this week decides the year
+  const yearStart = Date.UTC(d.getUTCFullYear(), 0, 1)
+  return Math.ceil(((d.getTime() - yearStart) / 86_400_000 + 1) / 7)
+}
