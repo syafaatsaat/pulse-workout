@@ -1,0 +1,256 @@
+/* Session summary (F-Summary). */
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  background: var(--bg);
+  color: var(--ink);
+  padding: calc(env(safe-area-inset-top) + 56px) max(var(--gutter), env(safe-area-inset-right))
+    max(30px, calc(env(safe-area-inset-bottom) + var(--s-4))) max(var(--gutter), env(safe-area-inset-left));
+}
+
+.inner {
+  flex: 1;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.check {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.complete,
+.date {
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.complete {
+  font-weight: 600;
+}
+
+.date {
+  margin-left: auto;
+  font-weight: 500;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.title {
+  margin-top: var(--s-4);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.bar {
+  margin-top: 14px;
+}
+
+/* Stats card: time, sets, reps */
+.stats {
+  margin: 18px 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--card);
+}
+
+.stats > div {
+  padding: 14px var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stats > div + div {
+  border-left: 1px solid var(--line);
+}
+
+.stats dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stats dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* New personal best banner */
+.best {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: var(--r-lg);
+  padding: 14px var(--s-4);
+}
+
+.bestIcon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bestText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.bestEyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.bestValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.bestGain {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Per-move card */
+.movesCard {
+  margin-top: 10px;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--card);
+  padding: var(--s-1) var(--s-4);
+}
+
+.move {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 52px 52px;
+  align-items: center;
+  min-height: 46px;
+}
+
+.move + .move {
+  border-top: 1px solid var(--line);
+}
+
+.moveName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.moveSets,
+.moveBest {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.moveSets {
+  color: var(--muted);
+}
+
+.moveBest {
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.moveBest[data-pb] {
+  color: var(--accent);
+}
+
+.more {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.spacer {
+  flex-grow: 1;
+  min-height: var(--s-6);
+}
+
+.save {
+  height: 56px;
+  border-radius: var(--r-md);
+  background: var(--ink);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.message {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  align-items: center;
+}

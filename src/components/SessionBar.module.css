@@ -19,6 +19,14 @@
   background: currentColor;
 }
 
+.bar[data-variant='summary'] .segment[data-state='past'] {
+  background: currentColor;
+}
+
+.bar[data-variant='summary'] .segment[data-state='current'] {
+  background: color-mix(in srgb, currentColor 16%, transparent);
+}
+
 @media (min-width: 1024px) {
   .bar {
     gap: var(--s-1);
