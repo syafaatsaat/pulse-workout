@@ -4,6 +4,12 @@ export function clock(ms: number): string {
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`
 }
 
+/** Player timers, always MM:SS: 5_000 → "00:05", 90_000 → "01:30". Rounds up like clock(). */
+export function timer(ms: number): string {
+  const total = Math.ceil(Math.max(0, ms) / 1000)
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
+}
+
 /** Elapsed time rounds down: 11:42. */
 export function elapsed(ms: number): string {
   const total = Math.floor(Math.max(0, ms) / 1000)
