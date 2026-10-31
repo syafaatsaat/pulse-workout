@@ -50,6 +50,8 @@ export interface Session {
   workoutId: string
   startedAt: number
   endedAt?: number
+  /** Time spent working out, excluding pauses; written when the session finishes. */
+  activeMs?: number
   effort?: number
   sets: SessionSet[]
 }

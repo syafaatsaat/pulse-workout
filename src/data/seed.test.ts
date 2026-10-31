@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto'
 import { db } from './db'
-import { generateDemoSessions, startOfWeek } from './demoSessions'
+import { startOfWeek } from '../engine/stats'
+import { generateDemoSessions } from './demoSessions'
 import { DEMO_WORKOUTS } from './demoWorkouts'
 import exercises from './exercises.json'
 import { ensureSeeded, resetDemoData } from './seed'

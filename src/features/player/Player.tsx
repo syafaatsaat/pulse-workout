@@ -8,6 +8,7 @@ import type { Exercise, SessionSet } from '../../data/types'
 import type { Step } from '../../engine/compile'
 import {
   currentStep,
+  elapsedMs,
   initPlayer,
   playerReducer,
   remainingMs,
@@ -86,14 +87,18 @@ export function Player(props: PlayerProps) {
     if (sets.length > 0 && startedAt !== null) saveSets(sessionId, sets, startedAt).catch(console.error)
   }, [sessionId, sets, startedAt])
 
+  // Once finished, elapsed is frozen at endedAt: the active time, pauses excluded.
+  const active = elapsedMs(state, 0)
   useEffect(() => {
     if (status !== 'finished' || endedAt === null) return
-    finishSession(sessionId, sets, endedAt)
+    finishSession(sessionId, sets, endedAt, active)
       .then((result) =>
-        navigate(result === 'saved' ? `/session/${sessionId}/summary` : '/', { replace: true }),
+        result === 'saved'
+          ? navigate(`/session/${sessionId}/summary`, { replace: true, state: { justFinished: true } })
+          : navigate('/', { replace: true }),
       )
       .catch(console.error)
-  }, [status, endedAt, sessionId, sets, navigate])
+  }, [status, endedAt, active, sessionId, sets, navigate])
 
   // Confirming an end pauses the clock; "Keep going" resumes it.
   const openEnd = () => {

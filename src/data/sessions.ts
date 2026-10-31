@@ -46,11 +46,12 @@ export async function finishSession(
   sessionId: string,
   sets: LoggedSet[],
   endedAt: number,
+  activeMs: number,
 ): Promise<'saved' | 'discarded'> {
   if (sets.length === 0) {
     await db.sessions.delete(sessionId)
     return 'discarded'
   }
-  await db.sessions.update(sessionId, { endedAt, sets: sets.map(toSessionSet) })
+  await db.sessions.update(sessionId, { endedAt, activeMs, sets: sets.map(toSessionSet) })
   return 'saved'
 }

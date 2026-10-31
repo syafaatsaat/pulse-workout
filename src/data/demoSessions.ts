@@ -1,4 +1,5 @@
 import { compile, tempoMs } from '../engine/compile'
+import { startOfWeek } from '../engine/stats'
 import type { Session, SessionSet, Workout } from './types'
 
 const WEEKS = 6
@@ -13,21 +14,15 @@ function rng(seed: number) {
   }
 }
 
-/** Local midnight of the Monday of `date`'s week. */
-export function startOfWeek(date: Date): Date {
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-  d.setDate(d.getDate() - ((d.getDay() + 6) % 7))
-  return d
-}
-
-// Day offsets (0 = Monday) per completed week: mostly 3–4, one 2, one missed-goal week.
+// Day offsets (0 = Monday) per completed week, oldest first: mostly 3–4, one 2. The last three
+// meet the default goal of 4, so the demo Log opens on a 3-week streak.
 const WEEK_PATTERNS = [
-  [0, 2, 4, 5],
   [1, 3, 5],
   [0, 3],
+  [0, 3, 5],
+  [0, 2, 4, 5],
   [0, 2, 4, 6],
   [1, 2, 4, 5],
-  [0, 3, 5],
 ]
 
 /**
