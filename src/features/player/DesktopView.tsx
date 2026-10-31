@@ -1,5 +1,5 @@
 import type { Dispatch, ReactNode } from 'react'
-import { ImagePlaceholder } from '../../components/ImagePlaceholder'
+import { ExercisePhoto } from '../../components/ExercisePhoto'
 import { RepTicks } from '../../components/RepTicks'
 import { SessionBar } from '../../components/SessionBar'
 import { stepWeight } from '../../components/stepWeight'
@@ -165,22 +165,19 @@ export function DesktopView(props: DesktopViewProps) {
 
         <aside className={styles.side}>
           <div className={styles.form}>
-            {formExercise?.images[0] ? (
-              <>
-                <img
-                  src={`/exercises/${formExercise.images[0]}`}
-                  alt={`${formExercise.name}: start position`}
-                />
-                {formExercise.images[1] && (
-                  <img
-                    className={styles.formEnd}
-                    src={`/exercises/${formExercise.images[1]}`}
-                    alt={`${formExercise.name}: end position`}
-                  />
-                )}
-              </>
-            ) : (
-              <ImagePlaceholder className={styles.formPlaceholder} label="No photo for this move" />
+            <ExercisePhoto
+              path={formExercise?.images[0]}
+              alt={`${formExercise?.name}: start position`}
+              placeholderLabel="No photo for this move"
+              placeholderClassName={styles.formPlaceholder}
+            />
+            {formExercise?.images[0] && (
+              <ExercisePhoto
+                path={formExercise.images[1]}
+                className={styles.formEnd}
+                alt={`${formExercise.name}: end position`}
+                fallback="none"
+              />
             )}
             <span className={styles.formTag}>{resting ? 'Next' : 'Form'}</span>
           </div>

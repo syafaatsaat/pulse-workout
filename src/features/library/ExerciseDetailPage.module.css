@@ -46,8 +46,7 @@
   transition: opacity 250ms ease;
 }
 
-.photo[data-shown],
-div.photo {
+.photo[data-shown] {
   opacity: 1;
 }
 

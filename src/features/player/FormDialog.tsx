@@ -1,4 +1,4 @@
-import { ImagePlaceholder } from '../../components/ImagePlaceholder'
+import { ExercisePhoto } from '../../components/ExercisePhoto'
 import type { Exercise } from '../../data/types'
 import styles from './Dialog.module.css'
 import { useModal } from './useModal'
@@ -32,19 +32,14 @@ export function FormDialog({ open, exercise, onClose }: FormDialogProps) {
               const src = exercise.images[i]
               return (
                 <figure key={label} className={styles.photo}>
-                  {src ? (
-                    <img
-                      src={`/exercises/${src}`}
-                      alt={`${exercise.name}: ${label.toLowerCase()} position`}
-                      width={600}
-                      height={400}
-                    />
-                  ) : (
-                    <ImagePlaceholder
-                      label={`No photo: ${label.toLowerCase()} position`}
-                      className={styles.placeholder}
-                    />
-                  )}
+                  <ExercisePhoto
+                    path={src}
+                    alt={`${exercise.name}: ${label.toLowerCase()} position`}
+                    placeholderLabel={`No photo: ${label.toLowerCase()} position`}
+                    placeholderClassName={styles.placeholder}
+                    width={600}
+                    height={400}
+                  />
                   <figcaption className="eyebrow">{label}</figcaption>
                 </figure>
               )

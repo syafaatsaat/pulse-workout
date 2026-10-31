@@ -1,7 +1,7 @@
 import { useDeferredValue, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { PageHeader } from '../../app/PageHeader'
-import { ImagePlaceholder } from '../../components/ImagePlaceholder'
+import { ExercisePhoto } from '../../components/ExercisePhoto'
 import { db } from '../../data/db'
 import type { Equipment } from '../../data/exerciseTypes'
 import { useLiveQuery } from '../../data/useLiveQuery'
@@ -151,19 +151,15 @@ export function LibraryPage() {
           {results.map((e) => (
             <li key={e.id}>
               <Link to={`/library/${e.id}`} className={styles.row}>
-                {e.images[0] ? (
-                  <img
-                    className={styles.thumb}
-                    src={`/exercises/${e.images[0]}`}
-                    alt=""
-                    width={52}
-                    height={52}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <ImagePlaceholder className={styles.thumb} label="" />
-                )}
+                <ExercisePhoto
+                  path={e.images[0]}
+                  className={styles.thumb}
+                  alt=""
+                  width={52}
+                  height={52}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <span className={styles.text}>
                   <span className={styles.name}>{e.name}</span>
                   <span className={styles.meta}>{muscleLine(e)}</span>

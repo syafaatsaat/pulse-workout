@@ -1,5 +1,5 @@
 import type { Dispatch } from 'react'
-import { ImagePlaceholder } from '../../components/ImagePlaceholder'
+import { ExercisePhoto } from '../../components/ExercisePhoto'
 import { Ring } from '../../components/Ring'
 import { SessionBar } from '../../components/SessionBar'
 import type { Exercise } from '../../data/types'
@@ -79,17 +79,7 @@ export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd
 
         {next && (
           <div className={styles.upNext}>
-            {nextImage ? (
-              <img
-                className={styles.upNextThumb}
-                src={`/exercises/${nextImage}`}
-                alt=""
-                width={76}
-                height={76}
-              />
-            ) : (
-              <ImagePlaceholder className={styles.upNextThumb} label={`Photo placeholder: ${nextName}`} />
-            )}
+            <ExercisePhoto path={nextImage} className={styles.upNextThumb} alt="" width={76} height={76} />
             <div className={styles.upNextText}>
               <span className={styles.upNextEyebrow}>
                 Up next · Set {next.setIndex + 1} of {next.setCount}

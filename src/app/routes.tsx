@@ -6,12 +6,14 @@ import { PlayerPage } from '../features/player/PlayerPage'
 import { SettingsPage } from '../features/settings/SettingsPage'
 import { SummaryPage } from '../features/summary/SummaryPage'
 import { TodayPage } from '../features/today/TodayPage'
+import { RouteError } from './ErrorScreen'
 import { FullScreen, Layout } from './Layout'
 import { NotFound } from './NotFound'
 
 export const routes: RouteObject[] = [
   {
     element: <Layout />,
+    errorElement: <RouteError />,
     children: [
       { index: true, element: <TodayPage /> },
       { path: 'library', element: <LibraryPage /> },
@@ -23,10 +25,12 @@ export const routes: RouteObject[] = [
   {
     // Pushed screens: no tab bar on phone, sidebar stays on desktop.
     element: <Layout tabBar={false} />,
+    errorElement: <RouteError />,
     children: [{ path: 'library/:exerciseId', element: <ExerciseDetailPage /> }],
   },
   {
     element: <FullScreen />,
+    errorElement: <RouteError />,
     children: [
       { path: 'session/:id', element: <PlayerPage /> },
       { path: 'session/:id/summary', element: <SummaryPage /> },

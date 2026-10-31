@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
+import { ExercisePhoto } from '../../components/ExercisePhoto'
 import { ImagePlaceholder } from '../../components/ImagePlaceholder'
 import { db, DEFAULT_SETTINGS } from '../../data/db'
 import { tryWorkout } from '../../data/tryWorkout'
@@ -96,17 +97,20 @@ export function ExerciseDetailPage() {
           e.images
             .slice(0, 2)
             .map((src, i) => (
-              <img
+              <ExercisePhoto
                 key={src}
+                path={src}
                 className={styles.photo}
                 data-shown={i === frame || undefined}
-                src={`/exercises/${src}`}
                 alt={i === frame ? `${e.name}, ${FRAMES[i]!.toLowerCase()} position` : ''}
+                placeholderLabel={
+                  i === frame ? `No photo: ${e.name}, ${FRAMES[i]!.toLowerCase()} position` : ''
+                }
                 aria-hidden={i !== frame || undefined}
               />
             ))
         ) : (
-          <ImagePlaceholder className={styles.photo} label={`No photo for ${e.name}`} />
+          <ImagePlaceholder className={styles.photo} data-shown label={`No photo for ${e.name}`} />
         )}
         {e.images.length > 1 && (
           <div className={styles.frames} role="group" aria-label="Photo">

@@ -1,14 +1,19 @@
+import type { HTMLAttributes } from 'react'
 import styles from './ImagePlaceholder.module.css'
 
-interface ImagePlaceholderProps {
+interface ImagePlaceholderProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
+  /** Accessible name; leave empty when the placeholder is decorative (the text beside it names the move). */
   label: string
-  className?: string
 }
 
 /** Hatched stand-in for an exercise photo. Override --ph-hatch / --ph-fill / --ph-ink on dark grounds. */
-export function ImagePlaceholder({ label, className }: ImagePlaceholderProps) {
+export function ImagePlaceholder({ label, className, ...rest }: ImagePlaceholderProps) {
   return (
-    <div role="img" aria-label={label} className={`${styles.placeholder} ${className ?? ''}`}>
+    <div
+      {...rest}
+      {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}
+      className={`${styles.placeholder} ${className ?? ''}`}
+    >
       <svg
         width="28"
         height="28"
