@@ -9,7 +9,8 @@ Lean scope = screens 1–6 and 8. Screen 7 (Builder) is an add-on.
 - Up-next card: eyebrow, session name (hero), info pills (moves, minutes, equipment), session bar with block
   labels, Start (orange, → Player), Edit (→ Builder, add-on; hide in lean build).
 - Quick start: 3 cards of ready-made workouts → Player.
-- Desktop: two columns — up-next card (with full move list) | This week, Quick start, Recent bests.
+- Desktop: two columns — up-next card (with full move list) | This week, Quick start (every workout, as a
+  list), Recent bests (top 3, number only; no sparklines, no New workout / Edit until the add-ons).
 
 ## 2. Player — `/session/:id` (F-Player work, F-Rest rest, DT-Player)
 Redesigned after real-phone testing, inspired by other fitness apps; where the F-Player / F-Rest
@@ -42,17 +43,21 @@ After the last step → Summary.
 - Title, search field, filter button (equipment), muscle chips (scroll).
 - Results card: thumbnail, name, primary · secondary muscle, level badge (BEG / INT / EXP) → Detail.
 - Equipment filter defaults to the equipment set in Settings.
-- Desktop: list pane | detail pane (selection in the URL: `/library/:exerciseId`). `/` focuses search.
+- Desktop: list pane | detail pane (selection in the URL: `/library/:exerciseId`, filters carried along;
+  `/library` alone shows the first result). `/` focuses search. Equipment and muscle chips wrap inline.
 
 ## 5. Exercise detail — `/library/:exerciseId` (F-Detail)
 - Back, image card with START / END toggle (crossfade in the app), name, tags (best in orange, level, force,
   mechanic, equipment), primary / also muscles, numbered steps card.
 - Bottom bar: Try it (single-exercise session) · Add to workout (add-on; hide in lean build).
+- Desktop: the Library's detail pane — START and END photos side by side, name, tags, Try it now, steps card |
+  muscles card with your best and last session (no 6-week bars until the Trends add-on).
 
 ## 6. Log — `/log` (F-Log)
 - Eyebrow totals, title, month calendar card (done = filled, today = orange ring, tap → that summary).
 - Stat cards: streak (weeks meeting goal), average per week, goal weeks this month.
 - Personal bests card: name, sparkline (add-on; lean = best number only), best value, delta.
+- Desktop: calendar on the left, stats and personal bests on the right.
 
 ## 7. Builder — `/workouts/:id/edit` (F-Builder) — ADD-ON
 - Cancel / Edit workout / Save. Name + live session bar + estimate card.

@@ -62,7 +62,7 @@ Done when: a stranger opens the link and finishes a workout without instructions
 |---|---|---|
 | Workout builder | 2–3 | Blocks, sets × reps / time, rest per item, dnd-kit reorder, live session bar + estimate |
 | Offline + installable | 1 | vite-plugin-pwa manifest, icons, caching app + data + images; works in airplane mode |
-| Desktop layouts | 1 | Two-pane Library, sidebar Today, side-by-side Log |
+| ~~Desktop layouts~~ (done before Day 7) | 1 | Two-pane Library, sidebar Today, side-by-side Log |
 | Trends + effort | 0.5 | 6-week sparklines in Log, 1–5 effort rating on Summary |
 | Voice + full Settings | 0.5 | Spoken cues, ~~3-second lead-in~~, equipment owned, export JSON |
 
