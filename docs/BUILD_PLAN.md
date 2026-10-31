@@ -16,27 +16,28 @@ Every day ends deployed.
 ## Stage 1 — Lean build
 
 ### Day 1 — Foundation and data
-- [ ] Vite + React + TypeScript (strict), ESLint, Prettier, Vitest; deploy to Vercel
-- [ ] `src/styles/tokens.css` (provided) + base.css; theme switch light / dark / auto
-- [ ] Fontsource fonts; React Router routes; tab bar < 1024px, sidebar ≥ 1024px
-- [ ] `scripts/import-exercises.ts`: filter free-exercise-db to home-friendly equipment (body only, bands,
+- [x] Vite + React + TypeScript (strict), ESLint, Prettier, Vitest; deploy to Vercel
+      (Vercel deferred: deployed by hand on Day 7)
+- [x] `src/styles/tokens.css` (provided) + base.css; theme switch light / dark / auto
+- [x] Fontsource fonts; React Router routes; tab bar < 1024px, sidebar ≥ 1024px
+- [x] `scripts/import-exercises.ts`: filter free-exercise-db to home-friendly equipment (body only, bands,
       dumbbell, kettlebells, plus chair/bench moves), convert images to WebP, clean null fields
-- [ ] Dexie schema; seed 5 ready-made workouts and ~6 weeks of demo sessions
+- [x] Dexie schema; seed 5 ready-made workouts and ~6 weeks of demo sessions
 Done when: the deployed shell lists real exercises and switches themes.
 
 ### Days 2–3 — Workout player
-- [ ] `compile()` + player reducer, unit tests written first
-- [ ] Work and rest screens per `docs/SCREENS.md` and the mock-ups
-- [ ] Timestamp-based timers; pause / resume
-- [ ] Wake Lock (re-request on visibilitychange); Web Audio beeps unlocked on Start
-- [ ] Save each set as it completes; resume an interrupted session
-- [ ] Desktop full-screen player + keyboard shortcuts
+- [x] `compile()` + player reducer, unit tests written first
+- [x] Work and rest screens per `docs/SCREENS.md` and the mock-ups
+- [x] Timestamp-based timers; pause / resume
+- [x] Wake Lock (re-request on visibilitychange); Web Audio beeps unlocked on Start
+- [x] Save each set as it completes; resume an interrupted session
+- [x] Desktop full-screen player + keyboard shortcuts
 Done when: a real workout is finished on a phone, touching it only to tap Set done.
 
 ### Day 4 — Summary and Log
-- [ ] `stats.ts`: personal bests, streak, weekly goal progress (unit-tested)
-- [ ] Summary with new-best banner
-- [ ] Log: month calendar, monthly stats, personal bests; tap a day → its summary
+- [x] `stats.ts`: personal bests, streak, weekly goal progress (unit-tested)
+- [x] Summary with new-best banner
+- [x] Log: month calendar, monthly stats, personal bests; tap a day → its summary
 Done when: a finished session appears in Log and a new best is detected.
 
 ### Day 5 — Today, Library, Exercise detail
