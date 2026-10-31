@@ -113,15 +113,11 @@ describe('time work', () => {
     expect(s.sets.at(-1)).toMatchObject({ seconds: 25 })
   })
 
-  test('added time counts towards the seconds held', () => {
-    const s = run(
-      { type: 'start', now: T0 },
-      { type: 'setDone', now: T0 + 30_000 },
-      { type: 'skipRest', now: T0 + 40_000 },
-      { type: 'addTime', ms: 15_000 },
-      { type: 'setDone', now: T0 + 100_000 },
-    )
-    expect(s.sets.at(-1)).toMatchObject({ seconds: 55 })
+  test('addTime only applies to rests, not to timed or reps work', () => {
+    const p = planking()
+    expect(playerReducer(p, { type: 'addTime', ms: 15_000 })).toBe(p)
+    const reps = run({ type: 'start', now: T0 })
+    expect(playerReducer(reps, { type: 'addTime', ms: 15_000 })).toBe(reps)
   })
 })
 
@@ -169,13 +165,11 @@ describe('lead-in', () => {
     expect(s.sets.at(-1)).toMatchObject({ exerciseId: 'Plank', seconds: 0 })
   })
 
-  test('pausing in the lead-in keeps it; added time goes to the hold', () => {
+  test('pausing in the lead-in keeps what is left of it', () => {
     let s = playerReducer(planking(), { type: 'pause', now: T0 + 42_000 })
     expect(leadInMs(s, T0 + 99_000)).toBe(3000)
-    s = playerReducer(s, { type: 'addTime', ms: 15_000 })
-    expect(leadInMs(s, T0 + 99_000)).toBe(3000)
     s = playerReducer(s, { type: 'resume', now: T0 + 100_000 })
-    expect(s.endsAt).toBe(T0 + 103_000 + 55_000)
+    expect(s.endsAt).toBe(T0 + 103_000 + 40_000)
   })
 })
 

@@ -115,7 +115,7 @@ export function Player(props: PlayerProps) {
   }
 
   // Keyboard (DT-Player): Space = set done / skip rest / start now (resume when paused), P = pause,
-  // ← → = adjust reps, ↑ = +15 s, Esc = end. Off while a dialog is open; it handles its own keys.
+  // ← → = adjust reps, ↑ = +15 s on a rest, Esc = end. Off while a dialog is open; it handles its own keys.
   const onKey = useRef<(e: KeyboardEvent) => void>(undefined)
   useEffect(() => {
     onKey.current = (e) => {

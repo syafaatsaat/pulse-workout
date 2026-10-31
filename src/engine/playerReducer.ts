@@ -28,7 +28,7 @@ export interface PlayerState {
   endsAt: number | null
   /** Timed step while paused: what was left at the pause. */
   remainingMs: number | null
-  /** Timed step: planned length plus any added time. */
+  /** Timed step: planned length plus any time added to a rest. */
   stepMs: number
   pausedAt: number | null
   /** Total paused time, excluded from elapsed. */
@@ -184,7 +184,8 @@ export function playerReducer(state: PlayerState, action: PlayerAction): PlayerS
     }
 
     case 'addTime': {
-      if (!step || !isTimed(step)) return state
+      // +15s is for catching your breath; a timed set doesn't get longer mid-hold.
+      if (step?.kind !== 'rest') return state
       if (state.status === 'running' && state.endsAt !== null) {
         return { ...state, endsAt: state.endsAt + action.ms, stepMs: state.stepMs + action.ms }
       }
