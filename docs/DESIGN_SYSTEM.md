@@ -38,7 +38,7 @@ Text on orange is always `#111113`, never white (white on #FF5A1F fails contrast
 | Primary button | Barlow Condensed | 24px / 700 | Uppercase, letter-spacing 0.5px |
 | List item name | Barlow Condensed | 19–21px / 600 | Uppercase |
 | Stat value | Barlow Condensed | 26–32px / 600 | `tabular-nums` |
-| Rep counter, timers | Barlow Condensed | 140px phone, clamp(200px, 24vw, 360px) desktop / 800 | line-height 1, never clipped |
+| Rep counter, timers | Barlow Condensed | 18dvh, max 180px phone, clamp(200px, 24vw, 360px) desktop / 800 | line-height 1, never clipped |
 | Rest countdown | Barlow Condensed | 120px / 800 | Inside the ring |
 
 ## Layout

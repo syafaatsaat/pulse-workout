@@ -84,10 +84,13 @@
   --ph-hatch: color-mix(in srgb, currentColor 8%, transparent);
   --ph-fill: color-mix(in srgb, currentColor 10%, transparent);
   --ph-ink: color-mix(in srgb, currentColor 70%, transparent);
+  /* Takes the screen's spare height, from the photos' 4:3 up to square (centred crop), so the name,
+     counter and buttons sit snugly below it instead of floating in a gap. */
+  --w: min(100vw - 2 * var(--gutter), 520px);
   margin-top: var(--s-4);
   width: 100%;
-  height: min(calc(min(100vw - 2 * var(--gutter), 520px) * 3 / 4), 34dvh);
-  flex-shrink: 0;
+  flex: 1 0 min(calc(var(--w) * 3 / 4), 30dvh);
+  max-height: var(--w);
   border-radius: var(--r-xl);
 }
 
@@ -119,7 +122,7 @@
 .counter {
   display: block;
   font-family: var(--font-display);
-  font-size: clamp(88px, 16dvh, var(--t-counter));
+  font-size: clamp(88px, 18dvh, var(--t-counter));
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.025em;
