@@ -2,13 +2,23 @@ import { NavLink } from 'react-router'
 import { Ring } from '../components/Ring'
 import { NAV_ITEMS } from './nav'
 import { NavIcon } from './NavIcon'
+import { db, DEFAULT_SETTINGS } from '../data/db'
+import { useLiveQuery } from '../data/useLiveQuery'
+import { startOfWeek, weekProgress } from '../engine/stats'
 import styles from './Sidebar.module.css'
 
-// Placeholder until engine/stats.ts (Day 4) derives it from sessions.
-const WEEKLY_GOAL = { done: 2, goal: 4 }
+/** Finished sessions this week against the weekly goal. */
+async function weeklyGoal() {
+  const now = Date.now()
+  const [sessions, settings] = await Promise.all([
+    db.sessions.where('startedAt').aboveOrEqual(startOfWeek(now).getTime()).toArray(),
+    db.settings.get('settings'),
+  ])
+  return { done: weekProgress(sessions, now), goal: (settings ?? DEFAULT_SETTINGS).weeklyGoal }
+}
 
 export function Sidebar() {
-  const { done, goal } = WEEKLY_GOAL
+  const { done, goal } = useLiveQuery(weeklyGoal) ?? { done: 0, goal: DEFAULT_SETTINGS.weeklyGoal }
   return (
     <nav aria-label="Main" className={styles.sidebar}>
       <div className={styles.brand}>
