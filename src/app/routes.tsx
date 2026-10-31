@@ -1,6 +1,5 @@
 import type { RouteObject } from 'react-router'
-import { ExerciseDetailPage } from '../features/library/ExerciseDetailPage'
-import { LibraryPage } from '../features/library/LibraryPage'
+import { LibraryRoute } from '../features/library/LibraryRoute'
 import { LogPage } from '../features/log/LogPage'
 import { PlayerPage } from '../features/player/PlayerPage'
 import { SettingsPage } from '../features/settings/SettingsPage'
@@ -16,17 +15,11 @@ export const routes: RouteObject[] = [
     errorElement: <RouteError />,
     children: [
       { index: true, element: <TodayPage /> },
-      { path: 'library', element: <LibraryPage /> },
+      { path: 'library/:exerciseId?', element: <LibraryRoute /> },
       { path: 'log', element: <LogPage /> },
       { path: 'settings', element: <SettingsPage /> },
       { path: '*', element: <NotFound /> },
     ],
-  },
-  {
-    // Pushed screens: no tab bar on phone, sidebar stays on desktop.
-    element: <Layout tabBar={false} />,
-    errorElement: <RouteError />,
-    children: [{ path: 'library/:exerciseId', element: <ExerciseDetailPage /> }],
   },
   {
     element: <FullScreen />,

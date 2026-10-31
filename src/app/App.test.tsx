@@ -15,7 +15,7 @@ test('tab pages render the main nav with the current page marked', () => {
   expect(current.map((a) => a.textContent)).toEqual(['Log', 'Log'])
 })
 
-test('library detail is a push: sidebar only, no tab bar', () => {
+test('library detail is a push on phones: sidebar only, no tab bar', () => {
   renderAt('/library/Pushups')
   expect(screen.getAllByRole('navigation', { name: 'Main' })).toHaveLength(1)
 })

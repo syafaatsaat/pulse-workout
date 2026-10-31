@@ -1,15 +1,14 @@
-import { Outlet } from 'react-router'
+import { Outlet, useMatch } from 'react-router'
 import { Sidebar } from './Sidebar'
 import { TabBar } from './TabBar'
 import styles from './Layout.module.css'
 
-interface LayoutProps {
-  /** Tab pages show the phone tab bar; pushed screens (e.g. exercise detail) don't. */
-  tabBar?: boolean
-}
-
-/** App chrome: Sidebar at ≥1024px, bottom TabBar below. */
-export function Layout({ tabBar = true }: LayoutProps) {
+/**
+ * App chrome: Sidebar at ≥1024px, bottom TabBar below. Pushed screens (exercise detail) hide the
+ * tab bar on phones; on desktop they are the Library's second pane.
+ */
+export function Layout() {
+  const tabBar = useMatch('/library/:exerciseId') === null
   return (
     <div className={styles.shell} data-tabbar={tabBar}>
       <div className={styles.sidebar}>

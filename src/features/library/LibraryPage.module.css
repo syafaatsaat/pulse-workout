@@ -1,4 +1,4 @@
-/* Library (F-Library). Lean build: one list at every width; the two-pane desktop is an add-on. */
+/* Library: F-Library on phones; DT-Library two panes at 1024px and up (LibraryRoute picks). */
 
 .searchRow {
   display: grid;
@@ -218,20 +218,120 @@
   }
 }
 
-@media (min-width: 1024px) {
-  .muscles {
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 2px;
-    padding-right: 2px;
-  }
+/* DT-Library: the two panes fill the viewport (cancelling the layout padding) and scroll apart. */
+.twoPane {
+  margin: -36px -48px -48px;
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: clamp(320px, 34vw, 440px) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
 
-  .searchRow,
-  .equipment,
-  .muscles,
-  .resultsHead,
-  .results,
-  .empty {
-    max-width: 640px;
+.listPane {
+  /* Contains the visually hidden level labels, which would otherwise stretch the page. */
+  position: relative;
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+  padding: 28px var(--s-6);
+}
+
+.paneSearch {
+  margin-top: 18px;
+}
+
+.paneSearch .search {
+  height: 46px;
+  padding: 0 var(--s-3) 0 14px;
+}
+
+.paneSearch .search input {
+  font-size: var(--t-body);
+}
+
+.kbd {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--fill);
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.paneFilters {
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.paneMuscles {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.paneFilters .chip,
+.paneMuscles .chip {
+  height: 34px;
+  padding: 0 13px;
+}
+
+.paneResults {
+  margin-top: var(--s-4);
+  padding: 6px;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--card);
+}
+
+.paneRow {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: var(--s-3);
+  align-items: center;
+  padding: var(--s-2) 10px;
+  border-radius: var(--s-3);
+}
+
+.paneRow .thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+}
+
+.paneRow .name {
+  font-size: 19px;
+}
+
+.paneRow[aria-current='page'] {
+  background: var(--fill);
+}
+
+.paneRow[aria-current='page'] .thumb {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.paneRow[aria-current='page'] .level {
+  background: var(--surface);
+}
+
+@media (hover: hover) {
+  .paneRow:not([aria-current='page']):hover {
+    background: color-mix(in srgb, var(--fill) 50%, transparent);
   }
+}
+
+.paneRow:focus-visible {
+  outline-offset: -2px;
+}
+
+.listPane .empty {
+  margin-top: var(--s-4);
+}
+
+.detailPane {
+  position: relative;
+  overflow-y: auto;
+  padding: 28px clamp(var(--s-6), 3vw, 40px) 40px;
 }

@@ -1,4 +1,5 @@
-/* Exercise detail (F-Detail). Lean build: Try it only; Add to workout is an add-on. */
+/* Exercise detail: F-Detail page on phones, DT-Library pane on desktop.
+   Lean build: Try it only; Add to workout is an add-on. */
 
 .page {
   /* Room for the fixed bottom bar. */
@@ -239,6 +240,178 @@
   .try {
     max-width: 640px;
   }
+}
+
+/* DT-Library detail pane */
+.pane {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.paneMedia {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+
+.paneFrame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  background: var(--fill);
+  box-shadow: var(--card);
+}
+
+.panePhoto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.frameTag {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 13px;
+  background: var(--surface);
+  box-shadow: var(--card);
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.paneHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+}
+
+.paneTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.paneTitle .tags {
+  margin-top: 0;
+}
+
+.paneName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 60px;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.tryNow {
+  height: 48px;
+  padding: 0 18px;
+  border-radius: var(--r-md);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.paneBody {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  align-items: flex-start;
+}
+
+.paneBody .steps {
+  flex: 3 1 340px;
+  min-width: 0;
+  margin-top: 0;
+  padding: 6px var(--s-5);
+  border-radius: var(--r-xl);
+}
+
+.paneBody .steps li {
+  grid-template-columns: 36px minmax(0, 1fr);
+  padding: 14px 0;
+  font-size: var(--t-body);
+  line-height: 1.5;
+}
+
+.paneBody .stepNumber {
+  width: 24px;
+  height: 24px;
+}
+
+.muscleCard {
+  flex: 2 1 240px;
+  min-width: 0;
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  box-shadow: var(--card);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.muscleList {
+  margin: var(--s-2) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  font-size: 14px;
+}
+
+.muscleList > div {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.muscleList dt {
+  width: 80px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--muted);
+}
+
+.muscleList dd {
+  margin: 0;
+}
+
+.yours {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.yourBest {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.lastSession {
+  font-size: var(--t-small);
+  color: var(--muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
