@@ -5,10 +5,14 @@
   --focus-ring: var(--work-ink);
   --chip: color-mix(in srgb, currentColor 10%, transparent);
   --hair: color-mix(in srgb, currentColor 15%, transparent);
-  min-height: 100dvh;
+  /* One column grid for main and footer, so every edge lines up. */
+  --cols: repeat(4, minmax(0, 1fr));
+  --gap: var(--s-5);
+  height: 100dvh;
+  min-height: 640px;
   display: flex;
   flex-direction: column;
-  gap: var(--s-5);
+  gap: var(--gap);
   padding: 28px 40px var(--s-8);
   background: var(--work);
   color: var(--work-ink);
@@ -32,9 +36,14 @@
 
 .top {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  /* 1fr | auto | 1fr keeps the position text centred on the screen, whatever the chip's width. */
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: var(--s-4);
+}
+
+.top .chip {
+  justify-self: start;
 }
 
 .chip {
@@ -110,30 +119,49 @@
   opacity: 0.85;
 }
 
-/* Main: stage | side panel */
+/* Main: name + counter (cols 1-2) | slideshow (cols 3-4); then the cards row. */
 .main {
-  flex-grow: 1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-8);
-  align-items: center;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: var(--cols);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--gap);
 }
 
+/* Name on top, counter at the bottom: both edges line up with the slideshow's. */
 .stage {
-  flex: 999 1 560px;
+  grid-column: 1 / 3;
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: clamp(56px, min(6vw, 11dvh), 108px);
+  font-weight: 800;
+  line-height: 0.9;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-3);
 }
 
 .pill {
-  align-self: flex-start;
   height: 30px;
   padding: 0 14px;
   border-radius: 15px;
   display: flex;
   align-items: center;
-  gap: var(--s-2);
   background: var(--work-ink);
   color: var(--work);
   font-family: var(--font-mono);
@@ -143,37 +171,23 @@
   text-transform: uppercase;
 }
 
-/* Ink ground, screen-colour text (orange on ink / blue on white). */
-.desk[data-mode='rest'] .pill {
-  background: var(--rest-ink);
-  color: var(--rest-bg);
-}
-
-.name {
-  margin-top: var(--s-3);
-  font-family: var(--font-display);
-  font-size: clamp(64px, 7vw, 108px);
-  font-weight: 800;
-  line-height: 0.92;
-  text-transform: uppercase;
-}
-
 .counterRow {
   display: flex;
   align-items: center;
-  gap: 28px;
-  flex-wrap: wrap;
+  gap: var(--s-6);
 }
 
+/* Sized to the column (MM:SS is the widest) and the height; the box is the glyphs' height, so its
+   bottom sits on the slideshow's bottom edge. */
 .counter {
   display: block;
   font-family: var(--font-display);
-  font-size: clamp(200px, 24vw, 360px);
+  font-size: clamp(120px, min(19vw, 34dvh), 360px);
   font-weight: 800;
-  line-height: 1;
+  line-height: 0.74;
+  margin: 0 0 0.035em -0.035em; /* glyph overhang: bottom and left edges on the grid lines */
   letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
-  margin-top: -0.08em;
 }
 
 .adjust {
@@ -190,72 +204,22 @@
   line-height: 1;
 }
 
-.unitRow {
-  margin-top: var(--s-6);
-  display: flex;
-  align-items: center;
-  gap: var(--s-4);
-  flex-wrap: wrap;
-}
-
-.unit {
-  font-family: var(--font-mono);
-  font-size: var(--t-body);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-/* Side panel */
-.side {
-  flex: 1 1 340px;
-  min-width: 0;
-  max-width: 420px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-}
-
-.form {
+.media {
+  grid-column: 3 / 5;
   position: relative;
-  aspect-ratio: 4 / 3;
-  border-radius: 22px;
-  overflow: hidden;
-  background: var(--chip);
+  min-height: 0;
 }
 
-.form img,
-.formPlaceholder {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.formPlaceholder {
+.slideshow {
   --ph-hatch: var(--chip);
   --ph-fill: var(--chip);
   --ph-ink: currentColor;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
 }
 
-/* Start ⇄ end crossfade. */
-.formEnd {
-  animation: crossfade 4s ease-in-out infinite alternate;
-}
-
-@keyframes crossfade {
-  0%,
-  40% {
-    opacity: 0;
-  }
-  60%,
-  100% {
-    opacity: 1;
-  }
-}
-
-.formTag {
+.mediaTag {
   position: absolute;
   left: 14px;
   top: 14px;
@@ -273,32 +237,32 @@
   text-transform: uppercase;
 }
 
-.desk[data-mode='rest'] .formTag {
+.desk[data-mode='rest'] :is(.pill, .mediaTag) {
   background: var(--rest-ink);
   color: var(--rest-bg);
 }
 
-.facts {
+/* Cards: last time (col 1) | up next, then, then (cols 2-4). */
+.cards {
+  grid-column: 1 / -1;
   margin: 0;
   display: grid;
-  border-radius: var(--r-lg);
-  background: var(--chip);
+  grid-template-columns: var(--cols);
+  gap: var(--gap);
 }
 
-.facts > div {
+.card {
+  min-width: 0;
+  min-height: 92px;
   padding: 14px var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--chip);
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 0;
 }
 
-.facts > div + div {
-  border-left: 1px solid var(--hair);
-}
-
-.facts dt,
-.upNext h2 {
+.card dt {
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
@@ -307,8 +271,11 @@
   opacity: 0.9;
 }
 
-.facts dd {
+.card dd {
   margin: 0;
+}
+
+.cardValue {
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 600;
@@ -319,47 +286,22 @@
   text-overflow: ellipsis;
 }
 
-.upNext {
-  padding: 6px var(--s-4);
-  border-radius: var(--r-lg);
-  background: var(--chip);
-}
-
-.upNext h2 {
-  padding: var(--s-2) 0 var(--s-1);
-}
-
-.upNext li {
-  min-height: 44px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--s-3);
-  border-top: 1px solid var(--hair);
-}
-
-.upName {
-  font-family: var(--font-display);
-  font-size: 21px;
-  font-weight: 600;
-  text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.upDose {
-  flex-shrink: 0;
+.cardDose {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
 }
 
-/* Footer */
+/* Footer: pause (+15s on a rest) in col 1 | primary across cols 2-4. */
 .footer {
+  display: grid;
+  grid-template-columns: var(--cols);
+  gap: var(--gap);
+}
+
+.secondaryActions {
   display: flex;
-  flex-wrap: wrap;
   gap: var(--s-3);
 }
 
@@ -373,15 +315,17 @@
 }
 
 .pause {
-  flex: 1 1 180px;
+  flex: 1 1 0;
+  min-width: 0;
   gap: var(--s-3);
   background: var(--chip);
   font-size: 16px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .cta {
-  flex: 4 1 360px;
+  grid-column: 2 / 5;
   gap: 18px;
   background: var(--work-ink);
   color: var(--work);
@@ -409,11 +353,5 @@
 @media (prefers-reduced-motion: reduce) {
   .desk {
     transition: none;
-  }
-
-  /* No crossfade: show the start position. */
-  .formEnd {
-    animation: none;
-    opacity: 0;
   }
 }

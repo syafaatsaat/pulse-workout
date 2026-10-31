@@ -1,5 +1,5 @@
 import type { Dispatch, ReactNode } from 'react'
-import { ExercisePhoto } from '../../components/ExercisePhoto'
+import { ExerciseSlideshow } from '../../components/ExerciseSlideshow'
 import { SessionBar } from '../../components/SessionBar'
 import { stepWeight } from '../../components/stepWeight'
 import type { Exercise } from '../../data/types'
@@ -8,7 +8,7 @@ import { leadInMs, remainingMs, type PlayerAction, type PlayerState } from '../.
 import type { SetValue } from '../../engine/stats'
 import styles from './Desktop.module.css'
 import { seconds, timer } from './format'
-import { dose, upNext } from './upNext'
+import { upNext } from './upNext'
 
 interface DesktopViewProps {
   state: PlayerState
@@ -33,7 +33,10 @@ function lastLabel(last: SetValue | undefined): string {
   return last.reps !== undefined ? `${last.reps} reps` : seconds(last.seconds ?? 0)
 }
 
-/** Full-screen desktop player (DT-Player): numbers scale with the viewport, side panel, shortcuts. */
+/**
+ * Full-screen desktop player (DT-Player). Everything sits on one 4-column grid: name + counter |
+ * slideshow; last time | the next three steps; pause | primary action.
+ */
 export function DesktopView(props: DesktopViewProps) {
   const { state, step, now, workoutName, blocks, exercises, lastTimes, dispatch, onEnd, notice } = props
   const resting = step.kind === 'rest'
@@ -41,25 +44,17 @@ export function DesktopView(props: DesktopViewProps) {
   const remaining = remainingMs(state, now) ?? 0
   const leadIn = leadInMs(state, now)
   const isReps = !resting && step.mode === 'reps'
-  const exercise = exercises.get(step.exerciseId)
   const nextWork = state.steps.slice(state.index + 1).find((s) => s.kind === 'work')
-  const nextExercise = nextWork && exercises.get(nextWork.exerciseId)
-  const formExercise = resting ? nextExercise : exercise
-  const last = lastTimes.get(step.exerciseId)
+  // The move on screen: the current one, or during a rest the one coming up.
+  const shown = resting ? nextWork : step
+  const shownExercise = shown && exercises.get(shown.exerciseId)
+  const shownName = shown ? (shownExercise?.name ?? shown.exerciseId) : 'Finish'
+  const last = shown && lastTimes.get(shown.exerciseId)
   const set = `Set ${step.setIndex + 1} of ${step.setCount}`
   const position = `${workoutName} · ${set}${resting ? ' done' : ''}`
-
   const bigNum = isReps ? String(state.reps).padStart(2, '0') : timer(leadIn > 0 ? leadIn : remaining)
-  const unit = isReps ? '← → Adjust' : leadIn > 0 ? 'Space to start now' : '+15s with ↑'
-
-  // Facts: work = last time; rest = what's next + its target.
-  const facts: [string, string][] = resting
-    ? [
-        ['Next', nextWork ? `${nextExercise?.name ?? nextWork.exerciseId}` : 'Finish'],
-        ['Target', nextWork ? dose(nextWork) : '—'],
-      ]
-    : [['Last time', lastLabel(last)]]
-  if (!resting && step.phase !== 'main') facts.splice(facts.length - 1, 1, ['Target', dose(step)])
+  // During a rest the move on screen is already the next one, so the cards start after it.
+  const later = upNext(state.steps, state.index, exercises, resting ? 4 : 3).slice(resting ? 1 : 0)
 
   // Block labels sit under their share of the bar.
   const blockWeights = blocks.map(({ blockId, label }) => ({
@@ -90,7 +85,6 @@ export function DesktopView(props: DesktopViewProps) {
             End session <Kbd>Esc</Kbd>
           </button>
           <span className={styles.position}>{position}</span>
-          <span />
         </div>
         <SessionBar steps={state.steps} current={state.index} label={`Session progress: ${position}`} />
         <div className={styles.blocks} aria-hidden="true">
@@ -105,115 +99,117 @@ export function DesktopView(props: DesktopViewProps) {
 
       <main className={styles.main}>
         <section className={styles.stage}>
-          {leadIn > 0 && <span className={styles.pill}>Get into position</span>}
-          {resting ? (
-            <h1 className="visually-hidden">Rest</h1>
-          ) : (
-            <h1 className={styles.name}>{exercise?.name ?? step.exerciseId}</h1>
-          )}
-          <div className={styles.counterRow}>
-            <span className={styles.counter} role={isReps ? undefined : 'timer'}>
-              {bigNum}
-            </span>
-            {isReps && (
-              <div className={styles.adjust}>
-                <button
-                  type="button"
-                  aria-label="One rep fewer (left arrow)"
-                  onClick={() => dispatch({ type: 'adjustReps', delta: -1 })}
-                >
-                  −
-                </button>
-                <button
-                  type="button"
-                  aria-label="One rep more (right arrow)"
-                  onClick={() => dispatch({ type: 'adjustReps', delta: 1 })}
-                >
-                  +
-                </button>
-              </div>
-            )}
-          </div>
-          <div className={styles.unitRow}>
-            <span className={styles.unit}>{unit}</span>
+          <h1 className={styles.name}>
+            {resting && <span className="visually-hidden">Rest. Next: </span>}
+            {shownName}
+          </h1>
+          <div className={styles.count}>
+            {leadIn > 0 && <span className={styles.pill}>Get into position</span>}
+            <div className={styles.counterRow}>
+              <span
+                className={styles.counter}
+                role={isReps ? undefined : 'timer'}
+                aria-label={isReps ? `${state.reps} reps` : undefined}
+              >
+                {bigNum}
+              </span>
+              {isReps && (
+                <div className={styles.adjust}>
+                  <button
+                    type="button"
+                    aria-label="One rep fewer"
+                    aria-keyshortcuts="ArrowLeft"
+                    title="One rep fewer (←)"
+                    onClick={() => dispatch({ type: 'adjustReps', delta: -1 })}
+                  >
+                    −
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="One rep more"
+                    aria-keyshortcuts="ArrowRight"
+                    title="One rep more (→)"
+                    onClick={() => dispatch({ type: 'adjustReps', delta: 1 })}
+                  >
+                    +
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
-        <aside className={styles.side}>
-          <div className={styles.form}>
-            <ExercisePhoto
-              path={formExercise?.images[0]}
-              alt={`${formExercise?.name}: start position`}
-              placeholderLabel="No photo for this move"
-              placeholderClassName={styles.formPlaceholder}
-            />
-            {formExercise?.images[0] && (
-              <ExercisePhoto
-                path={formExercise.images[1]}
-                className={styles.formEnd}
-                alt={`${formExercise.name}: end position`}
-                fallback="none"
-              />
-            )}
-            <span className={styles.formTag}>{resting ? 'Next' : 'Form'}</span>
+        <div className={styles.media}>
+          <ExerciseSlideshow
+            className={styles.slideshow}
+            images={shownExercise?.images}
+            alt={`${shownName} demonstration`}
+            still={paused}
+          />
+          <span className={styles.mediaTag} aria-hidden="true">
+            {resting ? 'Next' : 'Form'}
+          </span>
+        </div>
+
+        <dl className={styles.cards}>
+          <div className={styles.card}>
+            <dt>Last time</dt>
+            <dd className={styles.cardValue}>{lastLabel(last)}</dd>
           </div>
-          <dl
-            className={styles.facts}
-            style={{ gridTemplateColumns: `repeat(${facts.length}, minmax(0, 1fr))` }}
-          >
-            {facts.map(([k, v]) => (
-              <div key={k}>
-                <dt>{k}</dt>
-                <dd>{v}</dd>
+          {[0, 1, 2].map((i) => {
+            const row = later[i]
+            const finish = !row && i === later.length
+            if (!row && !finish) return null
+            return (
+              <div key={i} className={styles.card}>
+                <dt>{i === 0 ? 'Up next' : 'Then'}</dt>
+                <dd className={styles.cardValue}>{row ? row.name : 'Finish'}</dd>
+                {row && <dd className={styles.cardDose}>{row.dose}</dd>}
               </div>
-            ))}
-          </dl>
-          <div className={styles.upNext}>
-            <h2>Up next</h2>
-            <ul>
-              {upNext(state.steps, state.index, exercises).map((row, i) => (
-                <li key={i}>
-                  <span className={styles.upName}>{row.name}</span>
-                  <span className={styles.upDose}>{row.dose}</span>
-                </li>
-              ))}
-              {state.index >= state.steps.length - 1 && (
-                <li>
-                  <span className={styles.upName}>Finish</span>
-                </li>
-              )}
-            </ul>
-          </div>
-        </aside>
+            )
+          })}
+        </dl>
       </main>
 
       <footer className={styles.footer}>
-        <button
-          type="button"
-          className={styles.pause}
-          onClick={() => dispatch({ type: paused ? 'resume' : 'pause', now: Date.now() })}
-        >
-          {paused ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M8 5.5v13l10.5-6.5z" />
-            </svg>
-          ) : (
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              aria-hidden="true"
+        <div className={styles.secondaryActions}>
+          <button
+            type="button"
+            className={styles.pause}
+            onClick={() => dispatch({ type: paused ? 'resume' : 'pause', now: Date.now() })}
+          >
+            {paused ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8 5.5v13l10.5-6.5z" />
+              </svg>
+            ) : (
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <line x1="9" y1="6" x2="9" y2="18" />
+                <line x1="15" y1="6" x2="15" y2="18" />
+              </svg>
+            )}
+            {paused ? 'Resume' : 'Pause'} <Kbd>P</Kbd>
+          </button>
+          {resting && (
+            <button
+              type="button"
+              className={styles.pause}
+              aria-keyshortcuts="ArrowUp"
+              onClick={() => dispatch({ type: 'addTime', ms: 15_000 })}
             >
-              <line x1="9" y1="6" x2="9" y2="18" />
-              <line x1="15" y1="6" x2="15" y2="18" />
-            </svg>
+              +15s <Kbd>↑</Kbd>
+            </button>
           )}
-          {paused ? 'Resume' : 'Pause'} <Kbd>P</Kbd>
-        </button>
+        </div>
         <button
           type="button"
           className={styles.cta}
