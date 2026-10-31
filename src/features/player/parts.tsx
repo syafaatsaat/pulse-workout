@@ -75,12 +75,3 @@ export function Header({
     </div>
   )
 }
-
-export function Pill({ children }: { children: ReactNode }) {
-  return (
-    <span className={styles.pill}>
-      <span className={styles.pillDot} />
-      {children}
-    </span>
-  )
-}

@@ -1,12 +1,12 @@
 import type { Dispatch } from 'react'
-import { ExercisePhoto } from '../../components/ExercisePhoto'
+import { ExerciseSlideshow } from '../../components/ExerciseSlideshow'
 import { Ring } from '../../components/Ring'
 import { SessionBar } from '../../components/SessionBar'
 import type { Exercise } from '../../data/types'
 import type { Step } from '../../engine/compile'
-import { elapsedMs, remainingMs, type PlayerAction, type PlayerState } from '../../engine/playerReducer'
-import { clock, elapsed, seconds } from './format'
-import { CloseButton, Header, PauseButton, Pill } from './parts'
+import { remainingMs, type PlayerAction, type PlayerState } from '../../engine/playerReducer'
+import { seconds, timer } from './format'
+import { CloseButton, Header, PauseButton } from './parts'
 import styles from './Player.module.css'
 
 interface RestViewProps {
@@ -27,15 +27,7 @@ export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd
   const remaining = remainingMs(state, now) ?? 0
   const done = `Set ${step.setIndex + 1} of ${step.setCount} done`
   const nextName = nextExercise?.name ?? next?.exerciseId ?? ''
-  const nextImage = nextExercise?.images[0]
-  const nextDetail = next
-    ? [
-        next.mode === 'reps' ? `${next.target} reps` : seconds(next.target),
-        next.tempo && `Tempo ${next.tempo}`,
-      ]
-        .filter(Boolean)
-        .join(' · ')
-    : ''
+  const nextDetail = next ? (next.mode === 'reps' ? `${next.target} reps` : seconds(next.target)) : ''
 
   return (
     <div className={styles.player} data-mode="rest">
@@ -45,23 +37,15 @@ export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd
           current={state.index}
           label={`Session progress: resting after ${done.toLowerCase()}`}
         />
-        <Header
-          left={<CloseButton onClick={onEnd} />}
-          title={done}
-          sub={`${paused ? 'Paused · ' : ''}${elapsed(elapsedMs(state, now))} elapsed`}
-        />
+        <Header left={<CloseButton onClick={onEnd} />} title={done} />
         {notice && <p className={styles.notice}>{notice}</p>}
-
-        <div className={styles.titleBlock}>
-          <Pill>Rest</Pill>
-          <h1 className={styles.name}>Breathe</h1>
-        </div>
+        <h1 className="visually-hidden">Rest</h1>
 
         <div className={styles.stage}>
           <div
             className={styles.restRing}
             role="timer"
-            aria-label={`${Math.ceil(remaining / 1000)} of ${step.target} seconds left`}
+            aria-label={`Rest, ${Math.ceil(remaining / 1000)} seconds left`}
           >
             <Ring
               value={remaining}
@@ -71,18 +55,22 @@ export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd
               className={styles.restRingSvg}
             />
             <div className={styles.restRingText}>
-              <span className={styles.restCount}>{clock(remaining)}</span>
-              <span className={styles.restOf}>of {clock(state.stepMs)}</span>
+              <span className={styles.restCount}>{timer(remaining)}</span>
             </div>
           </div>
         </div>
 
         {next && (
           <div className={styles.upNext}>
-            <ExercisePhoto path={nextImage} className={styles.upNextThumb} alt="" width={76} height={76} />
+            <ExerciseSlideshow
+              className={styles.upNextPhoto}
+              images={nextExercise?.images}
+              alt={`${nextName} demonstration`}
+              still={paused}
+            />
             <div className={styles.upNextText}>
               <span className={styles.upNextEyebrow}>
-                Up next · Set {next.setIndex + 1} of {next.setCount}
+                Next · Set {next.setIndex + 1} of {next.setCount}
               </span>
               <span className={styles.upNextName}>{nextName}</span>
               <span className={styles.upNextDetail}>{nextDetail}</span>
