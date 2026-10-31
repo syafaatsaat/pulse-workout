@@ -79,6 +79,6 @@ scripts/
   relative to today. To reseed in the browser, delete the `field-manual` IndexedDB database.
 - Theme is in localStorage (`fm-theme`) until Settings moves to Dexie; `index.html` applies it pre-paint.
 - Read Dexie in components with `useLiveQuery` from `src/data/useLiveQuery.ts`.
-- Until Today has a Start button (Day 5), start a workout from `/debug`.
+- Start a workout from Today (up-next card or Quick start); an unfinished session shows a Resume card there.
 - Phone testing: `npm run dev -- --host`, open the LAN address. Plain http is not a secure context, so
   Wake Lock is unavailable there (the player shows its hint); everything else works.

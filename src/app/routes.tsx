@@ -1,5 +1,4 @@
 import type { RouteObject } from 'react-router'
-import { DebugPage } from '../features/debug/DebugPage'
 import { ExerciseDetailPage } from '../features/library/ExerciseDetailPage'
 import { LibraryPage } from '../features/library/LibraryPage'
 import { LogPage } from '../features/log/LogPage'
@@ -18,7 +17,6 @@ export const routes: RouteObject[] = [
       { path: 'library', element: <LibraryPage /> },
       { path: 'log', element: <LogPage /> },
       { path: 'settings', element: <SettingsPage /> },
-      { path: 'debug', element: <DebugPage /> }, // temporary (Day 1)
       { path: '*', element: <NotFound /> },
     ],
   },

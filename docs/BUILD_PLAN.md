@@ -41,9 +41,9 @@ Done when: a real workout is finished on a phone, touching it only to tap Set do
 Done when: a finished session appears in Log and a new best is detected.
 
 ### Day 5 — Today, Library, Exercise detail
-- [ ] Today: goal ring, week strip, up-next card, quick starts
-- [ ] Library: search, muscle + equipment filters, lazy images
-- [ ] Detail: start / end photos, tags, muscles, steps, your best
+- [x] Today: goal ring, week strip, up-next card, quick starts
+- [x] Library: search, muscle + equipment filters, lazy images
+- [x] Detail: start / end photos, tags, muscles, steps, your best
 Done when: any exercise is 3 taps away and any ready-made workout starts from Today.
 
 ### Day 6 — Settings and hardening
