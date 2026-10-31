@@ -161,6 +161,12 @@ describe('pause / resume', () => {
     const p = run({ type: 'start', now: T0 }, { type: 'pause', now: T0 + 1000 })
     expect(playerReducer(p, { type: 'setDone', now: T0 + 2000 })).toBe(p)
     expect(playerReducer(p, { type: 'adjustReps', delta: 1 }).reps).toBe(13)
+    const r = run(
+      { type: 'start', now: T0 },
+      { type: 'setDone', now: T0 + 30_000 },
+      { type: 'pause', now: T0 + 40_000 },
+    )
+    expect(playerReducer(r, { type: 'skipRest', now: T0 + 41_000 })).toBe(r)
   })
 })
 

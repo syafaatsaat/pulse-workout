@@ -6,7 +6,7 @@ import type { Step } from '../../engine/compile'
 import { elapsedMs, remainingMs, type PlayerAction, type PlayerState } from '../../engine/playerReducer'
 import type { SetValue } from '../../engine/stats'
 import { clock, elapsed, seconds } from './format'
-import { CloseButton, Header, Pill } from './parts'
+import { CloseButton, Header, PauseButton, Pill } from './parts'
 import styles from './Player.module.css'
 
 interface WorkViewProps {
@@ -160,32 +160,10 @@ export function WorkView({
         </dl>
 
         <div className={styles.actions} style={{ gridTemplateColumns: '64px minmax(0, 1fr)' }}>
-          <button
-            type="button"
-            className={styles.secondary}
-            aria-label={paused ? 'Resume' : 'Pause'}
+          <PauseButton
+            paused={paused}
             onClick={() => dispatch({ type: paused ? 'resume' : 'pause', now: Date.now() })}
-          >
-            {paused ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M8 5.5v13l10.5-6.5z" />
-              </svg>
-            ) : (
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                aria-hidden="true"
-              >
-                <line x1="9" y1="6" x2="9" y2="18" />
-                <line x1="15" y1="6" x2="15" y2="18" />
-              </svg>
-            )}
-          </button>
+          />
           {paused ? (
             <button
               type="button"

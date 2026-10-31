@@ -6,7 +6,7 @@ import type { Exercise } from '../../data/types'
 import type { Step } from '../../engine/compile'
 import { elapsedMs, remainingMs, type PlayerAction, type PlayerState } from '../../engine/playerReducer'
 import { clock, elapsed, seconds } from './format'
-import { CloseButton, Header, Pill } from './parts'
+import { CloseButton, Header, PauseButton, Pill } from './parts'
 import styles from './Player.module.css'
 
 interface RestViewProps {
@@ -23,6 +23,7 @@ interface RestViewProps {
 }
 
 export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd, notice }: RestViewProps) {
+  const paused = state.status === 'paused'
   const remaining = remainingMs(state, now) ?? 0
   const done = `Set ${step.setIndex + 1} of ${step.setCount} done`
   const nextName = nextExercise?.name ?? next?.exerciseId ?? ''
@@ -47,7 +48,7 @@ export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd
         <Header
           left={<CloseButton onClick={onEnd} />}
           title={done}
-          sub={`${state.status === 'paused' ? 'Paused · ' : ''}${elapsed(elapsedMs(state, now))} elapsed`}
+          sub={`${paused ? 'Paused · ' : ''}${elapsed(elapsedMs(state, now))} elapsed`}
         />
         {notice && <p className={styles.notice}>{notice}</p>}
 
@@ -99,7 +100,11 @@ export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd
           </div>
         )}
 
-        <div className={styles.actions} style={{ gridTemplateColumns: '96px minmax(0, 1fr)' }}>
+        <div className={styles.actions} style={{ gridTemplateColumns: '64px 80px minmax(0, 1fr)' }}>
+          <PauseButton
+            paused={paused}
+            onClick={() => dispatch({ type: paused ? 'resume' : 'pause', now: Date.now() })}
+          />
           <button
             type="button"
             className={`${styles.secondary} ${styles.addTime}`}
@@ -107,27 +112,37 @@ export function RestView({ state, step, now, next, nextExercise, dispatch, onEnd
           >
             +15s
           </button>
-          <button
-            type="button"
-            className={styles.primary}
-            onClick={() => dispatch({ type: 'skipRest', now: Date.now() })}
-          >
-            Skip rest
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+          {paused ? (
+            <button
+              type="button"
+              className={styles.primary}
+              onClick={() => dispatch({ type: 'resume', now: Date.now() })}
             >
-              <polyline points="6 5 13 12 6 19" />
-              <line x1="18" y1="5" x2="18" y2="19" />
-            </svg>
-          </button>
+              Resume
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={styles.primary}
+              onClick={() => dispatch({ type: 'skipRest', now: Date.now() })}
+            >
+              Skip rest
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="6 5 13 12 6 19" />
+                <line x1="18" y1="5" x2="18" y2="19" />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
     </div>

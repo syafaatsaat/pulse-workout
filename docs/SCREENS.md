@@ -20,7 +20,8 @@ Work:
 - Time-based exercises: counter shows a countdown instead of reps; Set done auto-fires at zero.
 Rest:
 - Blue screen, REST pill, countdown in a draining ring, "OF 0:30".
-- Up-next card with thumbnail. Buttons: +15s, Skip rest.
+- Up-next card with thumbnail. Buttons: Pause, +15s, Skip rest (Resume while paused). Pause was added after
+  real-phone testing; it is not in the F-Rest mock-up.
 Desktop: full screen, numbers scale with viewport, side panel (form photo, tempo/last time, up next 3),
 keyboard: Space = set done / skip rest, P = pause, ← → = adjust reps, ↑ = +15s, Esc = end.
 After the last step → Summary.
