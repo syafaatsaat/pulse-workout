@@ -22,5 +22,4 @@ export const DEFAULT_SETTINGS: Settings = {
   weeklyGoal: 4,
   beeps: true,
   wakeLock: true,
-  theme: 'auto',
 }

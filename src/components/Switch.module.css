@@ -1,0 +1,42 @@
+.switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 50px;
+  height: 30px;
+  border-radius: 15px;
+  padding: 3px;
+  background: var(--line2);
+  display: flex;
+  transition: background-color 150ms ease;
+}
+
+/* 30px visual, 44px hit area. */
+.switch::after {
+  content: '';
+  position: absolute;
+  inset: -7px 0;
+}
+
+.switch[aria-checked='true'] {
+  background: var(--accent);
+}
+
+.knob {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff; /* DESIGN_SYSTEM: white knob in both themes */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 150ms ease;
+}
+
+.switch[aria-checked='true'] .knob {
+  transform: translateX(20px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch,
+  .knob {
+    transition: none;
+  }
+}

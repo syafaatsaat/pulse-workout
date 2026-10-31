@@ -77,7 +77,8 @@ scripts/
 ## Dev notes
 - Demo data is seeded on first load by `ensureSeeded()` (`src/data/seed.ts`); demo sessions are dated
   relative to today. To reseed in the browser, delete the `field-manual` IndexedDB database.
-- Theme is in localStorage (`fm-theme`) until Settings moves to Dexie; `index.html` applies it pre-paint.
+- Theme lives in localStorage (`fm-theme`), not Dexie: `index.html` must read it synchronously pre-paint.
+  Every other setting is the Dexie `settings` row.
 - Read Dexie in components with `useLiveQuery` from `src/data/useLiveQuery.ts`.
 - Start a workout from Today (up-next card or Quick start); an unfinished session shows a Resume card there.
 - Phone testing: `npm run dev -- --host`, open the LAN address. Plain http is not a secure context, so

@@ -1,5 +1,3 @@
-import type { ThemePref } from '../app/theme'
-
 export type { Exercise } from './exerciseTypes'
 
 export type ItemMode = 'reps' | 'time'
@@ -66,5 +64,4 @@ export interface Settings {
   weeklyGoal: number
   beeps: boolean
   wakeLock: boolean
-  theme: ThemePref
 }
