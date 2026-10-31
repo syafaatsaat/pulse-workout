@@ -37,8 +37,7 @@
   gap: var(--s-4);
 }
 
-.chip,
-.elapsed {
+.chip {
   height: 44px;
   border-radius: 22px;
   background: var(--chip);
@@ -51,14 +50,6 @@
   gap: var(--s-2);
   font-size: 14px;
   font-weight: 600;
-}
-
-.elapsed {
-  padding: 0 var(--s-4);
-  font-family: var(--font-mono);
-  font-size: var(--t-small);
-  font-weight: 600;
-  text-transform: uppercase;
 }
 
 .position {
@@ -158,13 +149,6 @@
   color: var(--rest-bg);
 }
 
-.pillDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
 .name {
   margin-top: var(--s-3);
   font-family: var(--font-display);
@@ -220,15 +204,6 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-}
-
-.hint {
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  opacity: 0.9;
 }
 
 /* Side panel */

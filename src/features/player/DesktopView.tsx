@@ -1,14 +1,13 @@
 import type { Dispatch, ReactNode } from 'react'
 import { ExercisePhoto } from '../../components/ExercisePhoto'
-import { RepTicks } from '../../components/RepTicks'
 import { SessionBar } from '../../components/SessionBar'
 import { stepWeight } from '../../components/stepWeight'
 import type { Exercise } from '../../data/types'
 import type { Step } from '../../engine/compile'
-import { elapsedMs, remainingMs, type PlayerAction, type PlayerState } from '../../engine/playerReducer'
+import { leadInMs, remainingMs, type PlayerAction, type PlayerState } from '../../engine/playerReducer'
 import type { SetValue } from '../../engine/stats'
 import styles from './Desktop.module.css'
-import { clock, elapsed, seconds } from './format'
+import { seconds, timer } from './format'
 import { dose, upNext } from './upNext'
 
 interface DesktopViewProps {
@@ -25,8 +24,6 @@ interface DesktopViewProps {
   notice?: string
 }
 
-const PHASE_LABEL = { warmup: 'Warm-up', main: 'Work', cooldown: 'Cool-down' } as const
-
 function Kbd({ children }: { children: ReactNode }) {
   return <kbd className={styles.kbd}>{children}</kbd>
 }
@@ -38,11 +35,11 @@ function lastLabel(last: SetValue | undefined): string {
 
 /** Full-screen desktop player (DT-Player): numbers scale with the viewport, side panel, shortcuts. */
 export function DesktopView(props: DesktopViewProps) {
-  const { state, step, now, moveCount, workoutName, blocks, exercises, lastTimes, dispatch, onEnd, notice } =
-    props
+  const { state, step, now, workoutName, blocks, exercises, lastTimes, dispatch, onEnd, notice } = props
   const resting = step.kind === 'rest'
   const paused = state.status === 'paused'
   const remaining = remainingMs(state, now) ?? 0
+  const leadIn = leadInMs(state, now)
   const isReps = !resting && step.mode === 'reps'
   const exercise = exercises.get(step.exerciseId)
   const nextWork = state.steps.slice(state.index + 1).find((s) => s.kind === 'work')
@@ -50,31 +47,18 @@ export function DesktopView(props: DesktopViewProps) {
   const formExercise = resting ? nextExercise : exercise
   const last = lastTimes.get(step.exerciseId)
   const set = `Set ${step.setIndex + 1} of ${step.setCount}`
-  const position = resting
-    ? `${workoutName} · ${set} done`
-    : `${workoutName} · Move ${step.moveIndex + 1} of ${moveCount} · ${set}`
+  const position = `${workoutName} · ${set}${resting ? ' done' : ''}`
 
-  const bigNum = isReps
-    ? String(state.reps).padStart(2, '0')
-    : resting || step.target >= 60
-      ? clock(remaining)
-      : String(Math.ceil(remaining / 1000)).padStart(2, '0')
-  const unit = resting
-    ? `of ${clock(state.stepMs)} · +15s with ↑`
-    : isReps
-      ? `of ${step.target} reps`
-      : `of ${seconds(step.target)}`
+  const bigNum = isReps ? String(state.reps).padStart(2, '0') : timer(leadIn > 0 ? leadIn : remaining)
+  const unit = isReps ? '← → Adjust' : leadIn > 0 ? 'Space to start now' : '+15s with ↑'
 
-  // Facts: work = tempo + last time; rest = what's next + its target.
+  // Facts: work = last time; rest = what's next + its target.
   const facts: [string, string][] = resting
     ? [
         ['Next', nextWork ? `${nextExercise?.name ?? nextWork.exerciseId}` : 'Finish'],
         ['Target', nextWork ? dose(nextWork) : '—'],
       ]
-    : [
-        ...(step.tempo ? [['Tempo', step.tempo.replaceAll('·', ' · ')] as [string, string]] : []),
-        ['Last time', lastLabel(last)],
-      ]
+    : [['Last time', lastLabel(last)]]
   if (!resting && step.phase !== 'main') facts.splice(facts.length - 1, 1, ['Target', dose(step)])
 
   // Block labels sit under their share of the bar.
@@ -83,7 +67,7 @@ export function DesktopView(props: DesktopViewProps) {
     weight: state.steps.filter((s) => s.blockId === blockId).reduce((w, s) => w + stepWeight(s), 0),
   }))
 
-  const primaryLabel = paused ? 'Resume' : resting ? 'Skip rest' : 'Set done'
+  const primaryLabel = paused ? 'Resume' : resting ? 'Skip rest' : leadIn > 0 ? 'Start now' : 'Set done'
 
   return (
     <div className={styles.desk} data-mode={resting ? 'rest' : 'work'}>
@@ -106,10 +90,7 @@ export function DesktopView(props: DesktopViewProps) {
             End session <Kbd>Esc</Kbd>
           </button>
           <span className={styles.position}>{position}</span>
-          <span className={styles.elapsed} aria-label="Elapsed">
-            {paused && 'Paused · '}
-            {elapsed(elapsedMs(state, now))}
-          </span>
+          <span />
         </div>
         <SessionBar steps={state.steps} current={state.index} label={`Session progress: ${position}`} />
         <div className={styles.blocks} aria-hidden="true">
@@ -124,13 +105,14 @@ export function DesktopView(props: DesktopViewProps) {
 
       <main className={styles.main}>
         <section className={styles.stage}>
-          <span className={styles.pill}>
-            <span className={styles.pillDot} />
-            {resting ? 'Rest' : PHASE_LABEL[step.phase]}
-          </span>
-          <h1 className={styles.name}>{resting ? 'Breathe' : (exercise?.name ?? step.exerciseId)}</h1>
+          {leadIn > 0 && <span className={styles.pill}>Get into position</span>}
+          {resting ? (
+            <h1 className="visually-hidden">Rest</h1>
+          ) : (
+            <h1 className={styles.name}>{exercise?.name ?? step.exerciseId}</h1>
+          )}
           <div className={styles.counterRow}>
-            <span className={styles.counter} role={resting ? 'timer' : undefined}>
+            <span className={styles.counter} role={isReps ? undefined : 'timer'}>
               {bigNum}
             </span>
             {isReps && (
@@ -154,12 +136,6 @@ export function DesktopView(props: DesktopViewProps) {
           </div>
           <div className={styles.unitRow}>
             <span className={styles.unit}>{unit}</span>
-            {isReps && (
-              <>
-                <RepTicks value={state.reps} target={step.target} best={last?.reps} />
-                <span className={styles.hint}>← → Adjust</span>
-              </>
-            )}
           </div>
         </section>
 
@@ -244,7 +220,8 @@ export function DesktopView(props: DesktopViewProps) {
           onClick={() => {
             const now = Date.now()
             if (paused) dispatch({ type: 'resume', now })
-            else dispatch(resting ? { type: 'skipRest', now } : { type: 'setDone', now })
+            else if (resting) dispatch({ type: 'skipRest', now })
+            else dispatch(leadIn > 0 ? { type: 'startNow', now } : { type: 'setDone', now })
           }}
         >
           {primaryLabel}
