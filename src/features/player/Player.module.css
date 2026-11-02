@@ -340,7 +340,7 @@
 /* A beat: lands big, then settles. */
 @keyframes pulse {
   from {
-    transform: scale(1.15);
+    transform: scale(1.1);
   }
 }
 
