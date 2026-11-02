@@ -78,8 +78,16 @@ describe('rest', () => {
   })
 
   test('addTime extends the rest', () => {
-    const s = playerReducer(resting(), { type: 'addTime', ms: 15_000 })
-    expect(s.endsAt).toBe(T0 + 75_000)
+    const s = playerReducer(resting(), { type: 'addTime', ms: 15_000, now: T0 + 36_000 })
+    expect(s).toMatchObject({ endsAt: T0 + 75_000, stepMs: 45_000 })
+  })
+
+  test('a negative addTime shortens the rest, never below zero', () => {
+    const s = playerReducer(resting(), { type: 'addTime', ms: -15_000, now: T0 + 36_000 })
+    expect(s).toMatchObject({ endsAt: T0 + 45_000, stepMs: 15_000 })
+    const z = playerReducer(resting(), { type: 'addTime', ms: -30_000, now: T0 + 36_000 })
+    expect(z).toMatchObject({ endsAt: T0 + 36_000, stepMs: 6000 })
+    expect(remainingMs(z, T0 + 36_000)).toBe(0)
   })
 
   test('skipRest moves on to the next work step; a timed one starts with the lead-in', () => {
@@ -113,11 +121,28 @@ describe('time work', () => {
     expect(s.sets.at(-1)).toMatchObject({ seconds: 25 })
   })
 
-  test('addTime only applies to rests, not to timed or reps work', () => {
-    const p = planking()
-    expect(playerReducer(p, { type: 'addTime', ms: 15_000 })).toBe(p)
+  test('addTime lengthens or shortens the hold', () => {
+    const longer = playerReducer(planking(), { type: 'addTime', ms: 15_000, now: T0 + 50_000 })
+    expect(longer).toMatchObject({ endsAt: T0 + 100_000, stepMs: 55_000 })
+    const shorter = playerReducer(planking(), { type: 'addTime', ms: -15_000, now: T0 + 50_000 })
+    expect(shorter).toMatchObject({ endsAt: T0 + 70_000, stepMs: 25_000 })
+    const s = playerReducer(shorter, { type: 'setDone', now: T0 + 70_000 })
+    expect(s.sets.at(-1)).toMatchObject({ seconds: 25 })
+  })
+
+  test('shortening the hold stops at its end and leaves the lead-in alone', () => {
+    // At T0 + 80_000: 5 s of the hold left.
+    const late = playerReducer(planking(), { type: 'addTime', ms: -15_000, now: T0 + 80_000 })
+    expect(late).toMatchObject({ endsAt: T0 + 80_000, stepMs: 35_000 })
+    // During the lead-in: the hold can drop to zero, the lead-in still runs out.
+    const early = playerReducer(planking(), { type: 'addTime', ms: -60_000, now: T0 + 42_000 })
+    expect(early).toMatchObject({ endsAt: T0 + 45_000, stepMs: 0 })
+    expect(leadInMs(early, T0 + 42_000)).toBe(3000)
+  })
+
+  test('addTime does nothing on reps work', () => {
     const reps = run({ type: 'start', now: T0 })
-    expect(playerReducer(reps, { type: 'addTime', ms: 15_000 })).toBe(reps)
+    expect(playerReducer(reps, { type: 'addTime', ms: 15_000, now: T0 })).toBe(reps)
   })
 })
 
@@ -201,9 +226,10 @@ describe('pause / resume', () => {
       { type: 'start', now: T0 },
       { type: 'setDone', now: T0 + 30_000 },
       { type: 'pause', now: T0 + 40_000 },
-      { type: 'addTime', ms: 15_000 },
+      { type: 'addTime', ms: 15_000, now: T0 + 50_000 },
     )
     expect(s.remainingMs).toBe(35_000)
+    expect(playerReducer(s, { type: 'addTime', ms: -60_000, now: T0 + 50_000 }).remainingMs).toBe(0)
   })
 
   test('no set done or skip while paused; reps can still be adjusted', () => {

@@ -28,7 +28,7 @@ export interface PlayerState {
   endsAt: number | null
   /** Timed step while paused: what was left at the pause. */
   remainingMs: number | null
-  /** Timed step: planned length plus any time added to a rest. */
+  /** Timed step: planned length plus or minus any time added (±15 s). */
   stepMs: number
   pausedAt: number | null
   /** Total paused time, excluded from elapsed. */
@@ -44,7 +44,8 @@ export type PlayerAction =
   | { type: 'adjustReps'; delta: number }
   | { type: 'skipRest'; now: number }
   | { type: 'startNow'; now: number }
-  | { type: 'addTime'; ms: number }
+  /** ±ms on a rest or a timed hold; a cut stops at the end of the hold. */
+  | { type: 'addTime'; ms: number; now: number }
   | { type: 'pause'; now: number }
   | { type: 'resume'; now: number }
   | { type: 'end'; now: number }
@@ -184,15 +185,17 @@ export function playerReducer(state: PlayerState, action: PlayerAction): PlayerS
     }
 
     case 'addTime': {
-      // +15s is for catching your breath; a timed set doesn't get longer mid-hold.
-      if (step?.kind !== 'rest') return state
-      if (state.status === 'running' && state.endsAt !== null) {
-        return { ...state, endsAt: state.endsAt + action.ms, stepMs: state.stepMs + action.ms }
-      }
-      if (state.status === 'paused' && state.remainingMs !== null) {
-        return { ...state, remainingMs: state.remainingMs + action.ms, stepMs: state.stepMs + action.ms }
-      }
-      return state
+      // Rests and timed holds take ±15 s; a reps set has nothing to time.
+      if (!step || !isTimed(step)) return state
+      const active = state.status === 'running' || state.status === 'paused'
+      const remaining = remainingMs(state, action.now)
+      if (!active || remaining === null) return state
+      // A cut stops at the end of the hold: the lead-in (anything beyond stepMs) is left alone.
+      const ms = Math.max(action.ms, -Math.min(remaining, state.stepMs))
+      const stepMs = state.stepMs + ms
+      return state.status === 'running'
+        ? { ...state, endsAt: action.now + remaining + ms, stepMs }
+        : { ...state, remainingMs: remaining + ms, stepMs }
     }
 
     case 'pause': {
