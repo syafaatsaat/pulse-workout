@@ -2,7 +2,7 @@ import type { Dispatch } from 'react'
 import { ExerciseSlideshow } from '../../components/ExerciseSlideshow'
 import { SessionBar } from '../../components/SessionBar'
 import type { PlayerAction, PlayerState } from '../../engine/playerReducer'
-import { AdjustButton, CloseButton, Header, PauseButton, Progress } from './parts'
+import { AdjustButton, CloseButton, Header, PauseButton, Progress, Sweep } from './parts'
 import styles from './Player.module.css'
 import { runAdjust, runPrimary, type PlayerScreen } from './screen'
 
@@ -26,6 +26,7 @@ export function PhoneView({ state, screen, dispatch, onEnd, onForm, notice }: Ph
   const { resting, paused, adjust, primary } = screen
   return (
     <div className={styles.player} data-mode={resting ? 'rest' : 'work'}>
+      <Sweep mode={resting ? 'rest' : 'work'} className={styles.sweep} />
       <div className={styles.inner}>
         <SessionBar
           steps={state.steps}
@@ -61,8 +62,10 @@ export function PhoneView({ state, screen, dispatch, onEnd, onForm, notice }: Ph
             <span />
           )}
           <span
+            key={screen.pulse ?? (screen.counter.timer ? 'timer' : state.reps)}
             className={styles.counter}
             data-timer={screen.counter.timer || undefined}
+            data-pulse={screen.pulse ?? undefined}
             role={screen.counter.timer ? 'timer' : undefined}
             aria-label={screen.counter.label}
           >
@@ -84,8 +87,8 @@ export function PhoneView({ state, screen, dispatch, onEnd, onForm, notice }: Ph
 
         <dl className={styles.cards}>
           {screen.cards.map((card) => (
-            <div key={card.label} className={styles.card} data-cue={card.cue || undefined}>
-              <dt>{card.label}</dt>
+            <div key={card.label} className={styles.card} data-new-best={card.newBest || undefined}>
+              <dt>{card.newBest ? 'New best' : card.label}</dt>
               <dd>
                 {card.cue ? (
                   <button

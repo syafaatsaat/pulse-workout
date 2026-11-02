@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
 import { db } from '../../data/db'
 import { compile, moveCount } from '../../engine/compile'
-import { lastTime, type SetValue } from '../../engine/stats'
+import { lastTime, personalBests, type Best, type SetValue } from '../../engine/stats'
 import { blockLabels } from './blockLabels'
 import { Player } from './Player'
 import styles from './Player.module.css'
@@ -22,8 +22,9 @@ async function load(sessionId: string) {
     const v = lastTime(history, id, sessionId)
     if (v) lastTimes.set(id, v)
   }
+  const bests = new Map<string, Best>(personalBests(history).map((b) => [b.exerciseId, b.best]))
   // Restore time is taken here, not during render.
-  return { session, workout, steps, exercises, lastTimes, openedAt: Date.now() }
+  return { session, workout, steps, exercises, lastTimes, bests, openedAt: Date.now() }
 }
 
 export function PlayerPage() {
@@ -54,7 +55,7 @@ export function PlayerPage() {
     )
   }
 
-  const { session, workout, steps, exercises, lastTimes, openedAt } = data.d
+  const { session, workout, steps, exercises, lastTimes, bests, openedAt } = data.d
   return (
     <Player
       key={id}
@@ -66,6 +67,7 @@ export function PlayerPage() {
       moveCount={moveCount(workout)}
       exercises={exercises}
       lastTimes={lastTimes}
+      bests={bests}
     />
   )
 }

@@ -5,7 +5,7 @@ import { stepWeight } from '../../components/stepWeight'
 import type { Exercise } from '../../data/types'
 import type { PlayerAction, PlayerState } from '../../engine/playerReducer'
 import styles from './Desktop.module.css'
-import { AdjustButton, Progress } from './parts'
+import { AdjustButton, Progress, Sweep } from './parts'
 import { runAdjust, runPrimary, type PlayerScreen } from './screen'
 import { upNext } from './upNext'
 
@@ -47,6 +47,7 @@ export function DesktopView(props: DesktopViewProps) {
 
   return (
     <div className={styles.desk} data-mode={resting ? 'rest' : 'work'}>
+      <Sweep mode={resting ? 'rest' : 'work'} className={styles.sweep} />
       <header className={styles.header}>
         <div className={styles.top}>
           <button type="button" className={styles.chip} onClick={onEnd} aria-keyshortcuts="Escape">
@@ -107,7 +108,10 @@ export function DesktopView(props: DesktopViewProps) {
                 <span />
               )}
               <span
+                key={screen.pulse ?? (screen.counter.timer ? 'timer' : state.reps)}
                 className={styles.counter}
+                data-timer={screen.counter.timer || undefined}
+                data-pulse={screen.pulse ?? undefined}
                 role={screen.counter.timer ? 'timer' : undefined}
                 aria-label={screen.counter.label}
               >
@@ -133,8 +137,8 @@ export function DesktopView(props: DesktopViewProps) {
           <div className={styles.cards}>
             <dl className={styles.info}>
               {screen.cards.map((card) => (
-                <div key={card.label} className={styles.card}>
-                  <dt>{card.label}</dt>
+                <div key={card.label} className={styles.card} data-new-best={card.newBest || undefined}>
+                  <dt>{card.newBest ? 'New best' : card.label}</dt>
                   <dd>
                     {card.cue ? (
                       <button

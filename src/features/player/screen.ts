@@ -3,7 +3,7 @@ import { formCue } from '../../data/formCues'
 import type { Exercise } from '../../data/types'
 import type { Step } from '../../engine/compile'
 import { leadInMs, remainingMs, type PlayerAction, type PlayerState } from '../../engine/playerReducer'
-import type { SetValue } from '../../engine/stats'
+import { isNewBest, type Best, type SetValue } from '../../engine/stats'
 import { timer } from './format'
 import { dose } from './upNext'
 
@@ -12,6 +12,8 @@ export interface ScreenCard {
   value: string
   /** The form cue: plain text, and a button to the form overlay. */
   cue?: boolean
+  /** Last set beat the move's personal best: the orange "New best" pill. */
+  newBest?: boolean
 }
 
 export type PrimaryAction = 'resume' | 'skipRest' | 'startNow' | 'setDone'
@@ -35,6 +37,8 @@ export interface PlayerScreen {
   progress: { fill: number; marker?: number }
   cards: ScreenCard[]
   primary: PrimaryAction
+  /** 3, 2, 1 in the last seconds of a running countdown (the beeps); null otherwise. Keys the pulse. */
+  pulse: number | null
 }
 
 /** "10 reps" / "00:35". */
@@ -51,6 +55,8 @@ export function playerScreen(
   moveCount: number,
   exercises: Map<string, Exercise>,
   lastTimes: Map<string, SetValue>,
+  /** Each move's personal best from earlier sessions. */
+  bests: Map<string, Best>,
 ): PlayerScreen {
   const resting = step.kind === 'rest'
   const paused = state.status === 'paused'
@@ -65,6 +71,16 @@ export function playerScreen(
       : leadIn > 0
         ? 'startNow'
         : 'setDone'
+  // What the counter shows, for the 3-2-1 pulse.
+  const shownMs = resting
+    ? remaining
+    : step.mode === 'time'
+      ? leadIn > 0
+        ? leadIn
+        : Math.min(remaining, state.stepMs)
+      : 0
+  const pulse =
+    state.status === 'running' && shownMs > 0 && shownMs <= 3000 ? Math.ceil(shownMs / 1000) : null
 
   if (resting) {
     const next = state.steps.slice(state.index + 1).find((s) => s.kind === 'work')
@@ -84,9 +100,18 @@ export function playerScreen(
       progress: { fill: state.stepMs > 0 ? clamp01(remaining / state.stepMs) : 0 },
       cards: [
         { label: 'Next target', value: next ? dose(next) : 'Finish' },
-        ...(lastSet ? [{ label: 'Last set', value: describe(lastSet) }] : []),
+        ...(lastSet
+          ? [
+              {
+                label: 'Last set',
+                value: describe(lastSet),
+                newBest: isNewBest(bests.get(lastSet.exerciseId), state.sets.slice(0, -1), lastSet),
+              },
+            ]
+          : []),
       ],
       primary,
+      pulse,
     }
   }
 
@@ -99,7 +124,7 @@ export function playerScreen(
     ...(cue ? [{ label: 'Form cue', value: cue, cue: true }] : []),
     ...(step.phase === 'main' ? [{ label: 'Last time', value: last ? describe(last) : '—' }] : []),
   ]
-  const base = { resting, paused, position, title: name, media: { exercise, name }, cards, primary }
+  const base = { resting, paused, position, title: name, media: { exercise, name }, cards, primary, pulse }
 
   if (step.mode === 'reps') {
     const lastReps = last?.reps

@@ -15,7 +15,7 @@ import {
   restorePlayer,
   type PlayerAction,
 } from '../../engine/playerReducer'
-import type { SetValue } from '../../engine/stats'
+import type { Best, SetValue } from '../../engine/stats'
 import { unlockAudio } from './audio'
 import { DesktopView } from './DesktopView'
 import { EndDialog } from './EndDialog'
@@ -38,10 +38,12 @@ export interface PlayerProps {
   moveCount: number
   exercises: Map<string, Exercise>
   lastTimes: Map<string, SetValue>
+  /** Each move's personal best from earlier sessions, for the "New best" moment. */
+  bests: Map<string, Best>
 }
 
 export function Player(props: PlayerProps) {
-  const { sessionId, session, workoutName, blocks, steps, moveCount, exercises, lastTimes } = props
+  const { sessionId, session, workoutName, blocks, steps, moveCount, exercises, lastTimes, bests } = props
   const [state, rawDispatch] = useReducer(playerReducer, null, () =>
     session ? restorePlayer(steps, session.sets, session.startedAt, session.openedAt) : initPlayer(steps),
   )
@@ -122,7 +124,7 @@ export function Player(props: PlayerProps) {
       if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return
       const paused = state.status === 'paused'
       const now = Date.now()
-      const screen = playerScreen(state, step, now, moveCount, exercises, lastTimes)
+      const screen = playerScreen(state, step, now, moveCount, exercises, lastTimes, bests)
       switch (e.key) {
         case ' ':
           e.preventDefault() // also stops a focused button from clicking a second time
@@ -156,7 +158,7 @@ export function Player(props: PlayerProps) {
   if (!step) return <div className={styles.player} data-mode="work" />
 
   const exercise = exercises.get(step.exerciseId)
-  const screen = playerScreen(state, step, now, moveCount, exercises, lastTimes)
+  const screen = playerScreen(state, step, now, moveCount, exercises, lastTimes, bests)
   const common = { state, screen, dispatch, notice, onEnd: openEnd, onForm: () => setDialog('form') }
 
   return (

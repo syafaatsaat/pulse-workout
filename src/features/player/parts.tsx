@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import styles from './Player.module.css'
 import progress from './Progress.module.css'
 
@@ -107,4 +107,18 @@ export function Header({ left, title }: { left: ReactNode; title: string }) {
       <span />
     </div>
   )
+}
+
+/**
+ * Work ⇄ rest: a layer in the previous mode's colour that drops away to the top, so the new colour
+ * rises from the bottom (where Set done / Skip rest sit). Nothing on first render. Hidden by CSS under
+ * reduced motion.
+ */
+export function Sweep({ mode, className }: { mode: 'work' | 'rest'; className?: string }) {
+  const [sweep, setSweep] = useState<{ mode: string; from?: string; n: number }>({ mode, n: 0 })
+  // Derived from the previous render (React's "storing information from previous renders" pattern).
+  if (mode !== sweep.mode) setSweep({ mode, from: sweep.mode, n: sweep.n + 1 })
+  return sweep.from ? (
+    <span key={sweep.n} className={className} data-from={sweep.from} aria-hidden="true" />
+  ) : null
 }

@@ -4,6 +4,7 @@
 .player {
   --tint: var(--work-tint);
   --focus-ring: var(--work-ink);
+  position: relative;
   min-height: 100dvh;
   display: flex;
   background: var(--work);
@@ -11,7 +12,6 @@
   padding: calc(env(safe-area-inset-top) + var(--s-6)) max(var(--gutter), env(safe-area-inset-right))
     max(var(--s-6), calc(env(safe-area-inset-bottom) + var(--s-2)))
     max(var(--gutter), env(safe-area-inset-left));
-  transition: background-color 250ms ease;
 }
 
 .player[data-mode='rest'] {
@@ -22,6 +22,8 @@
 }
 
 .inner {
+  position: relative;
+  z-index: 1;
   flex: 1;
   width: 100%;
   max-width: 520px;
@@ -280,8 +282,77 @@
   align-items: center;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .player {
-    transition: none;
+/* Moments: short motion with a purpose. Off under reduced motion; the New best card stays. */
+.card[data-new-best] {
+  border-radius: var(--r-lg);
+  border-left-color: transparent;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.sweep {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Work ⇄ rest: the old colour drops away to the top, the new one rises from the buttons. */
+  .sweep {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    animation: sweep 380ms cubic-bezier(0.3, 0, 0.2, 1) forwards;
+  }
+
+  .sweep[data-from='work'] {
+    background: var(--work);
+  }
+
+  .sweep[data-from='rest'] {
+    background: var(--rest-bg);
+  }
+
+  /* 3-2-1 with the beeps. */
+  .counter[data-pulse] {
+    animation: pulse 220ms ease-out;
+  }
+
+  /* − / + on reps. */
+  .counter:not([data-timer]) {
+    animation: tick 120ms ease-out;
+  }
+
+  .card[data-new-best] {
+    animation: pop 260ms cubic-bezier(0.3, 0, 0.2, 1.4);
+  }
+}
+
+@keyframes sweep {
+  from {
+    clip-path: inset(0);
+  }
+  to {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes tick {
+  from {
+    opacity: 0.6;
+    transform: scale(0.94);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
   }
 }

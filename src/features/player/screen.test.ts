@@ -1,7 +1,7 @@
 import type { Exercise } from '../../data/types'
 import { LEAD_IN_MS, type Step } from '../../engine/compile'
 import { initPlayer, playerReducer, type PlayerAction } from '../../engine/playerReducer'
-import type { SetValue } from '../../engine/stats'
+import type { Best, SetValue } from '../../engine/stats'
 import { playerScreen } from './screen'
 
 const base = { setCount: 4, blockId: 'b', phase: 'main', moveIndex: 3 } as const
@@ -28,10 +28,11 @@ const lastTimes = new Map<string, SetValue>([
   ['Plank', { seconds: 35 }],
 ])
 const T0 = 1_000_000
+const bests = new Map<string, Best>([['Pushups', { measure: 'reps', value: 12 }]])
 
 function at(now: number, ...actions: PlayerAction[]) {
   const state = actions.reduce(playerReducer, initPlayer(STEPS))
-  return playerScreen(state, state.steps[state.index]!, now, 9, exercises, lastTimes)
+  return playerScreen(state, state.steps[state.index]!, now, 9, exercises, lastTimes, bests)
 }
 
 test('reps: counter, fill of the target, marker at last time, cue and last-time cards', () => {
@@ -64,8 +65,30 @@ test('rest: the next move with its target, the set just logged, the bar drains',
   })
   expect(s.cards).toEqual([
     { label: 'Next target', value: '00:40' },
-    { label: 'Last set', value: '12 reps' },
+    { label: 'Last set', value: '12 reps', newBest: false },
   ])
+})
+
+test('rest after a set that beats the best: New best on the last set', () => {
+  const s = at(
+    T0 + 36_000,
+    { type: 'start', now: T0 },
+    { type: 'adjustReps', delta: 2 },
+    { type: 'setDone', now: T0 + 30_000 },
+  )
+  expect(s.cards.at(-1)).toEqual({ label: 'Last set', value: '14 reps', newBest: true })
+})
+
+test('pulse counts 3-2-1 at the end of a running countdown, never while paused or on reps', () => {
+  const resting: PlayerAction[] = [
+    { type: 'start', now: T0 },
+    { type: 'setDone', now: T0 + 30_000 },
+  ]
+  expect(at(T0 + 50_000, ...resting).pulse).toBeNull()
+  expect(at(T0 + 57_500, ...resting).pulse).toBe(3)
+  expect(at(T0 + 59_200, ...resting).pulse).toBe(1)
+  expect(at(T0 + 57_500, ...resting, { type: 'pause', now: T0 + 57_500 }).pulse).toBeNull()
+  expect(at(T0, { type: 'start', now: T0 }).pulse).toBeNull()
 })
 
 test('hold: lead-in first with nothing to adjust, then the hold fills toward last time', () => {
