@@ -1,12 +1,10 @@
-/* Desktop full-screen player — DT-Player.dc.html. Same grounds as the phone player; tints are the
+/* Desktop full-screen player — "Desktop · Player (full screen).png". Same grounds as the phone player; tints are the
    ink (currentColor) at the mock-up's opacities. */
 
 .desk {
   --focus-ring: var(--work-ink);
   --chip: color-mix(in srgb, currentColor 10%, transparent);
   --hair: color-mix(in srgb, currentColor 15%, transparent);
-  /* One column grid for main and footer, so every edge lines up. */
-  --cols: repeat(4, minmax(0, 1fr));
   --gap: var(--s-5);
   height: 100dvh;
   min-height: 640px;
@@ -119,19 +117,54 @@
   opacity: 0.85;
 }
 
-/* Main: name + counter (cols 1-2) | slideshow (cols 3-4); then the cards row. */
+/* Main: large slideshow | name, counter, cards. */
 .main {
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: var(--cols);
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: var(--gap);
+  grid-template-columns: minmax(0, 11fr) minmax(0, 8fr);
+  gap: var(--s-8);
 }
 
-/* Name on top, counter at the bottom: both edges line up with the slideshow's. */
-.stage {
-  grid-column: 1 / 3;
+.media {
+  position: relative;
+  min-height: 0;
+  display: flex;
+}
+
+.slideshow {
+  --ph-hatch: var(--chip);
+  --ph-fill: var(--chip);
+  --ph-ink: currentColor;
+  flex: 1;
+  border-radius: 28px;
+}
+
+/* "Up next · Push-up · Set 3 of 4" / "Get into position" */
+.tag {
+  position: absolute;
+  left: var(--s-4);
+  top: var(--s-4);
+  max-width: calc(100% - 2 * var(--s-4));
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 16px;
+  display: block;
+  line-height: 32px;
+  background: var(--work-ink);
+  color: var(--work);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Name on top, counter in the middle, cards at the bottom: edges line up with the slideshow's. */
+.side {
   min-width: 0;
   min-height: 0;
   display: flex;
@@ -141,61 +174,48 @@
 }
 
 .name {
+  margin-top: var(--s-6);
   font-family: var(--font-display);
-  font-size: clamp(56px, min(6vw, 11dvh), 108px);
+  font-size: clamp(56px, min(5.6vw, 9dvh), 96px);
   font-weight: 800;
-  line-height: 0.9;
+  line-height: 0.95;
+  text-align: center;
   text-transform: uppercase;
   overflow-wrap: anywhere;
+}
+
+.name[data-long] {
+  font-size: clamp(44px, min(4vw, 7dvh), 72px);
 }
 
 .count {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--s-3);
-}
-
-.pill {
-  height: 30px;
-  padding: 0 14px;
-  border-radius: 15px;
-  display: flex;
   align-items: center;
-  background: var(--work-ink);
-  color: var(--work);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 .counterRow {
-  display: flex;
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 72px;
+  gap: var(--s-2);
   align-items: center;
-  gap: var(--s-6);
 }
 
-/* Sized to the column (MM:SS is the widest) and the height; the box is the glyphs' height, so its
-   bottom sits on the slideshow's bottom edge. */
 .counter {
   display: block;
+  text-align: center;
   font-family: var(--font-display);
-  font-size: clamp(120px, min(19vw, 34dvh), 360px);
+  font-size: clamp(112px, min(11vw, 18dvh), 220px);
   font-weight: 800;
-  line-height: 0.74;
-  margin: 0 0 0.035em -0.035em; /* glyph overhang: bottom and left edges on the grid lines */
+  line-height: 1;
   letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  margin: -0.076em 0 -0.093em;
 }
 
 .adjust {
-  display: flex;
-  gap: var(--s-3);
-}
-
-.adjust button {
   width: 72px;
   height: 72px;
   border-radius: 50%;
@@ -204,118 +224,158 @@
   line-height: 1;
 }
 
-.media {
-  grid-column: 3 / 5;
-  position: relative;
-  min-height: 0;
-}
-
-.slideshow {
-  --ph-hatch: var(--chip);
-  --ph-fill: var(--chip);
-  --ph-ink: currentColor;
-  width: 100%;
-  height: 100%;
-  border-radius: 22px;
-}
-
-.mediaTag {
-  position: absolute;
-  left: 14px;
-  top: 14px;
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 13px;
-  display: flex;
-  align-items: center;
-  background: var(--work-ink);
-  color: var(--work);
-  font-family: var(--font-mono);
-  font-size: 10px;
+.adjust[data-adjust='time'] {
+  font-size: 18px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress {
+  margin-top: var(--s-6);
+  width: min(400px, 72%);
+  height: 8px;
+  border-radius: 4px;
+}
+
+.hint {
+  margin-top: 18px;
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.desk[data-mode='rest'] :is(.pill, .mediaTag) {
-  background: var(--rest-ink);
-  color: var(--rest-bg);
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
 }
 
-/* Cards: last time (col 1) | up next, then, then (cols 2-4). */
-.cards {
-  grid-column: 1 / -1;
+/* Form cue | last time (work), next target | last set (rest) */
+.info {
   margin: 0;
-  display: grid;
-  grid-template-columns: var(--cols);
-  gap: var(--gap);
+  display: flex;
+  border-radius: var(--r-lg);
+  background: var(--chip);
 }
 
 .card {
+  flex: 1.7 1 0;
   min-width: 0;
-  min-height: 92px;
-  padding: 14px var(--s-4);
-  border-radius: var(--r-lg);
-  background: var(--chip);
+  min-height: 74px;
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--s-1);
 }
 
-.card dt {
+.card + .card {
+  flex: 1 1 0;
+  border-left: 1px solid var(--hair);
+}
+
+.card dt,
+.comingTitle {
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   opacity: 0.9;
 }
 
 .card dd {
   margin: 0;
+  min-width: 0;
 }
 
 .cardValue {
+  display: block;
   font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: 600;
-  line-height: 1.1;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.05;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.cardDose {
+/* The cue opens the form overlay; it reads as text. */
+.cue {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.coming {
+  padding: 14px 18px var(--s-1);
+  border-radius: var(--r-lg);
+  background: var(--chip);
+}
+
+.comingTitle {
+  padding-bottom: var(--s-2);
+}
+
+.comingList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comingList li {
+  min-height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  border-top: 1px solid var(--hair);
+}
+
+.comingName {
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.comingDose {
+  flex-shrink: 0;
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Footer: pause (+15s on a rest) in col 1 | primary across cols 2-4. */
+/* Footer: pause | primary. */
 .footer {
   display: grid;
-  grid-template-columns: var(--cols);
-  gap: var(--gap);
-}
-
-.secondaryActions {
-  display: flex;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
   gap: var(--s-3);
 }
 
 .pause,
 .cta {
-  height: 84px;
-  border-radius: 42px;
+  height: 80px;
+  border-radius: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .pause {
-  flex: 1 1 0;
   min-width: 0;
   gap: var(--s-3);
   background: var(--chip);
@@ -325,8 +385,7 @@
 }
 
 .cta {
-  grid-column: 2 / 5;
-  gap: 18px;
+  gap: var(--s-6);
   background: var(--work-ink);
   color: var(--work);
   font-family: var(--font-display);
@@ -336,7 +395,7 @@
   text-transform: uppercase;
 }
 
-.desk[data-mode='rest'] .cta {
+.desk[data-mode='rest'] :is(.cta, .tag) {
   background: var(--rest-ink);
   color: var(--rest-bg);
 }

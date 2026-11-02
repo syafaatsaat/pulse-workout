@@ -10,7 +10,6 @@ import {
   currentStep,
   elapsedMs,
   initPlayer,
-  leadInMs,
   playerReducer,
   remainingMs,
   restorePlayer,
@@ -21,12 +20,12 @@ import { unlockAudio } from './audio'
 import { DesktopView } from './DesktopView'
 import { EndDialog } from './EndDialog'
 import { FormDialog } from './FormDialog'
+import { PhoneView } from './PhoneView'
 import styles from './Player.module.css'
-import { RestView } from './RestView'
+import { playerScreen, runAdjust, runPrimary } from './screen'
 import { useCues } from './useCues'
 import { useNow } from './useNow'
 import { useWakeLock } from './useWakeLock'
-import { WorkView } from './WorkView'
 
 export interface PlayerProps {
   sessionId: string
@@ -114,8 +113,8 @@ export function Player(props: PlayerProps) {
     pausedForDialog.current = false
   }
 
-  // Keyboard (DT-Player): Space = set done / skip rest / start now (resume when paused), P = pause,
-  // ← → = adjust reps, ↑ = +15 s on a rest, Esc = end. Off while a dialog is open; it handles its own keys.
+  // Keyboard (desktop player): Space = set done / skip rest / start now (resume when paused),
+  // P = pause, ← → = − / + (a rep, or 15 s on a rest or a hold), Esc = end. Off while a dialog is open; it handles its own keys.
   const onKey = useRef<(e: KeyboardEvent) => void>(undefined)
   useEffect(() => {
     onKey.current = (e) => {
@@ -123,13 +122,11 @@ export function Player(props: PlayerProps) {
       if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return
       const paused = state.status === 'paused'
       const now = Date.now()
+      const screen = playerScreen(state, step, now, moveCount, exercises, lastTimes)
       switch (e.key) {
         case ' ':
           e.preventDefault() // also stops a focused button from clicking a second time
-          if (e.repeat) return
-          if (paused) dispatch({ type: 'resume', now })
-          else if (step.kind === 'rest') dispatch({ type: 'skipRest', now })
-          else dispatch(leadInMs(state, now) > 0 ? { type: 'startNow', now } : { type: 'setDone', now })
+          if (!e.repeat) runPrimary(screen.primary, dispatch)
           break
         case 'p':
         case 'P':
@@ -138,11 +135,7 @@ export function Player(props: PlayerProps) {
         case 'ArrowLeft':
         case 'ArrowRight':
           e.preventDefault()
-          dispatch({ type: 'adjustReps', delta: e.key === 'ArrowLeft' ? -1 : 1 })
-          break
-        case 'ArrowUp':
-          e.preventDefault()
-          dispatch({ type: 'addTime', ms: 15_000 })
+          runAdjust(screen.adjust, e.key === 'ArrowLeft' ? -1 : 1, dispatch)
           break
         case 'Escape':
           // Without this the same key press's default "close request" cancels the dialog it opens.
@@ -163,37 +156,15 @@ export function Player(props: PlayerProps) {
   if (!step) return <div className={styles.player} data-mode="work" />
 
   const exercise = exercises.get(step.exerciseId)
-  const next = state.steps[state.index + 1]
-  const common = { state, step, now, moveCount, dispatch, notice }
+  const screen = playerScreen(state, step, now, moveCount, exercises, lastTimes)
+  const common = { state, screen, dispatch, notice, onEnd: openEnd, onForm: () => setDialog('form') }
 
   return (
     <>
       {desktop ? (
-        <DesktopView
-          {...common}
-          onEnd={openEnd}
-          workoutName={workoutName}
-          blocks={blocks}
-          exercises={exercises}
-          lastTimes={lastTimes}
-        />
-      ) : step.kind === 'rest' ? (
-        <RestView
-          {...common}
-          onEnd={openEnd}
-          next={next}
-          nextExercise={next && exercises.get(next.exerciseId)}
-        />
+        <DesktopView {...common} workoutName={workoutName} blocks={blocks} exercises={exercises} />
       ) : (
-        <WorkView
-          {...common}
-          onEnd={openEnd}
-          exercise={exercise}
-          next={next}
-          nextExercise={next && exercises.get(next.exerciseId)}
-          last={lastTimes.get(step.exerciseId)}
-          onForm={() => setDialog('form')}
-        />
+        <PhoneView {...common} />
       )}
       <EndDialog
         open={dialog === 'end'}

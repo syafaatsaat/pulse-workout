@@ -30,33 +30,22 @@
   flex-direction: column;
 }
 
-/* Header: close · set position · how-to */
+/* Header: close · move / set position */
 .header {
   margin-top: var(--s-3);
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 44px;
+  gap: var(--s-2);
   align-items: center;
-}
-
-.headerText {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .headerTitle {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
   font-weight: 600;
-}
-
-.headerSub {
-  font-weight: 500;
-  opacity: 0.85;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .round {
@@ -80,24 +69,10 @@
   opacity: 0.85;
 }
 
-.photo {
-  --ph-hatch: color-mix(in srgb, currentColor 8%, transparent);
-  --ph-fill: color-mix(in srgb, currentColor 10%, transparent);
-  --ph-ink: color-mix(in srgb, currentColor 70%, transparent);
-  /* Takes the screen's spare height, from the photos' 4:3 up to square (centred crop), so the name,
-     counter and buttons sit snugly below it instead of floating in a gap. */
-  --w: min(100vw - 2 * var(--gutter), 520px);
-  margin-top: var(--s-4);
-  width: 100%;
-  flex: 1 0 min(calc(var(--w) * 3 / 4), 30dvh);
-  max-height: var(--w);
-  border-radius: var(--r-xl);
-}
-
 .name {
-  margin-top: var(--s-4);
+  margin-top: 14px;
   font-family: var(--font-display);
-  font-size: 56px;
+  font-size: 48px;
   font-weight: 800;
   line-height: 0.95;
   text-align: center;
@@ -106,39 +81,79 @@
 }
 
 .name[data-long] {
-  font-size: min(56px, 11vw);
+  font-size: min(48px, 10vw);
 }
 
-/* Centre stage: counter, ticks, adjust — or the rest ring. */
-.stage {
-  flex-grow: 1;
+/* Slideshow: takes the screen's spare height, from a 140px strip up to square. */
+.media {
+  --w: min(100vw - 2 * var(--gutter), 520px);
+  position: relative;
+  margin-top: var(--s-4);
+  flex: 1 1 0;
+  min-height: 140px;
+  max-height: var(--w);
   display: flex;
-  flex-direction: column;
+}
+
+.photo {
+  --ph-hatch: color-mix(in srgb, currentColor 8%, transparent);
+  --ph-fill: color-mix(in srgb, currentColor 10%, transparent);
+  --ph-ink: color-mix(in srgb, currentColor 70%, transparent);
+  flex: 1;
+  border-radius: 24px;
+}
+
+/* "Up next · Push-up · Set 3 of 4" / "Get into position" */
+.tag {
+  position: absolute;
+  left: var(--s-3);
+  top: var(--s-3);
+  max-width: calc(100% - 2 * var(--s-3));
+  height: 28px;
+  padding: 0 var(--s-3);
+  border-radius: 14px;
+  display: block;
+  line-height: 28px;
+  background: var(--work-ink);
+  color: var(--work);
+  font-family: var(--font-mono);
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player[data-mode='rest'] .tag {
+  background: var(--rest-ink);
+  color: var(--rest-bg);
+}
+
+/* − counter + : the buttons hug the edges, the number sits in the middle. */
+.counterRow {
+  margin-top: var(--s-5);
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 56px;
+  gap: var(--s-2);
   align-items: center;
-  justify-content: center;
-  padding: var(--s-4) 0;
 }
 
 .counter {
   display: block;
+  text-align: center;
   font-family: var(--font-display);
-  font-size: clamp(88px, 18dvh, var(--t-counter));
+  font-size: clamp(64px, min(13dvh, 25vw), 104px);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
   margin: -0.076em 0 -0.093em;
 }
 
-/* Reps: − count + in one row. */
-.repRow {
-  display: grid;
-  grid-template-columns: 56px auto 56px;
-  gap: var(--s-6);
-  align-items: center;
-}
-
-.repAdjust {
+.adjust {
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -147,32 +162,83 @@
   line-height: 1;
 }
 
-.getReady {
-  font-family: var(--font-mono);
-  font-size: var(--t-small);
+.adjust[data-adjust='time'] {
+  font-size: var(--t-body);
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: var(--s-2);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Last time · Next */
-.meta {
-  text-align: center;
+.progress {
+  margin: var(--s-6) auto 0;
+  width: min(236px, 68%);
+}
+
+/* Form cue | last time (work), next target | last set (rest) */
+.cards {
+  margin: var(--s-5) 0 0;
+  display: flex;
+  border-radius: var(--r-lg);
+  background: var(--tint);
+}
+
+.card {
+  flex: 1.7 1 0;
+  min-width: 0;
+  min-height: 64px;
+  padding: var(--s-3) 14px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.card + .card {
+  flex: 1 1 0;
+  border-left: 1px solid var(--tint);
+}
+
+.card dt {
   font-family: var(--font-mono);
-  font-size: var(--t-small);
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.card dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.cardValue {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.05;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Bottom buttons */
+/* The cue opens the form overlay; it reads as text. */
+.cue {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  min-height: 24px;
+  text-align: left;
+  font-size: var(--t-body);
+  line-height: 1.3;
+}
+
+/* Bottom buttons: pause | primary */
 .actions {
   margin-top: 14px;
   display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
   gap: 10px;
 }
 
@@ -186,7 +252,7 @@
 }
 
 .primary {
-  gap: 10px;
+  gap: var(--s-4);
   background: var(--work-ink);
   color: var(--work);
   font-family: var(--font-display);
@@ -203,107 +269,6 @@
 
 .secondary {
   background: var(--tint);
-}
-
-.addTime {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* Rest ring */
-.restRing {
-  position: relative;
-  width: min(300px, 76vw, 36dvh);
-  aspect-ratio: 1;
-}
-
-.restRingSvg {
-  --ring-track: color-mix(in srgb, currentColor 18%, transparent);
-  --ring-arc: currentColor;
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.restRingText {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.restCount {
-  font-family: var(--font-display);
-  font-size: min(88px, 22vw, 11dvh);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -2px;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Up next card (rest) */
-.upNext {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) min(150px, 40%);
-  gap: 14px;
-  align-items: center;
-  padding: var(--s-3);
-  border-radius: var(--r-lg);
-  background: color-mix(in srgb, currentColor 10%, transparent);
-}
-
-.upNextPhoto {
-  --ph-hatch: color-mix(in srgb, currentColor 8%, transparent);
-  --ph-fill: color-mix(in srgb, currentColor 10%, transparent);
-  --ph-ink: color-mix(in srgb, currentColor 70%, transparent);
-  grid-column: 2;
-  grid-row: 1;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: 12px;
-}
-
-.upNextText {
-  padding-left: var(--s-1);
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-
-.upNextEyebrow {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.9;
-}
-
-.upNextName {
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1;
-  text-transform: uppercase;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow-wrap: anywhere;
-}
-
-.upNextDetail {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
 }
 
 .message {

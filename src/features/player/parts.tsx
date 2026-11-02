@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import styles from './Player.module.css'
+import progress from './Progress.module.css'
 
 export function CloseButton({ onClick }: { onClick: () => void }) {
   return (
@@ -53,25 +54,57 @@ export function PauseButton({ paused, onClick }: { paused: boolean; onClick: () 
   )
 }
 
-export function Header({
-  left,
-  title,
-  sub,
-  right,
+/** − / + beside the counter: one rep, or −15 / +15 on a rest or a hold. */
+export function AdjustButton({
+  adjust,
+  sign,
+  className,
+  onClick,
 }: {
-  left: ReactNode
-  title: string
-  sub?: string
-  right?: ReactNode
+  adjust: 'reps' | 'time'
+  sign: -1 | 1
+  className?: string
+  onClick: () => void
 }) {
+  const reps = adjust === 'reps'
+  return (
+    <button
+      type="button"
+      className={className}
+      data-adjust={adjust}
+      aria-label={
+        reps
+          ? sign < 0
+            ? 'One rep fewer'
+            : 'One rep more'
+          : sign < 0
+            ? '15 seconds less'
+            : '15 seconds more'
+      }
+      aria-keyshortcuts={sign < 0 ? 'ArrowLeft' : 'ArrowRight'}
+      onClick={onClick}
+    >
+      {reps ? (sign < 0 ? '−' : '+') : sign < 0 ? '−15' : '+15'}
+    </button>
+  )
+}
+
+/** Bar under the counter: fill 0–1, and a tick at last time's mark. */
+export function Progress({ fill, marker, className }: { fill: number; marker?: number; className?: string }) {
+  return (
+    <div className={`${progress.track} ${className ?? ''}`} aria-hidden="true">
+      <span className={progress.fill} style={{ width: `${fill * 100}%` }} />
+      {marker !== undefined && <span className={progress.marker} style={{ left: `${marker * 100}%` }} />}
+    </div>
+  )
+}
+
+export function Header({ left, title }: { left: ReactNode; title: string }) {
   return (
     <div className={styles.header}>
       {left}
-      <div className={styles.headerText}>
-        <span className={styles.headerTitle}>{title}</span>
-        {sub && <span className={styles.headerSub}>{sub}</span>}
-      </div>
-      {right ?? <span />}
+      <span className={styles.headerTitle}>{title}</span>
+      <span />
     </div>
   )
 }

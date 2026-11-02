@@ -1,20 +1,19 @@
 import type { Exercise } from '../../data/types'
 import type { Step } from '../../engine/compile'
-import { seconds } from './format'
+import { timer } from './format'
 
 export interface UpNextRow {
   name: string
   dose: string
 }
 
-/** "12 reps" / "0:40". */
+/** "12 reps" / "00:40". */
 export function dose(step: Step): string {
-  if (step.kind === 'rest') return seconds(step.target)
-  return step.mode === 'reps' ? `${step.target} reps` : seconds(step.target)
+  return step.kind === 'work' && step.mode === 'reps' ? `${step.target} reps` : timer(step.target * 1000)
 }
 
 /**
- * The desktop "Up next" list: the next `count` steps after `index`. During a rest, rests are
+ * The desktop "Coming up" list: the next `count` steps after `index`. During a rest, rests are
  * skipped (you're in one). A later set of the same move is named "Push-up · set 3".
  */
 export function upNext(
