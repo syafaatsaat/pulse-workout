@@ -48,6 +48,18 @@ function bestBefore(sessions: Session[], exerciseId: string, before: number, ski
 const beats = (a: Best, b: Best | undefined) =>
   b !== undefined && a.measure === b.measure && a.value > b.value
 
+/**
+ * The player's "New best" moment: `set` beats the move's best from earlier sessions (`previous`) and
+ * every earlier set of the move this session, so it fires once per improvement. A first attempt
+ * (no previous best) is not a new best.
+ */
+export function isNewBest(previous: Best | undefined, earlier: SessionSet[], set: SessionSet): boolean {
+  const value = bestOf([set])!
+  if (!beats(value, previous)) return false
+  const thisSession = bestOf(earlier.filter((x) => x.exerciseId === set.exerciseId))
+  return thisSession === undefined || thisSession.measure !== value.measure || value.value > thisSession.value
+}
+
 export interface MoveResult {
   exerciseId: string
   sets: number

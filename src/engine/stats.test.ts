@@ -2,6 +2,7 @@ import type { Session } from '../data/types'
 import {
   activeMs,
   bestOf,
+  isNewBest,
   lastTime,
   monthStats,
   personalBests,
@@ -111,6 +112,32 @@ describe('sessionBests', () => {
   test('equalling the best is not a new best', () => {
     const tie = on('tie', 10, 15, [set('Pushups', { reps: 10 })])
     expect(sessionBests([...history, tie], tie)[0]?.isNew).toBe(false)
+  })
+})
+
+describe('isNewBest', () => {
+  const prev = { measure: 'reps', value: 10 } as const
+
+  test('beats the best from earlier sessions', () => {
+    expect(isNewBest(prev, [], set('P', { reps: 11 }))).toBe(true)
+    expect(isNewBest(prev, [], set('P', { reps: 10 }))).toBe(false)
+  })
+
+  test('only once per improvement within a session', () => {
+    const earlier = [set('P', { reps: 12 })]
+    expect(isNewBest(prev, earlier, set('P', { reps: 11 }))).toBe(false)
+    expect(isNewBest(prev, earlier, set('P', { reps: 13 }))).toBe(true)
+  })
+
+  test('a first attempt is not a new best, even after earlier sets this session', () => {
+    expect(isNewBest(undefined, [], set('P', { reps: 20 }))).toBe(false)
+    expect(isNewBest(undefined, [set('P', { reps: 5 })], set('P', { reps: 20 }))).toBe(false)
+  })
+
+  test('holds compare seconds; a different measure never counts', () => {
+    const hold = { measure: 'seconds', value: 35 } as const
+    expect(isNewBest(hold, [], set('Plank', { seconds: 40 }))).toBe(true)
+    expect(isNewBest(prev, [], set('P', { seconds: 40 }))).toBe(false)
   })
 })
 
