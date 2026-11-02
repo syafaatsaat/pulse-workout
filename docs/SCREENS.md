@@ -12,25 +12,26 @@ Lean scope = screens 1–6 and 8. Screen 7 (Builder) is an add-on.
 - Desktop: two columns — up-next card (with full move list) | This week, Quick start (every workout, as a
   list), Recent bests (top 3, number only; no sparklines, no New workout / Edit until the add-ons).
 
-## 2. Player — `/session/:id` (F-Player work, F-Rest rest, DT-Player)
-Redesigned after real-phone testing, inspired by other fitness apps; where the F-Player / F-Rest
-mock-ups differ, this list wins. All player timers are MM:SS (`00:05`); no totals ("of 0:40") or elapsed time.
-Work:
-- Session bar, close / end (→ confirm → Today), "Set 2 of 4", (i) how-to button (→ form overlay: photos, steps).
-- Exercise slideshow: start ⇄ end photo every second (still while paused or with reduced motion).
-- Exercise name; big counter (140px): reps with − / + beside it, or the MM:SS countdown for timed moves.
-- One line: "Last time 10 reps · Next Rest 0:45" (last time in the main phase only).
-- Buttons: Pause, Set done (→ rest or next work). Timed moves: Set done auto-fires at 00:00.
-- Timed moves start with a 5 s lead-in: "Get into position" over a 00:05 countdown and a Start now button
-  that skips it; beeps 3-2-1-go at the end of the lead-in and of the hold.
-Rest:
-- Blue screen, "Set 1 of 4 done", MM:SS countdown in a draining ring.
-- Next card: "Next · Set 2 of 4", name, dose, slideshow of the next move. Buttons: Pause, +15s, Skip rest
-  (Resume while paused).
-Desktop: full screen on one 4-column grid (replaces the DT-Player side panel): name + counter | large
-slideshow (the next move during a rest); cards: last time | up next, then, then; pause (+15s on a rest) |
-primary action. Same removals, MM:SS and lead-in as the phone. Keyboard: Space = set done / skip rest /
-start now, P = pause, ← → = adjust reps, ↑ = +15s (rests only), Esc = end. +15s exists on rests only.
+## 2. Player — `/session/:id` (2a work, 2b rest, 2c timed, Desktop · Player PNGs)
+Redesigned twice after real-phone testing; the PNG mock-ups in `docs/design-reference/` win over the older
+F-Player / F-Rest / DT-Player `.dc.html` files. All player timers are MM:SS (`00:05`); no totals or elapsed time.
+Phone, work and rest share one layout:
+- Session bar; close / end (→ confirm → Today) beside "Move 4 of 9 · Set 2 of 4" ("… done" on a rest).
+- Big name ("Rest" on a rest), then the exercise slideshow taking the spare height: start ⇄ end photo every
+  second (still while paused or with reduced motion). On a rest it shows the next move with an
+  "Up next · Push-up · Set 3 of 4" pill.
+- Counter with round − / + at the edges: reps ± 1, or −15 / +15 s on a rest or a timed hold.
+- Progress bar under it: reps done of the target, time held, or rest left; a tick marks last time.
+- Two-part card: work = Form cue (short hand-written cue, taps open the form overlay) | Last time (main phase
+  only); rest = Next target | Last set.
+- Buttons: Pause, then Set done / Skip rest (Resume while paused). Timed moves: Set done auto-fires at 00:00.
+- Timed moves start with a 5 s lead-in: "Get into position" pill on the slideshow over a 00:05 countdown, no
+  − / +, and Start now skips it; beeps 3-2-1-go at the end of the lead-in and of the hold.
+Desktop: full screen. Header: End session (Esc), "Push & Core · Move 4 of 9 · Set 2 of 4", session bar with
+block labels. Large slideshow | name, counter with − / +, progress bar, key hint, the same two-part card, and
+a Coming up list (next 3 steps; after the next move during a rest). Footer: Pause (P) | primary (Space).
+Keyboard: Space = set done / skip rest / start now / resume, P = pause, ← → = − / + (reps, or 15 s on a rest
+or hold), Esc = end.
 After the last step → Summary.
 
 ## 3. Summary — `/session/:id/summary` (F-Summary)

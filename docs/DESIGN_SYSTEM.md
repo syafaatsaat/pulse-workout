@@ -38,7 +38,7 @@ Text on orange is always `#111113`, never white (white on #FF5A1F fails contrast
 | Primary button | Barlow Condensed | 24px / 700 | Uppercase, letter-spacing 0.5px |
 | List item name | Barlow Condensed | 19–21px / 600 | Uppercase |
 | Stat value | Barlow Condensed | 26–32px / 600 | `tabular-nums` |
-| Rep counter, timers | Barlow Condensed | 18dvh, max 180px phone, clamp(200px, 24vw, 360px) desktop / 800 | line-height 1, never clipped |
+| Rep counter, timers | Barlow Condensed | min(13dvh, 25vw), 64–104px phone, min(11vw, 18dvh), 112–220px desktop / 800 | line-height 1, never clipped |
 | Rest countdown | Barlow Condensed | 120px / 800 | Inside the ring |
 
 ## Layout
@@ -63,12 +63,12 @@ Text on orange is always `#111113`, never white (white on #FF5A1F fails contrast
 | **Stepper** | 36px tall `--fill` rounded rect: − / value (mono) / +. |
 | **Switch** | 50×30, on = `--accent`, off = `--line2`, white 24px knob with small shadow. `role="switch"`. |
 | **Segmented** | `--fill` track, 4px padding; selected segment `--surface` + `--card`. Used for theme and effort. |
-| **Ring** | Progress ring. Weekly goal: 40px, 4px stroke, `--line` track, `--accent` arc. Rest: 280px, 10px stroke, white arc on rest-tint track. |
+| **Ring** | Progress ring. Weekly goal: 40px, 4px stroke, `--line` track, `--accent` arc. |
 | **RepTicks** | 12 squares (14px phone, 18px desktop), filled = done; a 2px ring marks last time's best. |
 | **Sparkline** | 6 bars, 3px gap, past `--bar`, latest `--accent`. |
 | **ImagePlaceholder** | `repeating-linear-gradient(135deg, var(--hatch) 0 8px, transparent 8px 16px), var(--fill)` + small figure icon. Used until images load. |
 | **Primary button** | 56px phone / 60px desktop, radius 14–16. Orange (Start) or `--ink` (Save, Add). |
-| **Player buttons** | Pill 64px (phone) / 84px (desktop) tall. Work: Set done = `#111113` bg, orange text. Rest: Skip = white bg, blue text. Secondary = tint bg. |
+| **Player buttons** | Pill 64px (phone) / 80px (desktop) tall. Work: Set done = `#111113` bg, orange text. Rest: Skip = white bg, blue text. Secondary = tint bg. |
 
 ## Icons
 Inline stroke SVGs, 1.8px stroke, 20px in nav, round caps and joins. No emoji, no icon font.
