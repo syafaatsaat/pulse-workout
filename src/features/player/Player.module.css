@@ -315,7 +315,7 @@
 
   /* 3-2-1 with the beeps. */
   .counter[data-pulse] {
-    animation: pulse 220ms ease-out;
+    animation: pulse 450ms cubic-bezier(0.2, 0, 0.2, 1);
   }
 
   /* − / + on reps. */
@@ -337,9 +337,10 @@
   }
 }
 
+/* A beat: lands big, then settles. */
 @keyframes pulse {
-  50% {
-    transform: scale(1.06);
+  from {
+    transform: scale(1.15);
   }
 }
 

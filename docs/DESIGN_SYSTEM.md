@@ -76,7 +76,7 @@ Inline stroke SVGs, 1.8px stroke, 20px in nav, round caps and joins. No emoji, n
 ## Motion (Day 6–7 polish)
 Moments, not decoration: the player's resting layout stays clean; motion only marks something happening.
 - Work ⇄ rest: the old colour drops away to the top over 380ms, so the new one rises from the buttons.
-- Countdowns (rest, hold, lead-in): the counter pulses (scale 1.06, 220ms) on 3, 2, 1, with the beeps.
+- Countdowns (rest, hold, lead-in): the counter lands at scale 1.15 and settles (450ms) on 3, 2, 1, with the beeps.
 - Reps − / +: the number changes with a short 120ms scale/opacity, no bounce.
 - New personal best: the rest screen's Last set card turns `--accent` with `--accent-ink`, label "New best",
   and pops in once (260ms). The colour stays under reduced motion; only the pop goes.
