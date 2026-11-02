@@ -74,7 +74,10 @@ Text on orange is always `#111113`, never white (white on #FF5A1F fails contrast
 Inline stroke SVGs, 1.8px stroke, 20px in nav, round caps and joins. No emoji, no icon font.
 
 ## Motion (Day 6–7 polish)
-- Work ↔ rest: background colour cross-fade, 250ms.
-- Session bar: current segment fills; rest ring drains smoothly (use the timestamp, not steps).
-- Counter: number change with a short 120ms scale/opacity, no bounce.
+Moments, not decoration: the player's resting layout stays clean; motion only marks something happening.
+- Work ⇄ rest: the old colour drops away to the top over 380ms, so the new one rises from the buttons.
+- Countdowns (rest, hold, lead-in): the counter pulses (scale 1.06, 220ms) on 3, 2, 1, with the beeps.
+- Reps − / +: the number changes with a short 120ms scale/opacity, no bounce.
+- New personal best: the rest screen's Last set card turns `--accent` with `--accent-ink`, label "New best",
+  and pops in once (260ms). The colour stays under reduced motion; only the pop goes.
 - All disabled under `prefers-reduced-motion`.
