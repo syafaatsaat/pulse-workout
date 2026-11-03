@@ -186,9 +186,6 @@ export function TodayPage() {
     </section>
   )
 
-  const startLabel = (w: Workout) =>
-    `Start ${w.name}, ${moveCount(w)} moves, ${minutes(w, exercises)} minutes`
-
   if (desktop) {
     const bests = personalBests(sessions).slice(0, SHOWN_BESTS)
     return (
@@ -212,13 +209,12 @@ export function TodayPage() {
                 <ul>
                   {others.slice(0, 3).map((w) => (
                     <li key={w.id}>
-                      <button
-                        type="button"
-                        className={styles.row}
-                        aria-label={startLabel(w)}
-                        onClick={() => void start(w.id)}
-                      >
-                        <span className={styles.rowName}>{w.name}</span>
+                      <button type="button" className={styles.row} onClick={() => void start(w.id)}>
+                        {/* Named by its visible text (WCAG 2.5.3), with "Start" for context. */}
+                        <span className={styles.rowName}>
+                          <span className="visually-hidden">Start </span>
+                          {w.name}
+                        </span>
                         <span className={styles.timeChip}>{minutes(w, exercises)} min</span>
                       </button>
                     </li>
@@ -272,12 +268,7 @@ export function TodayPage() {
           <ul className={styles.quick}>
             {others.slice(0, SHOWN_QUICK).map((w) => (
               <li key={w.id}>
-                <button
-                  type="button"
-                  className={styles.quickCard}
-                  aria-label={startLabel(w)}
-                  onClick={() => void start(w.id)}
-                >
+                <button type="button" className={styles.quickCard} onClick={() => void start(w.id)}>
                   <Rings
                     className={styles.quickRings}
                     radii={[24, 40, 56]}
@@ -286,11 +277,15 @@ export function TodayPage() {
                     step={0.0175}
                     color="var(--ring)"
                   />
-                  <span className={styles.timeChip}>{minutes(w, exercises)} min</span>
+                  {/* Named by its visible text (WCAG 2.5.3): name first, the chip is moved on top in CSS. */}
                   <span className={styles.quickText}>
-                    <span className={styles.quickName}>{w.name}</span>
+                    <span className={styles.quickName}>
+                      <span className="visually-hidden">Start </span>
+                      {w.name}
+                    </span>
                     <span className={styles.quickMeta}>{moveCount(w)} moves</span>
                   </span>
+                  <span className={styles.timeChip}>{minutes(w, exercises)} min</span>
                 </button>
               </li>
             ))}

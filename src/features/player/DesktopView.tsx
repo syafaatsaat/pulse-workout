@@ -53,7 +53,8 @@ export function DesktopView(props: DesktopViewProps) {
         <SessionBar steps={state.steps} current={state.index} label={`Session progress: ${position}`} />
       </header>
 
-      <main className={styles.main}>
+      {/* A div: the full-screen layout already provides <main>. */}
+      <div className={styles.main}>
         <div className={styles.media}>
           <VideoCard screen={screen} onInfo={onInfo} infoRef={infoRef} notice={notice} desktop />
         </div>
@@ -86,7 +87,7 @@ export function DesktopView(props: DesktopViewProps) {
 
           <Line screen={screen} className={styles.line} />
         </section>
-      </main>
+      </div>
 
       <footer className={styles.footer}>
         <button
