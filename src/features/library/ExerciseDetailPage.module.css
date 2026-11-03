@@ -1,16 +1,14 @@
-/* Exercise detail: F-Detail page on phones, DT-Library pane on desktop.
-   Lean build: Try it only; Add to workout is an add-on. */
+/* Exercise detail — G-Detail (phone push) and the right pane of GD-Library. */
 
+/* Phone: room at the bottom for the fixed Try it button (56px + 30px + inset). */
 .page {
-  /* Room for the fixed bottom bar. */
-  padding-bottom: calc(56px + var(--s-3) + max(var(--s-6), env(safe-area-inset-bottom)));
+  padding-bottom: calc(56px + 30px + env(safe-area-inset-bottom));
 }
 
 .top {
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 44px;
   align-items: center;
-  text-align: center;
 }
 
 .back {
@@ -24,16 +22,14 @@
   justify-content: center;
 }
 
-/* Photos: START / END crossfade */
+/* Photo card: Start / End crossfade, the toggle sits on the photo. */
 .media {
-  margin-top: 14px;
   position: relative;
-  aspect-ratio: 3 / 2;
-  max-height: 360px;
-  width: 100%;
-  border-radius: 22px;
   overflow: hidden;
-  background: var(--fill);
+  margin-top: var(--s-4);
+  height: 280px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
   box-shadow: var(--card-shadow);
 }
 
@@ -51,192 +47,144 @@
   opacity: 1;
 }
 
+/* Missing photo: the card's rings show through, with a faint figure. */
+.placeholder {
+  --ph-fill: transparent;
+  --ph-ink: var(--faint);
+}
+
 .frames {
   position: absolute;
   left: 50%;
-  bottom: var(--s-3);
+  bottom: 14px;
   transform: translateX(-50%);
   display: grid;
-  grid-template-columns: repeat(2, 76px);
-  gap: 2px;
+  grid-template-columns: repeat(2, 72px);
   padding: 3px;
-  border-radius: 12px;
-  background: var(--surface);
-  box-shadow: var(--card-shadow);
+  border-radius: 18px;
+  background: var(--fill);
 }
 
+/* 30px visual; the ::after brings the hit area to 44px. */
 .frames button {
-  height: 38px;
-  border-radius: 9px;
+  position: relative;
+  height: 30px;
+  border-radius: 15px;
   color: var(--ink);
   font-size: var(--t-small);
-  font-weight: 600;
+  font-weight: 500;
+}
+
+.frames button::after {
+  content: '';
+  position: absolute;
+  inset: -7px 0;
 }
 
 .frames button[aria-pressed='true'] {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--surface);
+  box-shadow: var(--seg-shadow);
 }
 
 .name {
-  margin-top: 18px;
+  margin-top: 22px;
+  font-size: var(--t-title);
   font-weight: 500;
-  font-size: 44px;
-  line-height: 0.95;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
-.missing {
-  margin-top: var(--s-3);
-}
-
-.tags {
-  margin-top: 10px;
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.tags li {
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 13px;
-  background: var(--fill);
-  display: flex;
-  align-items: center;
-  font-size: 10px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.tags li[data-best] {
-  background: var(--accent);
-  color: var(--accent-ink);
-}
-
-.muscles {
-  margin: 14px 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-1) 18px;
-  font-size: 14px;
-}
-
-.muscles > div {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.muscles dt {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.summary {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--t-body);
   color: var(--muted);
 }
 
-.muscles dd {
-  margin: 0;
+.tags {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.dot,
-.ring {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+.tags li {
+  height: 28px;
+  padding: 0 var(--s-3);
+  border-radius: 14px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  font-size: var(--t-small);
 }
 
-.dot {
-  background: var(--ink);
-}
-
-.ring {
-  box-shadow: inset 0 0 0 2px var(--ink);
+.tags li[data-best] {
+  background: var(--accent-tint);
+  color: var(--pb-ink);
+  font-weight: 500;
 }
 
 .steps {
-  margin-top: var(--s-4);
-  padding: var(--s-1) var(--s-4);
-  background: var(--surface);
-  border-radius: var(--r-lg);
-  box-shadow: var(--card-shadow);
+  margin-top: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .steps li {
   display: grid;
-  grid-template-columns: 30px minmax(0, 1fr);
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: var(--s-3);
   align-items: start;
-  padding: var(--s-3) 0;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.45;
 }
 
-.steps li + li {
-  border-top: 1px solid var(--line);
-}
-
 .stepNumber {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: var(--fill);
+  box-shadow: inset 0 0 0 1px var(--line2);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: var(--t-small);
-  font-weight: 600;
+  font-weight: 500;
 }
 
-/* Bottom bar */
+.stepText {
+  padding-top: 3px;
+}
+
+/* Fixed Try it, 30px above the bottom. */
 .bar {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: var(--s-3) max(var(--gutter), env(safe-area-inset-right))
-    max(var(--s-6), env(safe-area-inset-bottom)) max(var(--gutter), env(safe-area-inset-left));
-  border-top: 1px solid var(--line);
-  background: var(--bg);
+  left: max(var(--gutter), env(safe-area-inset-left));
+  right: max(var(--gutter), env(safe-area-inset-right));
+  bottom: calc(30px + env(safe-area-inset-bottom));
+  z-index: 5;
+}
+
+.try,
+.paneTry {
+  height: 56px;
+  border-radius: 28px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .try {
   width: 100%;
-  height: 56px;
-  border-radius: var(--r-md);
-  background: var(--ink);
-  color: var(--bg);
-  font-weight: 500;
-  font-size: 22px;
 }
 
-@media (min-width: 640px) {
-  .bar {
-    padding-left: max(48px, env(safe-area-inset-left));
-    padding-right: max(48px, env(safe-area-inset-right));
-  }
+.missing {
+  margin-top: var(--s-4);
+  color: var(--muted);
 }
 
-@media (min-width: 1024px) {
-  .page {
-    max-width: 640px;
-  }
-
-  .bar {
-    left: 220px; /* clear the sidebar */
-    padding-left: 48px;
-  }
-
-  .try {
-    max-width: 640px;
-  }
-}
-
-/* DT-Library detail pane */
-.pane {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
+/* Desktop pane (GD-Library). */
 .paneMedia {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -245,10 +193,10 @@
 
 .paneFrame {
   position: relative;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--r-xl);
   overflow: hidden;
-  background: var(--fill);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-lg);
+  background: var(--surface);
   box-shadow: var(--card-shadow);
 }
 
@@ -260,143 +208,81 @@
   object-fit: cover;
 }
 
+.paneFrame .placeholder {
+  position: absolute;
+  inset: 0;
+}
+
 .frameTag {
   position: absolute;
-  left: 14px;
-  top: 14px;
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 13px;
-  background: var(--surface);
-  box-shadow: var(--card-shadow);
+  left: var(--s-4);
+  top: var(--s-4);
+  height: 28px;
+  padding: 0 var(--s-3);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--ink);
   display: flex;
   align-items: center;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: var(--t-small);
+  font-weight: 500;
 }
 
 .paneHead {
+  margin-top: 26px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: var(--s-4);
   flex-wrap: wrap;
+  gap: var(--s-4);
 }
 
 .paneTitle {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   min-width: 0;
-}
-
-.paneTitle .tags {
-  margin-top: 0;
 }
 
 .paneName {
+  font-size: 44px;
   font-weight: 500;
-  font-size: 60px;
-  line-height: 0.9;
+  letter-spacing: -0.03em;
+  line-height: 1;
 }
 
-.tryNow {
-  height: 48px;
-  padding: 0 18px;
-  border-radius: var(--r-md);
-  background: var(--ink);
-  color: var(--bg);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.paneBody {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-4);
-  align-items: flex-start;
-}
-
-.paneBody .steps {
-  flex: 3 1 340px;
-  min-width: 0;
+.paneTitle .summary {
   margin-top: 0;
-  padding: 6px var(--s-5);
-  border-radius: var(--r-xl);
+  font-size: 15px;
 }
 
-.paneBody .steps li {
-  grid-template-columns: 36px minmax(0, 1fr);
-  padding: 14px 0;
-  font-size: var(--t-body);
+.paneTry {
+  height: 52px;
+  padding: 0 var(--s-6);
+  border-radius: 26px;
+}
+
+.pane .tags {
+  margin-top: var(--s-4);
+}
+
+.pane .tags li {
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 15px;
+}
+
+.pane .steps {
+  margin-top: var(--s-6);
+  max-width: 640px;
+}
+
+.pane .steps li {
+  font-size: 16px;
   line-height: 1.5;
 }
 
-.paneBody .stepNumber {
-  width: 24px;
-  height: 24px;
-}
-
-.muscleCard {
-  flex: 2 1 240px;
-  min-width: 0;
-  background: var(--surface);
-  border-radius: var(--r-xl);
-  box-shadow: var(--card-shadow);
-  padding: var(--s-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-4);
-}
-
-.muscleList {
-  margin: var(--s-2) 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-  font-size: 14px;
-}
-
-.muscleList > div {
-  display: flex;
-  gap: var(--s-2);
-}
-
-.muscleList dt {
-  width: 80px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
-  color: var(--muted);
-}
-
-.muscleList dd {
-  margin: 0;
-}
-
-.yours {
-  border-top: 1px solid var(--line);
-  padding-top: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-1);
-}
-
-.yourBest {
-  font-weight: 500;
-  font-size: 28px;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.lastSession {
-  font-size: var(--t-small);
-  color: var(--muted);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .photo {
-    transition: none;
-  }
+.pane .stepNumber {
+  width: 30px;
+  height: 30px;
 }

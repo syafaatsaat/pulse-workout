@@ -48,26 +48,3 @@
   background: var(--ink);
   color: var(--bg);
 }
-
-.spacer {
-  flex-grow: 1;
-  min-height: var(--s-6);
-}
-
-/* Weekly goal: the GD-Today goal pill, kept in the sidebar so every desktop page shows it. */
-.goal {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  height: 56px;
-  padding: 0 var(--s-4) 0 var(--s-2);
-  border-radius: var(--r-lg);
-  background: var(--surface);
-  box-shadow: var(--card-shadow);
-}
-
-.goalValue {
-  font-size: var(--t-small);
-  font-weight: 500;
-  white-space: nowrap;
-}
