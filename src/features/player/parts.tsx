@@ -236,7 +236,11 @@ export function VideoCard({
 }) {
   const { media, tag, paused, resting } = screen
   return (
-    <div className={styles.video} data-desktop={desktop || undefined}>
+    <div
+      className={styles.video}
+      data-desktop={desktop || undefined}
+      data-photo={(media.exercise?.images.length ?? 0) > 0 || undefined}
+    >
       <ExerciseSlideshow
         className={styles.slideshow}
         images={media.exercise?.images}

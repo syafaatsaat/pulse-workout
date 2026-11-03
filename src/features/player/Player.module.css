@@ -175,6 +175,13 @@
   font-weight: 500;
 }
 
+/* Over a photo a translucent tint vanishes on bright frames: use the solid ground colour
+   instead, like the "Up next" chip and the notice. The tint stays on the plain placeholder. */
+.video[data-photo] .info,
+.video[data-photo] .infoPill {
+  background: var(--g-bg);
+}
+
 .video[data-desktop] {
   margin-top: 0;
   border-radius: var(--r-xl);
