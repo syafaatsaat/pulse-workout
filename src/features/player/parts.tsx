@@ -161,7 +161,9 @@ export function CounterRings({ ready, desktop }: { ready: boolean; desktop?: boo
       startOpacity={start}
       step={step}
       color="var(--g-accent)"
-      style={{ left: '50%', top: '50%', margin: `${-size / 2}px 0 0 ${-size / 2}px` }}
+      // z-index -1: behind every other part of the player (name, bar, buttons, video card), not
+      // just the counter. Absolutely positioned, they would otherwise paint over in-flow content.
+      style={{ left: '50%', top: '50%', margin: `${-size / 2}px 0 0 ${-size / 2}px`, zIndex: -1 }}
     />
   )
 }

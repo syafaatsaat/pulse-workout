@@ -24,6 +24,7 @@ import { PhoneView } from './PhoneView'
 import styles from './Player.module.css'
 import { playerScreen, runAddTime, runAdjust, runPrimary } from './screen'
 import { useCues } from './useCues'
+import { unlockSpeech } from './voice'
 import { useVoice } from './useVoice'
 import { useNow } from './useNow'
 import { useWakeLock } from './useWakeLock'
@@ -49,9 +50,12 @@ export function Player(props: PlayerProps) {
   const location = useLocation()
   const settings = useLiveQuery(() => db.settings.get('settings'))
 
-  // Starting or resuming is a user gesture: the moment iOS lets audio unlock.
+  // Starting or resuming is a user gesture: the moment iOS lets audio and speech unlock.
   const dispatch = (action: PlayerAction) => {
-    if (action.type === 'start' || action.type === 'resume') unlockAudio()
+    if (action.type === 'start' || action.type === 'resume') {
+      unlockAudio()
+      unlockSpeech()
+    }
     rawDispatch(action)
   }
   const [dialog, setDialog] = useState<'end' | 'info' | null>(null)

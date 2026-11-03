@@ -9,9 +9,30 @@ export function stepCue(step: Step | undefined): string {
   return step.needsSetup ? 'Get into position' : 'Go'
 }
 
+const synth = () =>
+  typeof window !== 'undefined' && 'speechSynthesis' in window ? window.speechSynthesis : null
+
+let unlocked = false
+
+/**
+ * iOS Safari only speaks once speech has been started inside a tap; later cues come from timers
+ * and effects, not taps. So, like unlockAudio(), this runs on the Start / Resume tap (and the
+ * Voice cues switch): a silent utterance inside the gesture unlocks it for the session.
+ */
+export function unlockSpeech(): void {
+  const s = synth()
+  if (!s || unlocked) return
+  const silent = new SpeechSynthesisUtterance(' ')
+  silent.volume = 0
+  s.speak(silent)
+  unlocked = true
+}
+
 /** Speaks `text`, cutting off anything still being said. No-op without speech synthesis. */
 export function speak(text: string): void {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
-  window.speechSynthesis.cancel()
-  window.speechSynthesis.speak(new SpeechSynthesisUtterance(text))
+  const s = synth()
+  if (!s) return
+  // Only cancel when something is queued: iOS can drop an utterance spoken right after cancel().
+  if (s.speaking || s.pending) s.cancel()
+  s.speak(new SpeechSynthesisUtterance(text))
 }

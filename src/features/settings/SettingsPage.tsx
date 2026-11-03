@@ -9,6 +9,7 @@ import { resetDemoData } from '../../data/seed'
 import type { Settings } from '../../data/types'
 import { useLiveQuery } from '../../data/useLiveQuery'
 import { timer } from '../player/format'
+import { speak, unlockSpeech } from '../player/voice'
 import dialog from '../player/Dialog.module.css'
 import { useModal } from '../player/useModal'
 import styles from './SettingsPage.module.css'
@@ -109,7 +110,14 @@ export function SettingsPage() {
             <Switch
               labelledBy="settings-voice"
               checked={settings.voice ?? false}
-              onChange={(voice) => update({ voice })}
+              onChange={(voice) => {
+                update({ voice })
+                // The tap unlocks speech on iOS, and a sample confirms the volume.
+                if (voice) {
+                  unlockSpeech()
+                  speak('Voice cues on')
+                }
+              }}
             />
           </div>
         </div>
