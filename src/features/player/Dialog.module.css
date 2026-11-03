@@ -1,4 +1,4 @@
-/* End-session dialog: on the app surface (theme colours), not the player ground. */
+/* End-session and reset dialogs: on the app surface (theme colours), not the player ground. */
 .dialog {
   --focus-ring: var(--ink); /* back on the theme surface */
   width: min(440px, calc(100vw - 2 * var(--gutter)));
@@ -16,9 +16,10 @@
 }
 
 .title {
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 500;
-  line-height: 1;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
 .body {
@@ -35,7 +36,7 @@
 .buttons button {
   flex: 1;
   height: 56px;
-  border-radius: var(--r-md);
+  border-radius: var(--r-pill);
   font-size: var(--t-body);
   font-weight: 600;
 }

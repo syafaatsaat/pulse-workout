@@ -1,4 +1,4 @@
-// The Log's ?month= search param, e.g. "2026-10". Month is 0-based in code, as in Date.
+// Progress's ?month= search param, e.g. "2026-10". Month is 0-based in code, as in Date.
 
 export interface YearMonth {
   year: number

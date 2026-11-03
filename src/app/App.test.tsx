@@ -8,12 +8,19 @@ function renderAt(path: string) {
 }
 
 test('tab pages render the main nav with the current page marked', () => {
-  renderAt('/log')
-  expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Log')
+  renderAt('/progress')
+  expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Progress')
   // Sidebar + TabBar both render; CSS decides which one shows. The tab bar is icon-only, so
   // its links are named by aria-label.
   expect(screen.getAllByRole('link', { current: 'page' })).toHaveLength(2)
   expect(screen.getAllByRole('link', { current: 'page', name: 'Progress' })).toHaveLength(2)
+})
+
+test('the old /log URL redirects to Progress, keeping the month', async () => {
+  const router = createMemoryRouter(routes, { initialEntries: ['/log?month=2026-09'] })
+  render(<RouterProvider router={router} />)
+  expect(await screen.findByRole('heading', { level: 1, name: 'Progress' })).toBeTruthy()
+  expect(router.state.location.pathname + router.state.location.search).toBe('/progress?month=2026-09')
 })
 
 test('library detail is a push on phones: sidebar only, no tab bar', () => {

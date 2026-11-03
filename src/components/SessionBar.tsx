@@ -8,10 +8,10 @@ interface SessionBarProps {
   current: number
   label: string
   /**
-   * player: past / future in currentColor, current in accent. summary: done steps solid, the rest
-   * faint. preview (Today hero): the session's shape in hero tints; work bright, rest faint.
+   * player: past / future in currentColor, current in accent. preview (Today hero): the session's
+   * shape in hero tints; work bright, rest faint.
    */
-  variant?: 'player' | 'summary' | 'preview'
+  variant?: 'player' | 'preview'
 }
 
 /**

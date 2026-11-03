@@ -86,7 +86,7 @@ a {
   font-size: var(--t-title);
   font-weight: 500;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: normal; /* as in the refs: sets the gap to whatever comes next */
 }
 
 /* Big numbers: light weight, tight tracking, never clipped. */

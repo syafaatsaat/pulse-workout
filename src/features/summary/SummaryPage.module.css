@@ -1,82 +1,87 @@
-/* Session summary (F-Summary). */
+/* Session complete (G-Summary). Desktop: the phone layout, centred. */
 
 .page {
   min-height: 100dvh;
   display: flex;
   background: var(--bg);
   color: var(--ink);
-  padding: calc(env(safe-area-inset-top) + 56px) max(var(--gutter), env(safe-area-inset-right))
-    max(30px, calc(env(safe-area-inset-bottom) + var(--s-4))) max(var(--gutter), env(safe-area-inset-left));
+  overflow-x: hidden; /* the badge rings overhang */
+  padding: max(60px, calc(env(safe-area-inset-top) + var(--s-4)))
+    max(var(--gutter), env(safe-area-inset-right)) max(30px, calc(env(safe-area-inset-bottom) + var(--s-4)))
+    max(var(--gutter), env(safe-area-inset-left));
 }
 
 .inner {
   flex: 1;
   width: 100%;
-  max-width: 520px;
+  max-width: 420px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
 }
 
-.top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.check {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--accent-ink);
+/* Check badge with ember rings */
+.badge {
+  position: relative;
+  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.complete,
-.date {
-  font-size: var(--t-small);
+.badgeRings {
+  left: 50%;
+  top: 50%;
+  margin: -300px 0 0 -300px;
 }
 
-.complete {
-  font-weight: 600;
-}
-
-.date {
-  margin-left: auto;
-  font-weight: 500;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
+.check {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: var(--accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .title {
-  margin-top: var(--s-4);
+  position: relative;
+  margin-top: var(--s-2);
+  text-align: center;
+  font-size: var(--t-title);
   font-weight: 500;
-  font-size: 56px;
-  line-height: 0.92;
+  letter-spacing: -0.02em;
 }
 
-.bar {
-  margin-top: 14px;
+.sub {
+  position: relative;
+  margin-top: 6px;
+  text-align: center;
+  font-size: var(--t-body);
+  color: var(--muted);
 }
 
-/* Stats card: time, sets, reps */
+/* Stats card: time, sets, reps (value over label) */
 .stats {
-  margin: 18px 0 0;
+  position: relative;
+  margin: 26px 0 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   background: var(--surface);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-md);
   box-shadow: var(--card-shadow);
+  padding: 18px 0;
 }
 
 .stats > div {
-  padding: 14px var(--s-4);
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-direction: column-reverse; /* dt first in the markup, label under the value on screen */
+  align-items: center;
+  gap: var(--s-1);
 }
 
 .stats > div + div {
@@ -84,89 +89,90 @@
 }
 
 .stats dt {
-  font-size: 10px;
-  font-weight: 500;
+  font-size: var(--t-small);
   color: var(--muted);
 }
 
 .stats dd {
   margin: 0;
-  font-weight: 600;
-  font-size: 32px;
-  line-height: 1.1;
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 
-/* New personal best banner */
+/* New personal best: dark hero card with ember rings */
 .best {
-  margin-top: 10px;
+  position: relative;
+  margin-top: var(--s-3);
+  overflow: hidden;
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: var(--ink);
-  color: var(--bg);
-  border-radius: var(--r-lg);
-  padding: 14px var(--s-4);
+  justify-content: space-between;
+  gap: var(--s-3);
+  background: var(--hero);
+  color: var(--on-hero);
+  border-radius: var(--r-md);
+  padding: 18px var(--s-5);
 }
 
-.bestIcon {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.bestRings {
+  right: -90px;
+  top: -80px;
 }
 
 .bestText {
+  position: relative;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: var(--s-1);
 }
 
-.bestEyebrow {
-  font-size: 10px;
-  font-weight: 600;
-  opacity: 0.7;
+.bestLabel {
+  font-size: var(--t-small);
+  font-weight: 500;
+  color: var(--accent);
 }
 
 .bestValue {
+  font-size: 20px;
   font-weight: 500;
-  font-size: 24px;
-  line-height: 1;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
 
 .bestGain {
-  margin-left: auto;
+  position: relative;
   flex-shrink: 0;
-  padding: 2px var(--s-2);
+  height: 30px;
+  padding: 0 var(--s-3);
   border-radius: var(--r-pill);
-  background: var(--accent); /* orange text fails contrast; orange ground with ink passes */
-  color: var(--accent-ink);
-  font-size: 13px;
-  font-weight: 600;
+  background: var(--on-hero-line);
+  display: flex;
+  align-items: center;
+  font-size: var(--t-small);
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
-/* Per-move card */
+/* Moves */
 .movesCard {
-  margin-top: 10px;
+  position: relative;
+  margin-top: var(--s-3);
   background: var(--surface);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-md);
   box-shadow: var(--card-shadow);
-  padding: var(--s-1) var(--s-4);
+  padding: var(--s-1) var(--s-5);
 }
 
 .move {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 52px minmax(52px, auto);
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  min-height: 46px;
+  gap: var(--s-3);
+  min-height: 48px;
 }
 
 .move + .move {
@@ -174,35 +180,17 @@
 }
 
 .moveName {
-  font-weight: 600;
-  font-size: 19px;
+  font-size: 15px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.moveSets,
-.moveBest {
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-}
-
-.moveSets {
+.moveValue {
+  flex-shrink: 0;
+  font-size: var(--t-body);
   color: var(--muted);
-}
-
-.moveBest {
-  font-weight: 600;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.moveBest[data-pb] {
-  justify-self: end;
-  padding: 2px 6px;
-  border-radius: var(--r-pill);
-  background: var(--accent);
-  color: var(--accent-ink);
+  font-variant-numeric: tabular-nums;
 }
 
 .more {
@@ -212,7 +200,6 @@
   min-height: 44px;
   border-top: 1px solid var(--line);
   font-size: var(--t-small);
-  font-weight: 500;
   color: var(--muted);
 }
 
@@ -221,16 +208,18 @@
   min-height: var(--s-6);
 }
 
-.save {
+.done {
+  position: relative;
   height: 56px;
-  border-radius: var(--r-md);
+  border-radius: var(--r-pill);
   background: var(--ink);
   color: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
-  font-size: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .message {

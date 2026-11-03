@@ -1,0 +1,231 @@
+/* Progress (G-Progress). No desktop mock-up: calendar | stats + bests side by side at ≥1024px. */
+
+/* Month calendar card */
+.calendar {
+  margin-top: -2px; /* G-Progress: 20px under the header (PageHeader leaves 22px) */
+  background: var(--surface);
+  border-radius: 24px;
+  box-shadow: var(--card-shadow);
+  padding: 10px 14px 14px;
+}
+
+.monthBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.monthButton {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+}
+
+/* 40px visual, 44px hit area. */
+.monthButton::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+}
+
+.monthButton:disabled {
+  color: var(--faint);
+  cursor: default;
+}
+
+.monthTitle {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.grid {
+  margin-top: var(--s-1);
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  row-gap: var(--s-1);
+}
+
+.dow {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  padding: var(--s-1) 0;
+}
+
+.day {
+  justify-self: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.day[data-done] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.day[data-today] {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.day[data-future] {
+  color: var(--muted);
+}
+
+a.day:hover {
+  opacity: 0.8;
+}
+
+/* Stat cards: value over label */
+.stats {
+  margin: 10px 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+
+.stats > div {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  padding: 14px;
+  display: flex;
+  flex-direction: column-reverse; /* dt before dd in the markup, label under the value on screen */
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.stats dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.stats dd {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Personal bests */
+.bestsHead {
+  margin-top: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.bestsTitle {
+  font-size: var(--t-list);
+  font-weight: 500;
+}
+
+.window {
+  font-size: var(--t-small);
+  color: var(--muted);
+}
+
+.bests,
+.empty {
+  margin-top: 10px;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  box-shadow: var(--card-shadow);
+}
+
+.bests {
+  padding: 2px 18px;
+}
+
+.bests li + li {
+  border-top: 1px solid var(--line);
+}
+
+.best {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 60px 60px;
+  gap: var(--s-3);
+  align-items: center;
+  min-height: 54px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.bestName {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spark {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 20px;
+}
+
+.spark > span {
+  flex: 1;
+  border-radius: 2px;
+  background: var(--dot);
+}
+
+.spark > span[data-current] {
+  background: var(--accent);
+}
+
+.bestValue {
+  text-align: right;
+  font-size: 15px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  padding: var(--s-4) 18px;
+  font-size: var(--t-small);
+  color: var(--muted);
+}
+
+@media (min-width: 1024px) {
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(320px, 2fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+
+  .calendar {
+    padding: var(--s-3) var(--s-5) var(--s-5);
+  }
+
+  .grid {
+    row-gap: var(--s-2);
+  }
+
+  .day {
+    width: 48px;
+    height: 48px;
+    font-size: 16px;
+  }
+
+  .stats {
+    margin-top: -2px;
+  }
+}

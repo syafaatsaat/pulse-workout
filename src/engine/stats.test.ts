@@ -2,13 +2,14 @@ import type { Session } from '../data/types'
 import {
   activeMs,
   bestOf,
+  bestSeries,
+  goalStreak,
   isNewBest,
   lastTime,
   monthStats,
   personalBests,
   sessionBests,
   startOfWeek,
-  streak,
   weekProgress,
 } from './stats'
 
@@ -171,6 +172,28 @@ describe('personalBests', () => {
   })
 })
 
+describe('bestSeries', () => {
+  const sessions = [
+    on('a', 9, 20, [set('Pushups', { reps: 8 }), set('Plank', { seconds: 40 })]), // before the window
+    on('b', 10, 1, [set('Pushups', { reps: 10 })]),
+    on('c', 10, 8, [set('Plank', { seconds: 55 })]),
+    on('d', 10, 15, [set('Pushups', { reps: 12 }), set('Squat', { reps: 20 })]),
+    on('e', 10, 22, [set('Pushups', { reps: 11 })]),
+    session('open', at(10, 28), [set('Squat', { reps: 99 })], false),
+  ]
+
+  test('the best as it stood at the end of each of the last 6 weeks, oldest first', () => {
+    // Weeks of 21 Sep, 28 Sep, 5, 12, 19 and 26 Oct (NOW).
+    expect(bestSeries(sessions, 'Pushups', NOW)).toEqual([8, 10, 10, 12, 12, 12])
+    expect(bestSeries(sessions, 'Plank', NOW)).toEqual([40, 40, 55, 55, 55, 55])
+  })
+
+  test('0 before the first attempt; unfinished sessions do not count', () => {
+    expect(bestSeries(sessions, 'Squat', NOW)).toEqual([0, 0, 0, 20, 20, 20])
+    expect(bestSeries(sessions, 'Squat', NOW, 3)).toEqual([20, 20, 20])
+  })
+})
+
 describe('weekly goal', () => {
   const sessions = [
     // Week of 28 Sep: 4
@@ -202,15 +225,15 @@ describe('weekly goal', () => {
     expect(weekProgress(sessions, NOW)).toBe(2)
   })
 
-  test('streak: weeks in a row meeting the goal; an unfinished week does not break it', () => {
-    expect(streak(sessions, 4, NOW)).toBe(2)
-    expect(streak(sessions, 2, NOW)).toBe(5) // this week already counts once met
-    expect(streak(sessions, 6, NOW)).toBe(0)
-    expect(streak([], 4, NOW)).toBe(0)
+  test('goalStreak: weeks in a row meeting the goal; an unfinished week does not break it', () => {
+    expect(goalStreak(sessions, 4, NOW)).toBe(2)
+    expect(goalStreak(sessions, 2, NOW)).toBe(5) // this week already counts once met
+    expect(goalStreak(sessions, 6, NOW)).toBe(0)
+    expect(goalStreak([], 4, NOW)).toBe(0)
   })
 
-  test('streak is 0 once a whole week is missed', () => {
-    expect(streak(sessions, 4, at(11, 9, 12))).toBe(0)
+  test('goalStreak is 0 once a whole week is missed', () => {
+    expect(goalStreak(sessions, 4, at(11, 9, 12))).toBe(0)
   })
 
   test('monthStats: totals for the calendar month, weekly figures for weeks starting in it', () => {

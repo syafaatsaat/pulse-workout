@@ -11,6 +11,7 @@
   --accent: #F2542D;             /* ember: Start, active tab dot, PB marker, current session segment, switches */
   --accent-ink: #131518;         /* text/icons ON ember — stays dark in both themes */
   --accent-tint: rgba(242, 84, 45, 0.12);     /* "Best" tag background */
+  --accent-glow: 0 10px 30px rgba(242, 84, 45, 0.3); /* Summary check badge */
 
   /* Player — work + timed screens are dark in BOTH themes */
   --work: #121417;

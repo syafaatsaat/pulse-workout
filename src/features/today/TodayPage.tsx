@@ -112,7 +112,7 @@ export function TodayPage() {
     </div>
   )
 
-  // Kept from Field Manual (the refs don't show it): a plain surface card above the hero.
+  // Not in the refs: an unfinished session gets a plain surface card above the hero.
   const resume = unfinished && unfinishedWorkout && (
     <section className={styles.resume} aria-labelledby="today-resume">
       <div className={styles.resumeText}>

@@ -22,15 +22,6 @@
   background: var(--bar-current, var(--accent));
 }
 
-/* Summary: everything done is solid ink. */
-.bar[data-variant='summary'] .segment[data-state='past'] {
-  background: currentColor;
-}
-
-.bar[data-variant='summary'] .segment[data-state='current'] {
-  background: color-mix(in srgb, currentColor 12%, transparent);
-}
-
 /* Preview (G-Today hero): the session's shape on the dark hero card, 4px tall. */
 .bar[data-variant='preview'] {
   height: 4px;

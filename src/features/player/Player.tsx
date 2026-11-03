@@ -24,6 +24,7 @@ import { PhoneView } from './PhoneView'
 import styles from './Player.module.css'
 import { playerScreen, runAddTime, runAdjust, runPrimary } from './screen'
 import { useCues } from './useCues'
+import { useVoice } from './useVoice'
 import { useNow } from './useNow'
 import { useWakeLock } from './useWakeLock'
 
@@ -79,6 +80,7 @@ export function Player(props: PlayerProps) {
   }, [state.status, remaining, step, endsAt])
 
   useCues(state, settings?.beeps ?? true)
+  useVoice(state, settings?.voice ?? false)
   const wakeLock = useWakeLock((settings?.wakeLock ?? true) && state.status !== 'finished')
   const notice = wakeLock === 'unavailable' ? "Screen may sleep: this browser can't keep it awake" : undefined
 

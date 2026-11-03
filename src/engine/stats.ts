@@ -137,7 +137,7 @@ export function weekProgress(sessions: Session[], now: number): number {
  * Weeks in a row meeting the weekly goal, counting back from `now`. The current week counts once
  * it meets the goal; until then it doesn't break the streak.
  */
-export function streak(sessions: Session[], goal: number, now: number): number {
+export function goalStreak(sessions: Session[], goal: number, now: number): number {
   const counts = perWeek(sessions)
   const week = startOfWeek(now)
   let weeks = 0
@@ -147,6 +147,25 @@ export function streak(sessions: Session[], goal: number, now: number): number {
     if ((counts.get(week.getTime()) ?? 0) < goal) return weeks
     weeks++
   }
+}
+
+/**
+ * Progress sparkline: the move's best as it stood at the end of each of the last `weeks` weeks
+ * (Monday to Sunday, oldest first, the current week last), so the last value is the current best.
+ * 0 before the move was first done.
+ */
+export function bestSeries(sessions: Session[], exerciseId: string, now: number, weeks = 6): number[] {
+  const done = sessions.filter(isFinished)
+  const end = startOfWeek(now)
+  end.setDate(end.getDate() - 7 * (weeks - 1))
+  return Array.from({ length: weeks }, () => {
+    end.setDate(end.getDate() + 7)
+    const before = end.getTime()
+    const sets = done
+      .filter((s) => s.startedAt < before)
+      .flatMap((s) => s.sets.filter((x) => x.exerciseId === exerciseId))
+    return bestOf(sets)?.value ?? 0
+  })
 }
 
 export interface MonthStats {
