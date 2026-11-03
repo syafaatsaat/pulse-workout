@@ -29,6 +29,7 @@ npm run build             # type-check and production build to dist/
 npm run preview           # serve dist/
 npm run test              # unit tests
 npm run lint              # ESLint
+npm run e2e               # Playwright: every route and player phase, phone + desktop, light + dark
 npm run import:exercises  # re-import free-exercise-db into src/data/exercises.json + public/exercises/
 ```
 

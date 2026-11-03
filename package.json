@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "import:exercises": "tsx scripts/import-exercises.ts"
+    "import:exercises": "tsx scripts/import-exercises.ts",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource/geist": "^5.3.0",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",

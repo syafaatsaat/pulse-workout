@@ -82,7 +82,11 @@ scripts/
 - `npm run import:exercises` — re-import free-exercise-db (pinned commit, cached in `.cache/`) into
   `src/data/exercises.json` + `public/exercises/`. `-- --list` prints the kept ids without writing.
   Tune the filter in `scripts/exercise-overrides.json`.
-- `npm run e2e` — Playwright, added on Day 7
+- `npm run e2e` — Playwright (`e2e/`) against the production build (it builds and starts `preview` itself):
+  every route + every player phase at 390×844 and 1440×900, light and dark. Asserts the video card is the
+  same height in all four player phases. Screenshots are attached to the report (`npx playwright show-report`),
+  not compared pixel by pixel, since the demo data is dated relative to today. First run on a new machine:
+  `npx playwright install chromium`.
 
 ## Dev notes
 - Demo data is seeded on first load by `ensureSeeded()` (`src/data/seed.ts`); demo sessions are dated
