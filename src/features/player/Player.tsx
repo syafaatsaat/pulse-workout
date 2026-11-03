@@ -19,7 +19,7 @@ import type { Best, SetValue } from '../../engine/stats'
 import { unlockAudio } from './audio'
 import { DesktopView } from './DesktopView'
 import { EndDialog } from './EndDialog'
-import { FormDialog } from './FormDialog'
+import { InfoSheet } from './InfoSheet'
 import { PhoneView } from './PhoneView'
 import styles from './Player.module.css'
 import { playerScreen, runAddTime, runAdjust, runPrimary } from './screen'
@@ -55,6 +55,7 @@ export function Player(props: PlayerProps) {
   }
   const [dialog, setDialog] = useState<'end' | 'info' | null>(null)
   const pausedForDialog = useRef(false)
+  const infoRef = useRef<HTMLButtonElement>(null)
   const navigate = useNavigate()
   const now = useNow(state.status === 'running')
   const step = currentStep(state)
@@ -166,7 +167,15 @@ export function Player(props: PlayerProps) {
 
   const screen = playerScreen(state, step, now, moveCount, exercises, lastTimes, bests)
   // The info sheet shows the move on screen: during a rest, the next one. It doesn't pause.
-  const common = { state, screen, dispatch, notice, onEnd: openEnd, onInfo: () => setDialog('info') }
+  const common = {
+    state,
+    screen,
+    dispatch,
+    notice,
+    onEnd: openEnd,
+    onInfo: () => setDialog('info'),
+    infoRef,
+  }
 
   return (
     <>
@@ -180,7 +189,15 @@ export function Player(props: PlayerProps) {
           dispatch({ type: 'end', now: Date.now() })
         }}
       />
-      <FormDialog open={dialog === 'info'} exercise={screen.media.exercise} onClose={() => setDialog(null)} />
+      <InfoSheet
+        open={dialog === 'info'}
+        exercise={screen.media.exercise}
+        best={screen.media.exercise && bests.get(screen.media.exercise.id)}
+        resting={screen.resting}
+        desktop={desktop}
+        returnFocus={infoRef}
+        onClose={() => setDialog(null)}
+      />
     </>
   )
 }

@@ -5,7 +5,7 @@ import { Ring } from '../../components/Ring'
 import { SessionBar } from '../../components/SessionBar'
 import { db, DEFAULT_SETTINGS } from '../../data/db'
 import { useLiveQuery } from '../../data/useLiveQuery'
-import type { Workout } from '../../data/types'
+import type { Exercise, Workout } from '../../data/types'
 import { compile, estimateMs, moveCount } from '../../engine/compile'
 import { personalBests, weekProgress } from '../../engine/stats'
 import { blockLabels } from '../player/blockLabels'
@@ -22,7 +22,9 @@ const DOW = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 const DOW_LONG = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const SHOWN_BESTS = 3
 
-const minutes = (w: Workout) => Math.max(1, Math.round(estimateMs(compile(w)) / 60_000))
+// Lead-ins only count for moves flagged needsSetup, so the estimate needs the exercises.
+const minutes = (w: Workout, exercises: Map<string, Exercise>) =>
+  Math.max(1, Math.round(estimateMs(compile(w, exercises)) / 60_000))
 
 async function load() {
   const [workouts, sessions, settings, exercises] = await Promise.all([
@@ -138,7 +140,7 @@ export function TodayPage() {
       </h2>
       <ul className={styles.pills} aria-label="About this session">
         <li>{moveCount(next)} moves</li>
-        <li>{minutes(next)} min</li>
+        <li>{minutes(next, exercises)} min</li>
         <li>{equipmentLabel(next, exercises)}</li>
       </ul>
       <div className={styles.shape}>
@@ -215,7 +217,7 @@ export function TodayPage() {
                       <button
                         type="button"
                         className={styles.row}
-                        aria-label={`Start ${w.name}, ${moveCount(w)} moves, ${minutes(w)} minutes`}
+                        aria-label={`Start ${w.name}, ${moveCount(w)} moves, ${minutes(w, exercises)} minutes`}
                         onClick={() => void start(w.id)}
                       >
                         <span className={styles.rowName}>{w.name}</span>
@@ -288,7 +290,7 @@ export function TodayPage() {
                 <button
                   type="button"
                   className={styles.quickCard}
-                  aria-label={`Start ${w.name}, ${moveCount(w)} moves, ${minutes(w)} minutes`}
+                  aria-label={`Start ${w.name}, ${moveCount(w)} moves, ${minutes(w, exercises)} minutes`}
                   onClick={() => void start(w.id)}
                 >
                   <span className={styles.quickMeta}>{moveCount(w)} moves</span>

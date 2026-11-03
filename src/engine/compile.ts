@@ -1,4 +1,4 @@
-import type { Block, ItemMode, Workout } from '../data/types'
+import type { Block, Exercise, ItemMode, Workout } from '../data/types'
 
 /**
  * One entry of the compiled timeline. The player, the session bar, the time estimate and the
@@ -22,6 +22,8 @@ export interface Step {
   /** 0-based position of the move in the workout ("Move 4 of 9"). */
   moveIndex: number
   tempo?: string
+  /** Timed work on a move that needs setting up (a plank): a 5 s lead-in runs before its timer. */
+  needsSetup?: boolean
 }
 
 /** Per-rep estimate when an item has no tempo. */
@@ -42,12 +44,16 @@ export function moveCount(workout: Workout): number {
 }
 
 /**
- * Turns a workout into a flat timeline.
+ * Turns a workout into a flat timeline. `exercises` supplies each move's needsSetup flag; without
+ * it no step gets a lead-in (fine for anything that only needs the shape, like the session bar).
  * - straight block: every set of a move, then the next move.
  * - circuit block: one set of each move per round; `rounds` is the set count.
  * Each work step is followed by its item's rest (if > 0), except the very last step.
  */
-export function compile(workout: Workout): Step[] {
+export function compile(
+  workout: Workout,
+  exercises?: ReadonlyMap<string, Pick<Exercise, 'needsSetup'> | undefined>,
+): Step[] {
   const steps: Step[] = []
   let moveBase = 0
 
@@ -64,6 +70,7 @@ export function compile(workout: Workout): Step[] {
         mode: item.mode,
         moveIndex,
         ...(item.tempo ? { tempo: item.tempo } : {}),
+        ...(item.mode === 'time' && exercises?.get(item.exerciseId)?.needsSetup ? { needsSetup: true } : {}),
       })
       if (item.restAfter > 0) {
         steps.push({
@@ -97,13 +104,10 @@ function* order(block: Block) {
   }
 }
 
-/** "Get into position" countdown the player runs before every timed work set. */
+/** "Get into position" countdown the player runs before a timed set flagged needsSetup. */
 export const LEAD_IN_MS = 5000
 
-/** Planned total length of a timeline, including the lead-ins. */
+/** Planned total length of a timeline, including the lead-ins of the steps that have one. */
 export function estimateMs(steps: Step[]): number {
-  return steps.reduce(
-    (ms, s) => ms + s.durationMs + (s.kind === 'work' && s.mode === 'time' ? LEAD_IN_MS : 0),
-    0,
-  )
+  return steps.reduce((ms, s) => ms + s.durationMs + (s.needsSetup ? LEAD_IN_MS : 0), 0)
 }

@@ -11,10 +11,11 @@ async function load(sessionId: string) {
   if (!session) return null
   const workout = await db.workouts.get(session.workoutId)
   if (!workout) return null
-  const steps = compile(workout)
-  const ids = [...new Set(steps.map((s) => s.exerciseId))]
+  const ids = [...new Set(workout.blocks.flatMap((b) => b.items.map((i) => i.exerciseId)))]
   const found = await db.exercises.bulkGet(ids)
   const exercises = new Map(found.flatMap((e) => (e ? [[e.id, e] as const] : [])))
+  // With the exercises, so timed holds flagged needsSetup get their lead-in.
+  const steps = compile(workout, exercises)
   const history = await db.sessions.where('startedAt').below(session.startedAt).toArray()
   const lastTimes = new Map<string, SetValue>()
   for (const id of ids) {

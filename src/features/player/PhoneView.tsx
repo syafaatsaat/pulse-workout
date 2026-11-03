@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react'
+import type { Dispatch, Ref } from 'react'
 import { SessionBar } from '../../components/SessionBar'
 import type { PlayerAction, PlayerState } from '../../engine/playerReducer'
 import {
@@ -22,6 +22,7 @@ interface PhoneViewProps {
   dispatch: Dispatch<PlayerAction>
   onEnd: () => void
   onInfo: () => void
+  infoRef: Ref<HTMLButtonElement>
   /** Shown over the video card, e.g. when the screen can't be kept awake. */
   notice?: string
 }
@@ -30,7 +31,7 @@ interface PhoneViewProps {
  * Phone player (G-Player / G-Rest / G-Timed): one fixed layout for every phase. Everything has a
  * fixed height except the video card, so the video is the same size on work, rest, get-ready and hold.
  */
-export function PhoneView({ state, screen, dispatch, onEnd, onInfo, notice }: PhoneViewProps) {
+export function PhoneView({ state, screen, dispatch, onEnd, onInfo, infoRef, notice }: PhoneViewProps) {
   const { resting, paused, adjust, primary } = screen
   return (
     <div className={`${styles.ground} ${styles.player}`} data-mode={resting ? 'rest' : 'work'}>
@@ -51,7 +52,7 @@ export function PhoneView({ state, screen, dispatch, onEnd, onInfo, notice }: Ph
           />
         </div>
 
-        <VideoCard screen={screen} onInfo={onInfo} notice={notice} />
+        <VideoCard screen={screen} onInfo={onInfo} infoRef={infoRef} notice={notice} />
 
         <h1 className={styles.name}>{screen.title}</h1>
 

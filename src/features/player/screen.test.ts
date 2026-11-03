@@ -16,6 +16,7 @@ const STEPS: Step[] = [
     target: 40,
     durationMs: 40_000,
     mode: 'time',
+    needsSetup: true,
     moveIndex: 4,
   },
 ]

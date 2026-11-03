@@ -28,5 +28,12 @@
   ],
   "exclude": ["Inverted_Row", "Scapular_Pull-Up", "Trail_Running_Walking", "Linear_3-Part_Start_Technique"],
   "rename": {},
-  "equipment": {}
+  "equipment": {},
+  "needsSetup": [
+    "Isometric_Chest_Squeezes",
+    "Isometric_Neck_Exercise_-_Front_And_Back",
+    "Isometric_Neck_Exercise_-_Sides",
+    "Plank",
+    "Side_Bridge"
+  ]
 }

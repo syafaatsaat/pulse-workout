@@ -5,14 +5,19 @@ import type { Exercise } from './types'
 
 /**
  * First visit: load exercises, ready-made workouts, demo sessions and default settings.
- * Exercises are reloaded whenever the bundled list changes (e.g. after a re-import).
+ * Exercises are reloaded whenever the bundled list changes (e.g. after a re-import): a different
+ * count, or a stored copy that predates the needsSetup flag.
  */
 export async function ensureSeeded(now = new Date()): Promise<void> {
   // Dynamic import keeps the ~380 KB exercise list out of the main bundle.
   const { default: exercises } = await import('./exercises.json')
 
   await db.transaction('rw', [db.exercises, db.workouts, db.sessions, db.settings], async () => {
-    if ((await db.exercises.count()) !== exercises.length) {
+    const flagged = (exercises as Exercise[]).filter((e) => e.needsSetup).map((e) => e.id)
+    const stale =
+      (await db.exercises.count()) !== exercises.length ||
+      (await db.exercises.bulkGet(flagged)).some((e) => !e?.needsSetup)
+    if (stale) {
       await db.exercises.clear()
       await db.exercises.bulkPut(exercises as Exercise[])
     }

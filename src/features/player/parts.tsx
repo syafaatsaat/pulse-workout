@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState, type ReactNode, type Ref } from 'react'
 import { ExerciseSlideshow } from '../../components/ExerciseSlideshow'
 import { Rings } from '../../components/Rings'
 import styles from './Player.module.css'
@@ -223,11 +223,14 @@ export function Line({ screen, className }: { screen: PlayerScreen; className?: 
 export function VideoCard({
   screen,
   onInfo,
+  infoRef,
   notice,
   desktop,
 }: {
   screen: PlayerScreen
   onInfo: () => void
+  /** The ⓘ button: focus returns here when the info sheet closes. */
+  infoRef?: Ref<HTMLButtonElement>
   notice?: string
   desktop?: boolean
 }) {
@@ -247,6 +250,7 @@ export function VideoCard({
         </span>
       )}
       <button
+        ref={infoRef}
         type="button"
         className={desktop ? styles.infoPill : styles.info}
         aria-label={`Exercise info: ${media.name}${resting ? ', up next' : ''}`}

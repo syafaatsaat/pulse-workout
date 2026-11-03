@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react'
+import type { Dispatch, Ref } from 'react'
 import { SessionBar } from '../../components/SessionBar'
 import type { PlayerAction, PlayerState } from '../../engine/playerReducer'
 import styles from './Desktop.module.css'
@@ -24,6 +24,7 @@ interface DesktopViewProps {
   dispatch: Dispatch<PlayerAction>
   onEnd: () => void
   onInfo: () => void
+  infoRef: Ref<HTMLButtonElement>
   notice?: string
 }
 
@@ -33,7 +34,7 @@ interface DesktopViewProps {
  * action, each with its key.
  */
 export function DesktopView(props: DesktopViewProps) {
-  const { state, screen, workoutName, dispatch, onEnd, onInfo, notice } = props
+  const { state, screen, workoutName, dispatch, onEnd, onInfo, infoRef, notice } = props
   const { resting, paused, adjust, primary } = screen
   const position = `${workoutName} · ${screen.position}`
 
@@ -54,7 +55,7 @@ export function DesktopView(props: DesktopViewProps) {
 
       <main className={styles.main}>
         <div className={styles.media}>
-          <VideoCard screen={screen} onInfo={onInfo} notice={notice} desktop />
+          <VideoCard screen={screen} onInfo={onInfo} infoRef={infoRef} notice={notice} desktop />
         </div>
 
         <section className={styles.side}>

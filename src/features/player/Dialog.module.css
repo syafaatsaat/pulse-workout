@@ -1,4 +1,4 @@
-/* Player dialogs sit on the app surface (theme colours), not on the orange / blue ground. */
+/* End-session dialog: on the app surface (theme colours), not the player ground. */
 .dialog {
   --focus-ring: var(--ink); /* back on the theme surface */
   width: min(440px, calc(100vw - 2 * var(--gutter)));
@@ -12,11 +12,7 @@
 }
 
 .dialog::backdrop {
-  background: color-mix(in srgb, var(--accent-ink) 55%, transparent);
-}
-
-.form {
-  width: min(560px, calc(100vw - 2 * var(--gutter)));
+  background: var(--scrim);
 }
 
 .title {
@@ -51,48 +47,4 @@
 
 .secondary {
   background: var(--fill);
-}
-
-.photos {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--s-2);
-  margin-top: var(--s-4);
-}
-
-.photo {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-1);
-}
-
-.photo img,
-.placeholder {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-  border-radius: var(--r-sm);
-}
-
-.steps {
-  display: flex;
-  flex-direction: column;
-  margin-top: var(--s-4);
-  font-size: var(--t-small);
-}
-
-.steps li {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  padding: var(--s-2) 0;
-  border-top: 1px solid var(--line);
-}
-
-.steps li:first-child {
-  border-top: 0;
-}
-
-.stepNo {
-  color: var(--muted);
 }

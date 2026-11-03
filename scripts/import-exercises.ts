@@ -49,6 +49,8 @@ const include = new Set(overrides.include)
 const exclude = new Set(overrides.exclude)
 const rename: Record<string, string> = overrides.rename
 const equipmentOverride: Record<string, Equipment> = overrides.equipment as Record<string, Equipment>
+/** Timed holds that get the player's "get into position" lead-in. */
+const needsSetup = new Set(overrides.needsSetup)
 
 function keep(ex: SourceExercise): boolean {
   if (exclude.has(ex.id)) return false
@@ -79,6 +81,7 @@ function normalise(ex: SourceExercise): Exercise {
     secondaryMuscles: ex.secondaryMuscles ?? [],
     instructions: (ex.instructions ?? []).map(clean).filter(Boolean),
     images: (ex.images ?? []).map((p) => p.replace(/\.(jpe?g|png)$/i, '.webp')),
+    ...(needsSetup.has(ex.id) ? { needsSetup: true } : {}),
   }
 }
 
@@ -113,6 +116,8 @@ async function main() {
 
   const missing = overrides.include.filter((id) => !source.some((ex) => ex.id === id))
   if (missing.length) console.warn(`Unknown ids in overrides.include: ${missing.join(', ')}`)
+  const unflagged = overrides.needsSetup.filter((id) => !kept.some((ex) => ex.id === id))
+  if (unflagged.length) console.warn(`needsSetup ids not in the kept list: ${unflagged.join(', ')}`)
 
   if (listOnly) {
     for (const ex of kept) console.log(`${ex.equipment.padEnd(12)} ${ex.category.padEnd(12)} ${ex.id}`)
