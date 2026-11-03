@@ -25,11 +25,9 @@
 }
 
 .goalValue {
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 500;
   font-size: 20px;
   line-height: 1;
-  text-transform: uppercase;
   font-variant-numeric: tabular-nums;
 }
 
@@ -48,8 +46,7 @@
 }
 
 .dow {
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
+  font-size: var(--t-small);
   font-weight: 500;
   color: var(--muted);
 }
@@ -61,7 +58,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-display);
   font-weight: 600;
   font-size: 17px;
   font-variant-numeric: tabular-nums;
@@ -88,7 +84,7 @@
   gap: var(--s-3);
   background: var(--surface);
   border-radius: var(--r-lg);
-  box-shadow: var(--card);
+  box-shadow: var(--card-shadow);
   padding: 14px var(--s-4);
 }
 
@@ -101,11 +97,9 @@
 }
 
 .resumeName {
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 500;
   font-size: 24px;
   line-height: 1;
-  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -114,24 +108,22 @@
 .resumeButton {
   height: 44px;
   padding: 0 var(--s-4);
-  border-radius: var(--r-md);
+  border-radius: var(--r-pill);
   background: var(--ink);
   color: var(--bg);
   display: flex;
   align-items: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 20px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  font-weight: 600;
+  font-size: var(--t-body);
 }
 
 /* Up next */
+/* Hero card (REDESIGN §3): dark in both themes. Full G-Today polish is step 4. */
 .next {
   margin-top: 22px;
-  background: var(--surface);
-  border-radius: var(--r-xl);
-  box-shadow: var(--card);
+  background: var(--hero);
+  color: var(--on-hero);
+  border-radius: var(--r-lg);
   padding: var(--s-5);
   display: flex;
   flex-direction: column;
@@ -143,12 +135,9 @@
 
 .nextName {
   margin-top: var(--s-2);
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 500;
   font-size: var(--t-hero);
   line-height: 0.92;
-  letter-spacing: -0.5px;
-  text-transform: uppercase;
 }
 
 .pills {
@@ -158,18 +147,19 @@
   flex-wrap: wrap;
 }
 
+.next :global(.kicker) {
+  color: var(--on-hero-label);
+}
+
 .pills li {
   height: 28px;
   padding: 0 10px;
   border-radius: 14px;
-  background: var(--fill);
+  background: var(--on-hero-line);
   display: flex;
   align-items: center;
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
+  font-size: var(--t-small);
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
 .shape {
@@ -180,12 +170,9 @@
   margin-top: 6px;
   display: flex;
   gap: 3px;
-  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
+  color: var(--on-hero-label);
 }
 
 .blockLabels span {
@@ -210,18 +197,15 @@
 .start {
   margin-top: 18px;
   height: 56px;
-  border-radius: var(--r-md);
+  border-radius: var(--r-pill);
   background: var(--accent);
   color: var(--accent-ink);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 18px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 24px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 16px;
 }
 
 /* Quick start */
@@ -253,7 +237,7 @@
   min-height: 104px;
   background: var(--surface);
   border-radius: var(--s-4);
-  box-shadow: var(--card);
+  box-shadow: var(--card-shadow);
   padding: var(--s-3);
   display: flex;
   flex-direction: column;
@@ -264,19 +248,15 @@
 }
 
 .quickMeta {
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
+  font-size: var(--t-small);
   font-weight: 600;
   color: var(--muted);
-  text-transform: uppercase;
 }
 
 .quickName {
-  font-family: var(--font-display);
   font-weight: 600;
   font-size: 20px;
   line-height: 1;
-  text-transform: uppercase;
 }
 
 /* DT-Today: rendered only at >= 1024px (TodayPage picks the layout). */
@@ -317,9 +297,8 @@
 
 .deskMain .nextName {
   margin-top: 10px;
-  font-size: 88px;
+  font-size: 56px;
   line-height: 0.88;
-  letter-spacing: -1px;
 }
 
 .deskMain .pills {
@@ -354,30 +333,26 @@
   gap: var(--s-2);
   align-items: center;
   min-height: 44px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--on-hero-line);
 }
 
 .moveNum,
 .moveDose {
-  font-family: var(--font-mono);
-  color: var(--muted);
+  color: var(--on-hero-label);
   font-variant-numeric: tabular-nums;
 }
 
 .moveNum {
-  font-size: var(--t-eyebrow);
+  font-size: var(--t-small);
 }
 
 .moveDose {
   font-size: 12px;
-  text-transform: uppercase;
 }
 
 .moveName {
-  font-family: var(--font-display);
   font-weight: 600;
   font-size: 19px;
-  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -386,15 +361,15 @@
 .deskMain .start {
   margin-top: var(--s-6);
   height: 60px;
-  border-radius: var(--s-4);
+  border-radius: var(--r-pill);
   padding: 0 22px;
-  font-size: 26px;
+  font-size: 17px;
 }
 
 .sideCard {
   background: var(--surface);
   border-radius: var(--r-xl);
-  box-shadow: var(--card);
+  box-shadow: var(--card-shadow);
   padding: var(--s-5);
 }
 
@@ -404,7 +379,6 @@
 
 .sideCard .dow {
   font-size: 10px;
-  text-transform: uppercase;
 }
 
 .sideCard .date {
@@ -416,7 +390,7 @@
 .listCard {
   background: var(--surface);
   border-radius: var(--r-xl);
-  box-shadow: var(--card);
+  box-shadow: var(--card-shadow);
   padding: var(--s-2) var(--s-5);
 }
 
@@ -436,10 +410,8 @@
 }
 
 .rowName {
-  font-family: var(--font-display);
   font-weight: 600;
   font-size: 21px;
-  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -452,15 +424,12 @@
   background: var(--fill);
   display: flex;
   align-items: center;
-  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
-  text-transform: uppercase;
 }
 
 .rowValue {
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 500;
   font-size: 22px;
   font-variant-numeric: tabular-nums;
 }

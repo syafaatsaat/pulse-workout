@@ -45,7 +45,7 @@ export function SettingsPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Stored on this device" title="Settings" />
+      <PageHeader kicker="Stored on this device" title="Settings" />
 
       <section className={styles.group} aria-labelledby="settings-workout">
         <h2 id="settings-workout" className={styles.heading}>

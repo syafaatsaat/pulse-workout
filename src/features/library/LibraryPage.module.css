@@ -10,7 +10,7 @@
   height: 48px;
   border-radius: var(--r-md);
   background: var(--surface);
-  box-shadow: var(--card);
+  box-shadow: var(--card-shadow);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -43,7 +43,7 @@
   height: 48px;
   border-radius: var(--r-md);
   background: var(--surface);
-  box-shadow: var(--card);
+  box-shadow: var(--card-shadow);
   color: var(--ink);
   display: flex;
   align-items: center;
@@ -94,7 +94,7 @@
   padding: 0 14px;
   border-radius: 18px;
   background: var(--surface);
-  box-shadow: var(--card);
+  box-shadow: var(--card-shadow);
   color: var(--ink);
   font-size: var(--t-small);
   font-weight: 600;
@@ -125,7 +125,7 @@
   margin-top: var(--s-2);
   background: var(--surface);
   border-radius: var(--r-lg);
-  box-shadow: var(--card);
+  box-shadow: var(--card-shadow);
 }
 
 .results {
@@ -160,11 +160,9 @@
 }
 
 .name {
-  font-family: var(--font-display);
   font-weight: 600;
   font-size: 20px;
   line-height: 1.1;
-  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -182,14 +180,12 @@
   background: var(--fill);
   display: flex;
   align-items: center;
-  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.04em;
 }
 
 .chevron {
-  color: var(--dim);
+  color: var(--faint);
 }
 
 .empty {
@@ -252,8 +248,7 @@
   padding: 2px 7px;
   border-radius: 6px;
   background: var(--fill);
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
+  font-size: var(--t-small);
   font-weight: 600;
   color: var(--muted);
 }
@@ -282,7 +277,7 @@
   padding: 6px;
   background: var(--surface);
   border-radius: var(--r-lg);
-  box-shadow: var(--card);
+  box-shadow: var(--card-shadow);
 }
 
 .paneRow {

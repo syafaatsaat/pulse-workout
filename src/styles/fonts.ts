@@ -1,10 +1,6 @@
-// Self-hosted via Fontsource, latin subset, only the weights the design uses.
-import '@fontsource/barlow-condensed/latin-600.css'
-import '@fontsource/barlow-condensed/latin-700.css'
-import '@fontsource/barlow-condensed/latin-800.css'
-import '@fontsource/ibm-plex-sans/latin-400.css'
-import '@fontsource/ibm-plex-sans/latin-500.css'
-import '@fontsource/ibm-plex-sans/latin-600.css'
-import '@fontsource/ibm-plex-mono/latin-400.css'
-import '@fontsource/ibm-plex-mono/latin-500.css'
-import '@fontsource/ibm-plex-mono/latin-600.css'
+// Self-hosted via Fontsource, latin subset. Geist only: 300 big numbers, 400 body, 500 titles,
+// 600 primary-button labels (REDESIGN.md §2).
+import '@fontsource/geist/latin-300.css'
+import '@fontsource/geist/latin-400.css'
+import '@fontsource/geist/latin-500.css'
+import '@fontsource/geist/latin-600.css'

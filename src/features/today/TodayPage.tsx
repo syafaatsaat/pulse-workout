@@ -51,7 +51,7 @@ export function TodayPage() {
   const header = (done: number, goal: number) => (
     <header className={styles.header}>
       <div className={styles.titles}>
-        <span className="eyebrow">
+        <span className="kicker">
           {dateFmt.format(now)}
           {desktop && ` · Week ${isoWeek(new Date(now))}`}
         </span>
@@ -61,7 +61,7 @@ export function TodayPage() {
       {!desktop && (
         <div className={styles.goal} role="img" aria-label={`Weekly goal: ${done} of ${goal} sessions`}>
           <div className={styles.goalText}>
-            <span className="eyebrow">Week</span>
+            <span className="kicker">Week</span>
             <span className={styles.goalValue}>
               {done} of {goal}
             </span>
@@ -115,7 +115,7 @@ export function TodayPage() {
   const resume = unfinished && unfinishedWorkout && (
     <section className={styles.resume} aria-labelledby="today-resume">
       <div className={styles.resumeText}>
-        <span className="eyebrow">
+        <span className="kicker">
           Unfinished · {unfinished.sets.length} {unfinished.sets.length === 1 ? 'set' : 'sets'} done
         </span>
         <h2 id="today-resume" className={styles.resumeName}>
@@ -130,7 +130,7 @@ export function TodayPage() {
 
   const nextCard = next && (
     <section className={styles.next} aria-labelledby="today-next">
-      <span className="eyebrow">
+      <span className="kicker">
         Up next · Session {String(done + 1).padStart(2, '0')} · {next.focus}
       </span>
       <h2 id="today-next" className={styles.nextName}>
@@ -199,14 +199,14 @@ export function TodayPage() {
           </div>
           <aside className={styles.deskSide} aria-label="This week, quick start and recent bests">
             <section className={styles.sideCard} aria-labelledby="today-week">
-              <h2 id="today-week" className="eyebrow">
+              <h2 id="today-week" className="kicker">
                 This week
               </h2>
               {week}
             </section>
             {others.length > 0 && (
               <section className={styles.listCard} aria-labelledby="today-quick">
-                <h2 id="today-quick" className="eyebrow">
+                <h2 id="today-quick" className="kicker">
                   Quick start
                 </h2>
                 <ul>
@@ -229,7 +229,7 @@ export function TodayPage() {
             )}
             {bests.length > 0 && (
               <section className={styles.listCard} aria-labelledby="today-bests">
-                <h2 id="today-bests" className="eyebrow">
+                <h2 id="today-bests" className="kicker">
                   Recent bests
                 </h2>
                 <ul>
@@ -267,7 +267,7 @@ export function TodayPage() {
       {others.length > 0 && (
         <section aria-labelledby="today-quick">
           <div className={styles.quickHead}>
-            <h2 id="today-quick" className="eyebrow">
+            <h2 id="today-quick" className="kicker">
               Quick start
             </h2>
             {others.length > SHOWN_QUICK && (

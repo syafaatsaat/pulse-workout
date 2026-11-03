@@ -198,7 +198,7 @@ export function LibraryPage() {
 
   return (
     <>
-      <PageHeader eyebrow="free-exercise-db" title="Library" />
+      <PageHeader kicker="free-exercise-db" title="Library" />
 
       <div className={styles.searchRow}>
         <SearchField lib={lib} />
@@ -228,7 +228,7 @@ export function LibraryPage() {
 
       {showEquipment && (
         <fieldset className={styles.equipment} id="library-equipment">
-          <legend className="eyebrow">Equipment</legend>
+          <legend className="kicker">Equipment</legend>
           <EquipmentChips lib={lib} />
         </fieldset>
       )}
@@ -236,7 +236,7 @@ export function LibraryPage() {
       <MuscleChips lib={lib} className={styles.muscles} />
 
       <div className={styles.resultsHead}>
-        <h2 className="eyebrow" aria-live="polite">
+        <h2 className="kicker" aria-live="polite">
           {group ?? 'All muscles'} · {equipmentText} · {results.length}
         </h2>
         <span className={styles.sorted}>Sorted A–Z</span>
@@ -292,7 +292,7 @@ export function LibraryTwoPane() {
   return (
     <div className={styles.twoPane}>
       <section className={styles.listPane} aria-label="Exercise list">
-        <PageHeader eyebrow="free-exercise-db" title="Library" />
+        <PageHeader kicker="free-exercise-db" title="Library" />
         <div className={styles.paneSearch}>
           <SearchField lib={lib} inputRef={search} hint />
         </div>

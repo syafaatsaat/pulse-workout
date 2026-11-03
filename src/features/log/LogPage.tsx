@@ -50,7 +50,7 @@ export function LogPage() {
   const shown = parseMonth(params.get('month'), current)
   const data = useLiveQuery(load)
 
-  if (!data) return <PageHeader eyebrow="…" title="Log" />
+  if (!data) return <PageHeader kicker="…" title="Log" />
 
   const { sessions, goal, names } = data
   const stats = monthStats(sessions, shown.year, shown.month, goal, now)
@@ -70,7 +70,7 @@ export function LogPage() {
   return (
     <>
       <PageHeader
-        eyebrow={`${plural(stats.sessions, 'session', 'sessions')} · ${hoursMinutes(stats.activeMs)}`}
+        kicker={`${plural(stats.sessions, 'session', 'sessions')} · ${hoursMinutes(stats.activeMs)}`}
         title="Log"
       />
 
@@ -191,7 +191,7 @@ export function LogPage() {
 
           <section aria-labelledby="log-bests">
             <div className={styles.bestsHead}>
-              <h2 id="log-bests" className="eyebrow">
+              <h2 id="log-bests" className="kicker">
                 Personal bests · 6 weeks
               </h2>
               <Link to="/library" className={styles.all}>

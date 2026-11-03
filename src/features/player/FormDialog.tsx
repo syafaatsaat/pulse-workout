@@ -40,7 +40,7 @@ export function FormDialog({ open, exercise, onClose }: FormDialogProps) {
                     width={600}
                     height={400}
                   />
-                  <figcaption className="eyebrow">{label}</figcaption>
+                  <figcaption className="kicker">{label}</figcaption>
                 </figure>
               )
             })}

@@ -10,9 +10,10 @@ function renderAt(path: string) {
 test('tab pages render the main nav with the current page marked', () => {
   renderAt('/log')
   expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Log')
-  // Sidebar + TabBar both render; CSS decides which one shows.
-  const current = screen.getAllByRole('link', { current: 'page' })
-  expect(current.map((a) => a.textContent)).toEqual(['Log', 'Log'])
+  // Sidebar + TabBar both render; CSS decides which one shows. The tab bar is icon-only, so
+  // its links are named by aria-label.
+  expect(screen.getAllByRole('link', { current: 'page' })).toHaveLength(2)
+  expect(screen.getAllByRole('link', { current: 'page', name: 'Progress' })).toHaveLength(2)
 })
 
 test('library detail is a push on phones: sidebar only, no tab bar', () => {

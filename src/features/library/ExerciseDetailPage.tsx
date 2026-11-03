@@ -144,11 +144,11 @@ export function ExerciseDetailPane({ exerciseId }: { exerciseId: string }) {
         <Steps exercise={e} />
         <div className={styles.muscleCard}>
           <div>
-            <h3 className="eyebrow">Muscles</h3>
+            <h3 className="kicker">Muscles</h3>
             <Muscles exercise={e} className={styles.muscleList} />
           </div>
           <div className={styles.yours}>
-            <h3 className="eyebrow">Your best</h3>
+            <h3 className="kicker">Your best</h3>
             <p className={styles.yourBest}>
               {best ? (best.measure === 'reps' ? `${best.value} reps` : clock(best.value * 1000)) : '—'}
             </p>
@@ -202,7 +202,7 @@ export function ExerciseDetailPage() {
   const top = (
     <div className={styles.top}>
       {back}
-      <span className="eyebrow">Exercise</span>
+      <span className="kicker">Exercise</span>
       <span />
     </div>
   )

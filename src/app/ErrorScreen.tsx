@@ -7,7 +7,7 @@ export function ErrorScreen({ title, children }: { title: string; children: Reac
   return (
     <main className={styles.screen}>
       <div className={styles.inner}>
-        <span className="eyebrow">Field Manual</span>
+        <span className="kicker">Field Manual</span>
         <h1 className="page-title">{title}</h1>
         {children}
         <div className={styles.actions}>

@@ -1,21 +1,20 @@
+/* G-Settings Appearance: pill track on --fill2, selected segment a raised --surface pill. */
 .track {
   display: grid;
-  gap: var(--s-1);
   padding: var(--s-1);
   border-radius: var(--r-md);
-  background: var(--fill);
+  background: var(--fill2);
 }
 
-/* 36px visual height from F-Settings; the track padding brings the hit area to 44px. */
 .segment {
-  height: 36px;
-  border-radius: var(--r-sm);
+  height: 40px;
+  border-radius: 18px;
   color: var(--ink);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--t-body);
+  font-weight: 500;
 }
 
 .segment[aria-pressed='true'] {
   background: var(--surface);
-  box-shadow: var(--card);
+  box-shadow: var(--seg-shadow);
 }
