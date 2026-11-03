@@ -30,7 +30,8 @@ export function Rings({ radii, startOpacity, step, color, size, className, style
       viewBox={`0 0 ${box} ${box}`}
       aria-hidden="true"
       className={className}
-      style={{ position: 'absolute', pointerEvents: 'none', color, ...style }}
+      // max-width: none overrides base.css's svg { max-width: 100% }; rings overhang on purpose.
+      style={{ position: 'absolute', maxWidth: 'none', pointerEvents: 'none', color, ...style }}
     >
       {radii.map((r, i) => (
         <circle

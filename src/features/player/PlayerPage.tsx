@@ -3,7 +3,6 @@ import { Link, useLocation, useParams } from 'react-router'
 import { db } from '../../data/db'
 import { compile, moveCount } from '../../engine/compile'
 import { lastTime, personalBests, type Best, type SetValue } from '../../engine/stats'
-import { blockLabels } from './blockLabels'
 import { Player } from './Player'
 import styles from './Player.module.css'
 
@@ -43,10 +42,10 @@ export function PlayerPage() {
     }
   }, [id])
 
-  if (!data || data.id !== id) return <div className={styles.player} data-mode="work" />
+  if (!data || data.id !== id) return <div className={`${styles.ground} ${styles.player}`} data-mode="work" />
   if (!data.d || data.d.session.endedAt !== undefined) {
     return (
-      <div className={styles.player} data-mode="work">
+      <div className={`${styles.ground} ${styles.player}`} data-mode="work">
         <div className={styles.message}>
           <h1 className={styles.name}>{data.d ? 'Session finished' : 'Session not found'}</h1>
           <Link to="/">Back to Today</Link>
@@ -62,7 +61,6 @@ export function PlayerPage() {
       sessionId={id}
       session={autoStart ? null : { sets: session.sets, startedAt: session.startedAt, openedAt }}
       workoutName={workout.name}
-      blocks={blockLabels(workout)}
       steps={steps}
       moveCount={moveCount(workout)}
       exercises={exercises}

@@ -22,7 +22,7 @@ import { EndDialog } from './EndDialog'
 import { FormDialog } from './FormDialog'
 import { PhoneView } from './PhoneView'
 import styles from './Player.module.css'
-import { playerScreen, runAdjust, runPrimary } from './screen'
+import { playerScreen, runAddTime, runAdjust, runPrimary } from './screen'
 import { useCues } from './useCues'
 import { useNow } from './useNow'
 import { useWakeLock } from './useWakeLock'
@@ -32,8 +32,6 @@ export interface PlayerProps {
   /** Saved progress to restore; null for a fresh start from the Start tap. */
   session: { sets: SessionSet[]; startedAt: number; openedAt: number } | null
   workoutName: string
-  /** Labels under the desktop session bar. */
-  blocks: { blockId: string; label: string }[]
   steps: Step[]
   moveCount: number
   exercises: Map<string, Exercise>
@@ -43,7 +41,7 @@ export interface PlayerProps {
 }
 
 export function Player(props: PlayerProps) {
-  const { sessionId, session, workoutName, blocks, steps, moveCount, exercises, lastTimes, bests } = props
+  const { sessionId, session, workoutName, steps, moveCount, exercises, lastTimes, bests } = props
   const [state, rawDispatch] = useReducer(playerReducer, null, () =>
     session ? restorePlayer(steps, session.sets, session.startedAt, session.openedAt) : initPlayer(steps),
   )
@@ -55,7 +53,7 @@ export function Player(props: PlayerProps) {
     if (action.type === 'start' || action.type === 'resume') unlockAudio()
     rawDispatch(action)
   }
-  const [dialog, setDialog] = useState<'end' | 'form' | null>(null)
+  const [dialog, setDialog] = useState<'end' | 'info' | null>(null)
   const pausedForDialog = useRef(false)
   const navigate = useNavigate()
   const now = useNow(state.status === 'running')
@@ -116,7 +114,8 @@ export function Player(props: PlayerProps) {
   }
 
   // Keyboard (desktop player): Space = set done / skip rest / start now (resume when paused),
-  // P = pause, ← → = − / + (a rep, or 15 s on a rest or a hold), Esc = end. Off while a dialog is open; it handles its own keys.
+  // P = pause, ← → = − / + a rep, ↑ = +15 s on a rest, I = exercise info, Esc = end.
+  // Off while a dialog is open; it handles its own keys.
   const onKey = useRef<(e: KeyboardEvent) => void>(undefined)
   useEffect(() => {
     onKey.current = (e) => {
@@ -139,6 +138,14 @@ export function Player(props: PlayerProps) {
           e.preventDefault()
           runAdjust(screen.adjust, e.key === 'ArrowLeft' ? -1 : 1, dispatch)
           break
+        case 'ArrowUp':
+          e.preventDefault()
+          runAddTime(screen, dispatch)
+          break
+        case 'i':
+        case 'I':
+          if (!e.repeat) setDialog('info')
+          break
         case 'Escape':
           // Without this the same key press's default "close request" cancels the dialog it opens.
           e.preventDefault()
@@ -155,19 +162,15 @@ export function Player(props: PlayerProps) {
 
   const desktop = useMediaQuery('(min-width: 1024px)')
 
-  if (!step) return <div className={styles.player} data-mode="work" />
+  if (!step) return <div className={`${styles.ground} ${styles.player}`} data-mode="work" />
 
-  const exercise = exercises.get(step.exerciseId)
   const screen = playerScreen(state, step, now, moveCount, exercises, lastTimes, bests)
-  const common = { state, screen, dispatch, notice, onEnd: openEnd, onForm: () => setDialog('form') }
+  // The info sheet shows the move on screen: during a rest, the next one. It doesn't pause.
+  const common = { state, screen, dispatch, notice, onEnd: openEnd, onInfo: () => setDialog('info') }
 
   return (
     <>
-      {desktop ? (
-        <DesktopView {...common} workoutName={workoutName} blocks={blocks} exercises={exercises} />
-      ) : (
-        <PhoneView {...common} />
-      )}
+      {desktop ? <DesktopView {...common} workoutName={workoutName} /> : <PhoneView {...common} />}
       <EndDialog
         open={dialog === 'end'}
         setsDone={state.sets.length}
@@ -177,7 +180,7 @@ export function Player(props: PlayerProps) {
           dispatch({ type: 'end', now: Date.now() })
         }}
       />
-      <FormDialog open={dialog === 'form'} exercise={exercise} onClose={() => setDialog(null)} />
+      <FormDialog open={dialog === 'info'} exercise={screen.media.exercise} onClose={() => setDialog(null)} />
     </>
   )
 }
