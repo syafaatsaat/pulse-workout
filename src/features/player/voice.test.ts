@@ -1,4 +1,5 @@
 import type { Step } from '../../engine/compile'
+import type { Mock } from 'vitest'
 import { stepCue } from './voice'
 
 const step = (over: Partial<Step>): Step => ({
@@ -23,23 +24,29 @@ test('stepCue: Go on work, Get into position before a hold, Set done on rest and
 })
 
 describe('speech (iOS)', () => {
-  const spoken: SpeechSynthesisUtterance[] = []
-  const synth = { speaking: false, pending: false, speak: vi.fn((u) => spoken.push(u)), cancel: vi.fn() }
+  let spoken: SpeechSynthesisUtterance[]
+  let synth: { speaking: boolean; pending: boolean; speak: Mock; cancel: Mock }
 
-  beforeAll(() => {
+  // Fresh module per test: voice.ts keeps the unlocked flag and the current cue.
+  beforeEach(() => {
+    vi.resetModules()
+    spoken = []
+    synth = { speaking: false, pending: false, speak: vi.fn((u) => spoken.push(u)), cancel: vi.fn() }
     vi.stubGlobal('speechSynthesis', synth)
     vi.stubGlobal(
       'SpeechSynthesisUtterance',
       class {
         volume = 1
         text: string
+        onend: (() => void) | null = null
+        onerror: (() => void) | null = null
         constructor(text: string) {
           this.text = text
         }
       },
     )
   })
-  afterAll(() => vi.unstubAllGlobals())
+  afterEach(() => vi.unstubAllGlobals())
 
   test('unlockSpeech speaks one silent utterance, once', async () => {
     const { unlockSpeech } = await import('./voice')
@@ -49,13 +56,23 @@ describe('speech (iOS)', () => {
     expect(spoken[0]!.volume).toBe(0)
   })
 
-  test('speak only cancels when something is queued (iOS drops speech right after cancel)', async () => {
-    const { speak } = await import('./voice')
+  test('the first cue never cancels the silent unlock still in the queue', async () => {
+    const { speak, unlockSpeech } = await import('./voice')
+    unlockSpeech()
+    synth.speaking = true // the silent utterance hasn't finished
     speak('Go')
     expect(synth.cancel).not.toHaveBeenCalled()
+    expect(spoken.map((u) => u.text)).toEqual([' ', 'Go'])
+  })
+
+  test('a new cue cuts off a cue still being said, but not one that has ended', async () => {
+    const { speak } = await import('./voice')
+    speak('Go')
     synth.speaking = true
     speak('Set done. Rest')
     expect(synth.cancel).toHaveBeenCalledTimes(1)
-    expect(spoken.map((u) => u.text).slice(-2)).toEqual(['Go', 'Set done. Rest'])
+    spoken.at(-1)!.onend!(new Event('end') as SpeechSynthesisEvent)
+    speak('Go')
+    expect(synth.cancel).toHaveBeenCalledTimes(1)
   })
 })

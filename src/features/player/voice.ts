@@ -28,11 +28,22 @@ export function unlockSpeech(): void {
   unlocked = true
 }
 
-/** Speaks `text`, cutting off anything still being said. No-op without speech synthesis. */
+/** The last cue spoken, until it ends. The silent unlock never counts. */
+let current: SpeechSynthesisUtterance | null = null
+
+/**
+ * Speaks `text`, cutting off a cue still being said. Never cancels for the silent unlock: the
+ * first "Go" comes straight after the Start tap, while it is still queued, and iOS drops an
+ * utterance spoken right after cancel().
+ */
 export function speak(text: string): void {
   const s = synth()
   if (!s) return
-  // Only cancel when something is queued: iOS can drop an utterance spoken right after cancel().
-  if (s.speaking || s.pending) s.cancel()
-  s.speak(new SpeechSynthesisUtterance(text))
+  if (current && (s.speaking || s.pending)) s.cancel()
+  const u = new SpeechSynthesisUtterance(text)
+  current = u
+  u.onend = u.onerror = () => {
+    if (current === u) current = null
+  }
+  s.speak(u)
 }
