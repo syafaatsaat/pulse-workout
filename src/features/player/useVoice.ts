@@ -6,8 +6,12 @@ import { speak, stepCue } from './voice'
  * Voice cues: says the step's cue once on entering it ("Go", "Set done. Rest", "Get into
  * position") and "Set done" at the end. A hold with a lead-in also says "Go" when the hold starts
  * (or at once on "Start now"). Pausing and resuming don't repeat anything.
+ *
+ * `enabled` is undefined while the settings are still loading. The session starts on mount,
+ * before they arrive, so a cue only counts as said once it really is: the first "Go" then plays
+ * as soon as the setting is known, instead of being skipped.
  */
-export function useVoice(state: PlayerState, enabled: boolean): void {
+export function useVoice(state: PlayerState, enabled: boolean | undefined): void {
   const { status, index, endsAt, stepMs } = state
   const step = currentStep(state)
   const leadIn = step?.kind === 'work' && step.needsSetup === true
@@ -15,11 +19,11 @@ export function useVoice(state: PlayerState, enabled: boolean): void {
   const saidGo = useRef<number | null>(null)
 
   useEffect(() => {
-    if (status !== 'running' && status !== 'finished') return
+    if (!enabled || (status !== 'running' && status !== 'finished')) return
     const key = status === 'finished' ? -1 : index
     if (spoken.current === key) return
     spoken.current = key
-    if (enabled) speak(stepCue(status === 'finished' ? undefined : step))
+    speak(stepCue(status === 'finished' ? undefined : step))
   }, [enabled, status, index, step])
 
   useEffect(() => {

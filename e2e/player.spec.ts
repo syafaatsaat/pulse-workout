@@ -68,3 +68,35 @@ test('the info sheet opens without pausing and gives focus back to ⓘ', async (
   await expect(page.getByRole('button', { name: /^Pause/ })).toBeVisible()
   await expect(page.getByRole('button', { name: /^Resume/ })).toHaveCount(0)
 })
+
+test('voice cues say "Go" as the first set starts, not just on later ones', async ({ page }) => {
+  // Record speech instead of playing it.
+  await page.addInitScript(() => {
+    const spoken: string[] = []
+    Object.assign(window, { spoken })
+    class Utterance {
+      text: string
+      volume = 1
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
+      constructor(text: string) {
+        this.text = text
+      }
+    }
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', { value: Utterance })
+    Object.defineProperty(window, 'speechSynthesis', {
+      value: { speaking: false, pending: false, speak: (u: Utterance) => spoken.push(u.text), cancel() {} },
+    })
+  })
+  const spoken = () => page.evaluate(() => (window as unknown as { spoken: string[] }).spoken)
+
+  await page.goto('/settings')
+  const voice = page.getByRole('switch', { name: 'Voice cues' })
+  await voice.click()
+  await expect.poll(spoken).toContain('Voice cues on')
+  // The switch shows the stored value: checked means the setting is saved before we leave.
+  await expect(voice).toBeChecked()
+
+  await tryIt(page, 'Pushups')
+  await expect.poll(spoken).toEqual([' ', 'Go']) // the silent iOS unlock, then the cue
+})

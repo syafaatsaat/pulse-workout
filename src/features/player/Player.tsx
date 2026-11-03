@@ -84,7 +84,7 @@ export function Player(props: PlayerProps) {
   }, [state.status, remaining, step, endsAt])
 
   useCues(state, settings?.beeps ?? true)
-  useVoice(state, settings?.voice ?? false)
+  useVoice(state, settings?.voice) // undefined while loading: see useVoice
   const wakeLock = useWakeLock((settings?.wakeLock ?? true) && state.status !== 'finished')
   const notice = wakeLock === 'unavailable' ? "Screen may sleep: this browser can't keep it awake" : undefined
 
