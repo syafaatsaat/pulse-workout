@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pulse — Workout builder</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.pl-light{--bg:#F4F2EE;--surface:#FFFFFF;--ink:#121417;--muted:#6B6E76;--faint:#9A9DA4;--placeholder:#8A8D94;--fill:#F4F2EE;--fill2:#ECE9E3;--line:rgba(18,20,23,0.08);--line2:rgba(18,20,23,0.17);--dot:rgba(18,20,23,0.13);--ring:#121417;--card:0 1px 2px rgba(18,20,23,0.04);--hero:#121417;--on-hero:#F4F2EE;--tabbar:#121417;--tabshadow:0 10px 30px rgba(18,20,23,0.18);--danger:#C2361B;--pb-ink:#B5371A;color-scheme:light}
+.pl-dark{--bg:#0F1012;--surface:#1A1C20;--ink:#F1EFEA;--muted:#9C9EA6;--faint:#6E7179;--placeholder:#7C7F86;--fill:#26282D;--fill2:#24262B;--line:rgba(241,239,234,0.08);--line2:rgba(241,239,234,0.18);--dot:rgba(241,239,234,0.14);--ring:#F1EFEA;--card:0 0 0 1px rgba(241,239,234,0.06);--hero:#202228;--on-hero:#F1EFEA;--tabbar:#202228;--tabshadow:0 0 0 1px rgba(241,239,234,0.08),0 10px 30px rgba(0,0,0,0.4);--danger:#FF7A63;--pb-ink:#FF8A6B;color-scheme:dark}
+a{color:var(--ink)}a:hover{opacity:0.8}
+</style>
+</helmet>
+<div class="pl-{{theme}}" style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: var(--bg); color: var(--ink); font-family: 'Geist', sans-serif; padding: 60px 24px 0; display: flex; flex-direction: column">
+  <div style="display: grid; grid-template-columns: 76px minmax(0, 1fr) 76px; align-items: center">
+    <a href="G-Today.dc.html" style="font-size: 15px; color: var(--muted); text-decoration: none; padding: 12px 0">Cancel</a>
+    <span style="text-align: center; font-size: 15px; font-weight: 500">Edit workout</span>
+    <a href="G-Today.dc.html" style="justify-self: end; height: 36px; padding: 0 16px; border-radius: 18px; background: var(--ink); color: var(--bg); display: flex; align-items: center; text-decoration: none; font-size: 14px; font-weight: 600">Save</a>
+  </div>
+
+  <section style="position: relative; overflow: hidden; margin-top: 16px; border-radius: 26px; background: var(--hero); color: var(--on-hero); padding: 20px">
+    <svg width="300" height="300" viewBox="0 0 300 300" aria-hidden="true" style="position: absolute; right: -130px; top: -130px">
+      <circle cx="150" cy="150" r="40" fill="none" stroke="#F2542D" stroke-opacity="0.45"></circle><circle cx="150" cy="150" r="70" fill="none" stroke="#F2542D" stroke-opacity="0.3"></circle><circle cx="150" cy="150" r="100" fill="none" stroke="#F2542D" stroke-opacity="0.18"></circle><circle cx="150" cy="150" r="130" fill="none" stroke="#F2542D" stroke-opacity="0.08"></circle>
+    </svg>
+    <label for="g-wk-name" style="position: relative; font-size: 13px; color: rgba(244,242,238,0.55)">Name</label>
+    <input id="g-wk-name" type="text" value="Push &amp; Core" style="position: relative; display: block; width: 100%; box-sizing: border-box; margin-top: 4px; border: none; background: transparent; padding: 0; font-family: 'Geist', sans-serif; font-size: 28px; font-weight: 500; letter-spacing: -0.02em; color: var(--on-hero); outline: none">
+    <div style="position: relative; margin-top: 18px; display: flex; gap: 3px; height: 4px" role="img" aria-label="Session shape preview">
+      <sc-for list="{{shape}}" as="s" hint-placeholder-count="18">
+        <span style="flex-grow: {{s.grow}}; flex-basis: 0; border-radius: 2px; background: {{s.fill}}"></span>
+      </sc-for>
+    </div>
+    <span style="position: relative; display: block; margin-top: 10px; font-size: 13px; color: rgba(244,242,238,0.6)">9 moves · about 28 min</span>
+  </section>
+
+  <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px">
+    <sc-for list="{{blocks}}" as="b" hint-placeholder-count="3">
+      <section style="border-radius: 22px; background: var(--surface); box-shadow: var(--card); padding: 4px 16px">
+        <div style="display: flex; align-items: center; gap: 10px; min-height: 46px">
+          <span style="font-size: 15px; font-weight: 500">{{b.title}}</span>
+          <span style="margin-left: auto; height: 26px; padding: 0 10px; border-radius: 13px; background: var(--fill); display: flex; align-items: center; font-size: 12px; font-weight: 500">{{b.meta}}</span>
+        </div>
+        <sc-for list="{{b.rows}}" as="r" hint-placeholder-count="2">
+          <div style="display: grid; grid-template-columns: 16px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; min-height: 50px; border-top: 1px solid var(--line)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color: var(--faint)" role="img" aria-label="Drag to reorder"><circle cx="9" cy="6" r="2"></circle><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="15" cy="12" r="2"></circle><circle cx="9" cy="18" r="2"></circle><circle cx="15" cy="18" r="2"></circle></svg>
+            <span style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.name}}</span>
+            <button aria-label="Sets and reps for {{r.name}}" style="height: 32px; padding: 0 12px; border-radius: 16px; border: none; background: var(--bg); color: var(--ink); font-family: 'Geist', sans-serif; font-size: 13px; font-weight: 500">{{r.dose}}</button>
+            <button aria-label="Rest after {{r.name}}" style="height: 32px; padding: 0 6px; border: none; background: transparent; color: var(--muted); font-family: 'Geist', sans-serif; font-size: 13px">{{r.rest}}</button>
+          </div>
+        </sc-for>
+      </section>
+    </sc-for>
+  </div>
+
+  <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+    <a href="G-Library.dc.html" style="height: 50px; border-radius: 25px; box-shadow: inset 0 0 0 1px var(--line2); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 14px; font-weight: 500">+ Exercise</a>
+    <button style="height: 50px; border-radius: 25px; border: none; background: transparent; box-shadow: inset 0 0 0 1px var(--line2); color: var(--ink); font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500">+ Block</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return Object.assign(this.baseVals(), { theme: this.props.theme === 'dark' ? 'dark' : 'light' });
+  }
+  baseVals() {
+    const grows = [4, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3];
+    const shape = grows.map((g, i) => ({ grow: g, fill: (i === 0 || i === grows.length - 1) ? 'rgba(244,242,238,0.35)' : (i % 2 === 1 ? 'rgba(244,242,238,0.9)' : 'rgba(244,242,238,0.2)') }));
+    const blocks = [
+      { title: 'Warm-up', meta: 'Straight sets', rows: [
+        { name: 'Incline push-up', dose: '2 × 10', rest: '00:20' },
+        { name: 'Dead bug', dose: '2 × 12', rest: '00:20' }
+      ] },
+      { title: 'Main', meta: 'Circuit × 4', rows: [
+        { name: 'Push-up', dose: '12', rest: '—' },
+        { name: 'Pike push-up', dose: '8', rest: '—' },
+        { name: 'Plank', dose: '00:40', rest: '00:30' }
+      ] },
+      { title: 'Finisher', meta: 'Straight sets', rows: [
+        { name: 'Chair dip', dose: '3 × 10', rest: '00:30' }
+      ] }
+    ];
+    return { shape, blocks };
+  }
+}
+</script>
+</body>
+</html>

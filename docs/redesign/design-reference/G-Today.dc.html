@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pulse — Today</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.pl-light{--bg:#F4F2EE;--surface:#FFFFFF;--ink:#121417;--muted:#6B6E76;--faint:#9A9DA4;--placeholder:#8A8D94;--fill:#F4F2EE;--fill2:#ECE9E3;--line:rgba(18,20,23,0.08);--line2:rgba(18,20,23,0.17);--dot:rgba(18,20,23,0.13);--ring:#121417;--card:0 1px 2px rgba(18,20,23,0.04);--hero:#121417;--on-hero:#F4F2EE;--tabbar:#121417;--tabshadow:0 10px 30px rgba(18,20,23,0.18);--danger:#C2361B;--pb-ink:#B5371A;color-scheme:light}
+.pl-dark{--bg:#0F1012;--surface:#1A1C20;--ink:#F1EFEA;--muted:#9C9EA6;--faint:#6E7179;--placeholder:#7C7F86;--fill:#26282D;--fill2:#24262B;--line:rgba(241,239,234,0.08);--line2:rgba(241,239,234,0.18);--dot:rgba(241,239,234,0.14);--ring:#F1EFEA;--card:0 0 0 1px rgba(241,239,234,0.06);--hero:#202228;--on-hero:#F1EFEA;--tabbar:#202228;--tabshadow:0 0 0 1px rgba(241,239,234,0.08),0 10px 30px rgba(0,0,0,0.4);--danger:#FF7A63;--pb-ink:#FF8A6B;color-scheme:dark}
+a{color:var(--ink)}a:hover{opacity:0.8}
+</style>
+</helmet>
+<div class="pl-{{theme}}" style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: var(--bg); color: var(--ink); font-family: 'Geist', sans-serif; padding: 60px 24px 0; display: flex; flex-direction: column">
+  <svg width="420" height="420" viewBox="0 0 420 420" aria-hidden="true" style="position: absolute; right: -210px; top: -170px">
+    <sc-for list="{{rings}}" as="r" hint-placeholder-count="7"><circle cx="210" cy="210" r="{{r.r}}" fill="none" stroke="currentColor" style="color: var(--ring)" stroke-opacity="{{r.o}}" stroke-width="1"></circle></sc-for>
+  </svg>
+
+  <div style="position: relative; display: flex; justify-content: space-between; align-items: center">
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 14px; color: var(--muted)">Monday, 2 November</span>
+      <span style="font-size: 30px; font-weight: 500; letter-spacing: -0.02em">Good evening</span>
+    </div>
+    <div style="position: relative; width: 52px; height: 52px" role="img" aria-label="Weekly goal: 2 of 4 sessions">
+      <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="22" fill="none" stroke="currentColor" style="color: var(--line)" stroke-width="3"></circle><circle cx="26" cy="26" r="22" fill="none" stroke="#F2542D" stroke-width="3" stroke-linecap="round" stroke-dasharray="69.1 138.2" transform="rotate(-90 26 26)"></circle></svg>
+      <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">2/4</span>
+    </div>
+  </div>
+
+  <div style="position: relative; margin-top: 26px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr))" role="img" aria-label="This week: today is Monday, no sessions yet">
+    <sc-for list="{{week}}" as="d" hint-placeholder-count="7">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px">
+        <span style="font-size: 12px; color: {{d.ink}}; font-weight: {{d.weight}}">{{d.label}}</span>
+        <span style="width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: {{d.fill}}; box-shadow: {{d.ring}}"></span>
+      </div>
+    </sc-for>
+  </div>
+
+  <section style="position: relative; margin-top: 28px; border-radius: 28px; background: var(--hero); color: var(--on-hero); padding: 26px 24px 24px; overflow: hidden">
+    <svg width="360" height="360" viewBox="0 0 360 360" aria-hidden="true" style="position: absolute; right: -150px; bottom: -170px">
+      <sc-for list="{{cardRings}}" as="r" hint-placeholder-count="6"><circle cx="180" cy="180" r="{{r.r}}" fill="none" stroke="#F2542D" stroke-opacity="{{r.o}}" stroke-width="1"></circle></sc-for>
+    </svg>
+    <span style="position: relative; font-size: 13px; color: rgba(244,242,238,0.55)">Up next</span>
+    <h1 style="position: relative; margin: 6px 0 0; font-size: 36px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.05">Push &amp; Core</h1>
+    <span style="position: relative; display: block; margin-top: 8px; font-size: 14px; color: rgba(244,242,238,0.6)">9 moves · 28 min · No equipment</span>
+    <div style="position: relative; margin-top: 26px; display: flex; gap: 3px; height: 4px" role="img" aria-label="Session shape: warm-up, three blocks, cool-down">
+      <sc-for list="{{shape}}" as="s" hint-placeholder-count="18">
+        <span style="flex-grow: {{s.grow}}; flex-basis: 0; border-radius: 2px; background: {{s.fill}}"></span>
+      </sc-for>
+    </div>
+    <a href="G-Player.dc.html" style="position: relative; margin-top: 24px; height: 56px; border-radius: 28px; background: #F2542D; color: #131518; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 24px; text-decoration: none; font-size: 16px; font-weight: 600">
+      Start session
+      <span style="width: 40px; height: 40px; border-radius: 50%; background: #131518; color: #F2542D; display: flex; align-items: center; justify-content: center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg>
+      </span>
+    </a>
+  </section>
+
+  <div style="position: relative; margin-top: 28px; display: flex; justify-content: space-between; align-items: baseline">
+    <span style="font-size: 17px; font-weight: 500">Quick start</span>
+    <a href="G-Library.dc.html" style="font-size: 14px; color: var(--muted); text-decoration: none">See all</a>
+  </div>
+  <div style="position: relative; margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+    <sc-for list="{{quick}}" as="q" hint-placeholder-count="2">
+      <a href="G-Player.dc.html" style="position: relative; overflow: hidden; height: 132px; box-sizing: border-box; border-radius: 22px; background: var(--surface); box-shadow: var(--card); padding: 16px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none">
+        <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true" style="position: absolute; right: -60px; top: -60px">
+          <circle cx="70" cy="70" r="24" fill="none" stroke="currentColor" style="color: var(--ring)" stroke-opacity="0.07"></circle><circle cx="70" cy="70" r="40" fill="none" stroke="currentColor" style="color: var(--ring)" stroke-opacity="0.05"></circle><circle cx="70" cy="70" r="56" fill="none" stroke="currentColor" style="color: var(--ring)" stroke-opacity="0.035"></circle>
+        </svg>
+        <span style="position: relative; align-self: flex-start; height: 26px; padding: 0 10px; border-radius: 13px; background: var(--fill); display: flex; align-items: center; font-size: 12px; font-weight: 500">{{q.time}}</span>
+        <span style="position: relative; display: flex; flex-direction: column; gap: 2px">
+          <span style="font-size: 17px; font-weight: 500; letter-spacing: -0.01em">{{q.name}}</span>
+          <span style="font-size: 13px; color: var(--muted)">{{q.meta}}</span>
+        </span>
+      </a>
+    </sc-for>
+  </div>
+
+  <nav aria-label="Main" style="position: absolute; left: 24px; right: 24px; bottom: 30px; height: 64px; border-radius: 32px; background: var(--tabbar); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center; box-shadow: var(--tabshadow)">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+      <a href="{{t.href}}" aria-label="{{t.label}}" aria-current="{{t.current}}" style="height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: {{t.color}}; text-decoration: none">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.d}}"></path></svg>
+        <span style="width: 4px; height: 4px; border-radius: 50%; background: {{t.dot}}"></span>
+      </a>
+    </sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return Object.assign(this.baseVals(), { theme: this.props.theme === 'dark' ? 'dark' : 'light' });
+  }
+  baseVals() {
+    const rings = [40, 80, 120, 160, 200].map((r, i) => ({ r, o: (0.09 - i * 0.015).toFixed(3) }));
+    const cardRings = [30, 60, 90, 120, 150, 178].map((r, i) => ({ r, o: (0.55 - i * 0.08).toFixed(2) }));
+    const labels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const done = [true, false, true, false, false, false, false];
+    const today = 0;
+    const week = labels.map((label, i) => ({
+      label,
+      ink: i === today ? 'var(--ink)' : 'var(--muted)',
+      weight: i === today ? 600 : 400,
+      fill: i === today ? 'transparent' : (done[i] && i < today ? 'var(--ink)' : 'var(--dot)'),
+      ring: i === today ? 'inset 0 0 0 2.5px #F2542D' : 'none'
+    }));
+    const grows = [4, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3];
+    const shape = grows.map((g, i) => ({ grow: g, fill: (i === 0 || i === grows.length - 1) ? 'rgba(244,242,238,0.35)' : (i % 2 === 1 ? 'rgba(244,242,238,0.9)' : 'rgba(244,242,238,0.2)') }));
+    const quick = [
+      { name: 'Core reset', meta: '6 moves', time: '10 min' },
+      { name: 'Full body', meta: '8 moves', time: '20 min' }
+    ];
+    const T = [
+      ['Today', 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z'],
+      ['Library', 'M4 19.5V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-1.5z'],
+      ['Progress', 'M3 20h18M6 20V11M11 20V5M16 20v-6M21 20V9'],
+      ['Settings', 'M4 7h9M17 7h3M15 4v6M4 17h3M11 17h9M9 14v6']
+    ];
+    const hrefs = ['G-Today.dc.html', 'G-Library.dc.html', 'G-Progress.dc.html', 'G-Settings.dc.html'];
+    const tabs = T.map(([label, d], i) => ({ label, d, href: hrefs[i], current: i === 0 ? 'page' : 'false', color: i === 0 ? '#F1EFEA' : 'rgba(244,242,238,0.45)', dot: i === 0 ? '#F2542D' : 'transparent' }));
+    return { rings, cardRings, week, shape, quick, tabs };
+  }
+}
+</script>
+</body>
+</html>

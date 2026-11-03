@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pulse — Settings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.pl-light{--bg:#F4F2EE;--surface:#FFFFFF;--ink:#121417;--muted:#6B6E76;--faint:#9A9DA4;--placeholder:#8A8D94;--fill:#F4F2EE;--fill2:#ECE9E3;--line:rgba(18,20,23,0.08);--line2:rgba(18,20,23,0.17);--dot:rgba(18,20,23,0.13);--ring:#121417;--card:0 1px 2px rgba(18,20,23,0.04);--hero:#121417;--on-hero:#F4F2EE;--tabbar:#121417;--tabshadow:0 10px 30px rgba(18,20,23,0.18);--danger:#C2361B;--pb-ink:#B5371A;color-scheme:light}
+.pl-dark{--bg:#0F1012;--surface:#1A1C20;--ink:#F1EFEA;--muted:#9C9EA6;--faint:#6E7179;--placeholder:#7C7F86;--fill:#26282D;--fill2:#24262B;--line:rgba(241,239,234,0.08);--line2:rgba(241,239,234,0.18);--dot:rgba(241,239,234,0.14);--ring:#F1EFEA;--card:0 0 0 1px rgba(241,239,234,0.06);--hero:#202228;--on-hero:#F1EFEA;--tabbar:#202228;--tabshadow:0 0 0 1px rgba(241,239,234,0.08),0 10px 30px rgba(0,0,0,0.4);--danger:#FF7A63;--pb-ink:#FF8A6B;color-scheme:dark}
+a{color:var(--ink)}a:hover{opacity:0.8}
+</style>
+</helmet>
+<div class="pl-{{theme}}" style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: var(--bg); color: var(--ink); font-family: 'Geist', sans-serif; padding: 60px 24px 0; display: flex; flex-direction: column">
+  <svg width="420" height="420" viewBox="0 0 420 420" aria-hidden="true" style="position: absolute; right: -210px; top: -170px">
+    <sc-for list="{{rings}}" as="r" hint-placeholder-count="5"><circle cx="210" cy="210" r="{{r.r}}" fill="none" stroke="currentColor" style="color: var(--ring)" stroke-opacity="{{r.o}}" stroke-width="1"></circle></sc-for>
+  </svg>
+
+  <div style="position: relative; display: flex; flex-direction: column; gap: 4px">
+    <span style="font-size: 14px; color: var(--muted)">Saved on this device</span>
+    <h1 style="margin: 0; font-size: 30px; font-weight: 500; letter-spacing: -0.02em">Settings</h1>
+  </div>
+
+  <span style="position: relative; margin: 22px 0 8px 6px; font-size: 13px; color: var(--muted)">Workout</span>
+  <div style="position: relative; border-radius: 22px; background: var(--surface); box-shadow: var(--card); padding: 0 16px">
+    <sc-for list="{{steppers}}" as="s" hint-placeholder-count="2">
+      <div style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; border-top: {{s.line}}">
+        <span style="font-size: 15px">{{s.label}}</span>
+        <div style="display: flex; align-items: center; gap: 4px">
+          <button aria-label="Decrease {{s.label}}" style="width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--bg); color: var(--ink); font-family: 'Geist', sans-serif; font-size: 18px; font-weight: 300">−</button>
+          <span style="min-width: 60px; text-align: center; font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums">{{s.value}}</span>
+          <button aria-label="Increase {{s.label}}" style="width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--bg); color: var(--ink); font-family: 'Geist', sans-serif; font-size: 18px; font-weight: 300">+</button>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <span style="position: relative; margin: 18px 0 8px 6px; font-size: 13px; color: var(--muted)">During a session</span>
+  <div style="position: relative; border-radius: 22px; background: var(--surface); box-shadow: var(--card); padding: 0 16px">
+    <sc-for list="{{toggles}}" as="t" hint-placeholder-count="3">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 56px; border-top: {{t.line}}">
+        <span style="font-size: 15px">{{t.label}}</span>
+        <button role="switch" aria-checked="{{t.checked}}" aria-label="{{t.label}}" onClick="{{t.flip}}" style="width: 48px; height: 28px; flex-shrink: 0; border-radius: 14px; border: none; background: {{t.track}}; padding: 3px; display: flex; justify-content: {{t.side}}; transition: background 150ms">
+          <span style="width: 22px; height: 22px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(18,20,23,0.2)"></span>
+        </button>
+      </div>
+    </sc-for>
+  </div>
+
+  <span style="position: relative; margin: 18px 0 8px 6px; font-size: 13px; color: var(--muted)">Appearance</span>
+  <div style="position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px; border-radius: 22px; background: var(--fill2)" role="group" aria-label="Appearance">
+    <sc-for list="{{appearance}}" as="a" hint-placeholder-count="3">
+      <button onClick="{{a.pick}}" aria-pressed="{{a.pressed}}" style="height: 40px; border-radius: 18px; border: none; background: {{a.bg}}; box-shadow: {{a.shadow}}; color: var(--ink); font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500">{{a.label}}</button>
+    </sc-for>
+  </div>
+
+  <div style="position: relative; margin-top: 18px; border-radius: 22px; background: var(--surface); box-shadow: var(--card); padding: 0 16px">
+    <button style="width: 100%; min-height: 54px; border: none; background: transparent; padding: 0; text-align: left; color: var(--danger); font-family: 'Geist', sans-serif; font-size: 15px">Reset demo data</button>
+  </div>
+
+  <nav aria-label="Main" style="position: absolute; left: 24px; right: 24px; bottom: 30px; height: 64px; border-radius: 32px; background: var(--tabbar); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center; box-shadow: var(--tabshadow)">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+      <a href="{{t.href}}" aria-label="{{t.label}}" aria-current="{{t.current}}" style="height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: {{t.color}}; text-decoration: none">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.d}}"></path></svg>
+        <span style="width: 4px; height: 4px; border-radius: 50%; background: {{t.dot}}"></span>
+      </a>
+    </sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { wake: true, beeps: true, voice: false, appearance: 'Auto' }; }
+  renderVals() {
+    const base = this.baseVals();
+    const pick = this.state.appearance;
+    const theme = pick === 'Light' ? 'light' : (pick === 'Dark' ? 'dark' : (this.props.theme === 'dark' ? 'dark' : 'light'));
+    return Object.assign(base, { theme });
+  }
+  baseVals() {
+    const rings = [40, 80, 120, 160, 200].map((r, i) => ({ r, o: (0.09 - i * 0.015).toFixed(3) }));
+    const line = (i) => i === 0 ? 'none' : '1px solid var(--line)';
+    const steppers = [{ label: 'Default rest', value: '00:30' }, { label: 'Weekly goal', value: '4' }].map((s, i) => ({ ...s, line: line(i) }));
+    const toggles = [['wake', 'Keep screen awake'], ['beeps', 'Countdown beeps'], ['voice', 'Voice cues']].map(([key, label], i) => {
+      const on = this.state[key];
+      return { label, line: line(i), checked: on ? 'true' : 'false', track: on ? '#F2542D' : 'var(--line2)', side: on ? 'flex-end' : 'flex-start', flip: () => this.setState({ [key]: !on }) };
+    });
+    const appearance = ['Light', 'Dark', 'Auto'].map((label) => {
+      const on = this.state.appearance === label;
+      return { label, pressed: on ? 'true' : 'false', bg: on ? 'var(--surface)' : 'transparent', shadow: on ? '0 1px 3px rgba(18,20,23,0.1)' : 'none', pick: () => this.setState({ appearance: label }) };
+    });
+    const T = [
+      ['Today', 'G-Today.dc.html', 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z'],
+      ['Library', 'G-Library.dc.html', 'M4 19.5V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-1.5z'],
+      ['Progress', 'G-Progress.dc.html', 'M3 20h18M6 20V11M11 20V5M16 20v-6M21 20V9'],
+      ['Settings', 'G-Settings.dc.html', 'M4 7h9M17 7h3M15 4v6M4 17h3M11 17h9M9 14v6']
+    ];
+    const active = 3;
+    const tabs = T.map(([label, href, d], i) => ({ label, href, d, current: i === active ? 'page' : 'false', color: i === active ? '#F1EFEA' : 'rgba(244,242,238,0.45)', dot: i === active ? '#F2542D' : 'transparent' }));
+    return { rings, steppers, toggles, appearance, tabs };
+  }
+}
+</script>
+</body>
+</html>
