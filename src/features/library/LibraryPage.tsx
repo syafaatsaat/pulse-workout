@@ -30,7 +30,9 @@ function useLibrary() {
   const muscle = params.get('muscle')
   const group = isMuscleGroup(muscle) ? muscle : undefined
   const equipment = parseEquipment(params.get('eq'))
-  const exercises = useLiveQuery(() => db.exercises.toArray())
+  // Empty only on a first visit, until seeding has written the list: still loading, not "no matches".
+  const stored = useLiveQuery(() => db.exercises.toArray())
+  const exercises = stored?.length ? stored : undefined
   const deferredQuery = useDeferredValue(query)
 
   const update = (key: string, value: string | undefined) =>
@@ -232,15 +234,19 @@ function Chevron() {
   )
 }
 
+// Empty while loading, so screen readers aren't told "0 exercises" before the list arrives.
 const countText = (lib: Library) =>
-  `${lib.group ?? 'All muscles'} · ${lib.equipmentText} · ${lib.results.length} exercises`
+  lib.exercises
+    ? `${lib.group ?? 'All muscles'} · ${lib.equipmentText} · ${lib.results.length} exercises`
+    : ''
 
 /** G-Library: search pill (with the equipment filter), muscle chips, row cards pushing to the detail. */
 export function LibraryPage() {
   const lib = useLibrary()
   const [showEquipment, setShowEquipment] = useState(false)
   const { exercises, results } = lib
-  const count = useProgressiveCount(results.length, 0, lib.listKey)
+  const more = useRef<HTMLDivElement>(null)
+  const count = useProgressiveCount(results.length, 0, lib.listKey, more)
 
   return (
     <>
@@ -270,6 +276,8 @@ export function LibraryPage() {
           ))}
         </ul>
       )}
+      {/* More rows render as this comes near. */}
+      <div ref={more} aria-hidden="true" />
     </>
   )
 }
@@ -286,11 +294,16 @@ export function LibraryTwoPane() {
   const { exercises, results, params } = lib
   const selected = exerciseId ?? results[0]?.id
   const qs = params.toString()
-  // Render down to the selected row at once, so it can be scrolled into view.
+  // Render down to the selected row at once, so it can be scrolled into view; more rows render
+  // as the end of the list comes near in the pane.
+  const pane = useRef<HTMLElement>(null)
+  const more = useRef<HTMLDivElement>(null)
   const count = useProgressiveCount(
     results.length,
     results.findIndex((e) => e.id === selected) + 1,
     lib.listKey,
+    more,
+    pane,
   )
 
   // Keep the selected row in view, e.g. after opening /library/:id directly or using Back.
@@ -313,7 +326,7 @@ export function LibraryTwoPane() {
 
   return (
     <div className={styles.twoPane} data-bleed>
-      <section className={styles.listPane} aria-label="Exercise list">
+      <section className={styles.listPane} aria-label="Exercise list" ref={pane}>
         <PageHeader kicker={`${exercises?.length ?? ''} exercises`} title="Library" />
         <SearchField
           lib={lib}
@@ -344,6 +357,7 @@ export function LibraryTwoPane() {
             ))}
           </ul>
         )}
+        <div ref={more} aria-hidden="true" />
       </section>
       <div className={styles.detailPane}>{selected && <ExerciseDetailPane exerciseId={selected} />}</div>
     </div>

@@ -21,7 +21,8 @@ async function load(id: string) {
     db.sessions.toArray(),
     db.settings.get('settings'),
   ])
-  if (!exercise) return null
+  // On a first visit the list isn't written yet: still loading (undefined), not "not found" (null).
+  if (!exercise) return (await db.exercises.count()) === 0 ? undefined : null
   const best = personalBests(sessions).find((b) => b.exerciseId === id)?.best
   return { exercise, best, rest: (settings ?? DEFAULT_SETTINGS).defaultRest }
 }

@@ -26,12 +26,21 @@ test('the old /log URL lands on Progress and keeps the month', async ({ page }) 
   await expect(page.getByRole('heading', { name: 'September 2026' })).toBeVisible()
 })
 
-test('the library renders the whole list, a chunk at a time', async ({ page }) => {
+test('the library renders a screenful, then more as you scroll, down to the last exercise', async ({
+  page,
+}) => {
   await page.goto('/library')
   const kicker = page.getByText(/^\d+ exercises$/)
   await expect(kicker).toBeVisible()
-  const total = Number((await kicker.textContent())!.split(' ')[0])
-  await expect(page.locator('li > a[href^="/library/"]')).toHaveCount(total)
+  const total = Number((await kicker.textContent())!.match(/\d+/)![0])
+  const rows = page.locator('li > a[href^="/library/"]')
+  await expect(rows.first()).toBeVisible()
+  expect(await rows.count()).toBeLessThan(total)
+  // Keep scrolling the last row into view (window on phones, the list pane on desktop).
+  await expect(async () => {
+    await rows.last().scrollIntoViewIfNeeded()
+    expect(await rows.count()).toBe(total)
+  }).toPass({ timeout: 20_000 })
 })
 
 test('a deep link to an exercise far down the list selects it and scrolls it into view', async ({
