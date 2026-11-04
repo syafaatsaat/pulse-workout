@@ -124,3 +124,33 @@ test('hold: get into position first, filling over 5 s, then the hold fills towar
   expect(hold.progress.marker).toBeCloseTo(35 / 40)
   expect(hold.line).toEqual({ text: 'Last time 00:35', dot: 'accent' })
 })
+
+test('beat: a ripple per rep change and per second of a hold; rest only on the 3-2-1; none when paused', () => {
+  const start: PlayerAction = { type: 'start', now: T0 }
+  // Reps: keyed by the count, never strong.
+  const reps = at(T0, start).beat
+  const fewer = at(T0, start, { type: 'adjustReps', delta: -1 }).beat
+  expect(reps).toMatchObject({ strong: false })
+  expect(fewer!.key).not.toBe(reps!.key)
+
+  // Rest (30 s from T0 + 30 s): calm until the last 3 s, then a strong beat each second.
+  const rest: PlayerAction[] = [start, { type: 'setDone', now: T0 + 30_000 }]
+  expect(at(T0 + 50_000, ...rest).beat).toBeNull()
+  const three = at(T0 + 57_500, ...rest).beat
+  const two = at(T0 + 58_500, ...rest).beat
+  expect(three).toMatchObject({ strong: true })
+  expect(two!.key).not.toBe(three!.key)
+  expect(at(T0 + 57_500, ...rest, { type: 'pause', now: T0 + 57_500 }).beat).toBeNull()
+
+  // Hold, after skipping the rest: a beat every second, strong only at the end.
+  const hold: PlayerAction[] = [
+    ...rest,
+    { type: 'skipRest', now: T0 + 40_000 },
+    { type: 'startNow', now: T0 + 40_000 },
+  ]
+  const early = at(T0 + 41_500, ...hold).beat
+  const later = at(T0 + 42_500, ...hold).beat
+  expect(early).toMatchObject({ strong: false })
+  expect(later!.key).not.toBe(early!.key)
+  expect(at(T0 + 78_500, ...hold).beat).toMatchObject({ strong: true })
+})

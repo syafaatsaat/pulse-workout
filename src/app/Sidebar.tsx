@@ -20,7 +20,7 @@ export function Sidebar() {
         <span className={styles.wordmark}>Pulse</span>
       </div>
       {NAV_ITEMS.map((item) => (
-        <NavLink key={item.to} to={item.to} end={item.to === '/'} className={styles.item}>
+        <NavLink key={item.to} to={item.to} end={item.to === '/'} viewTransition className={styles.item}>
           <NavIcon d={item.icon} />
           {item.label}
         </NavLink>

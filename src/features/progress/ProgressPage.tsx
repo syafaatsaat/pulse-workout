@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { PageHeader } from '../../app/PageHeader'
 import { db, DEFAULT_SETTINGS } from '../../data/db'
@@ -71,7 +71,7 @@ function Sparkline({ values }: { values: number[] }) {
         <span
           key={i}
           data-current={i === values.length - 1 || undefined}
-          style={{ height: Math.max(BAR_MIN, Math.round((v / max) * BAR_MAX)) }}
+          style={{ height: Math.max(BAR_MIN, Math.round((v / max) * BAR_MAX)), '--i': i } as CSSProperties}
         />
       ))}
     </span>

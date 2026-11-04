@@ -230,3 +230,57 @@
   gap: var(--s-4);
   align-items: center;
 }
+
+/* Celebration, right after a session only (data-celebrate): the badge pops and its check draws
+   in, the rings burst outward, the cards rise in turn. Off under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .page[data-celebrate] .check {
+    animation: badge-pop 450ms cubic-bezier(0.3, 0, 0.2, 1.4) both;
+  }
+
+  .page[data-celebrate] .check polyline {
+    stroke-dasharray: 1;
+    animation: draw 350ms 250ms ease-out both;
+  }
+
+  .page[data-celebrate] .burst {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: burst 800ms cubic-bezier(0.2, 0.6, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 70ms);
+  }
+
+  .page[data-celebrate] .rise {
+    animation: rise 400ms ease-out both;
+    animation-delay: calc(350ms + var(--i) * 80ms);
+  }
+}
+
+@keyframes badge-pop {
+  from {
+    transform: scale(0.6);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes burst {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

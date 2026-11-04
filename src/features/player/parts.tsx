@@ -1,4 +1,4 @@
-import { useState, type ReactNode, type Ref } from 'react'
+import { useState, type CSSProperties, type ReactNode, type Ref } from 'react'
 import { ExerciseSlideshow } from '../../components/ExerciseSlideshow'
 import { Rings } from '../../components/Rings'
 import styles from './Player.module.css'
@@ -144,7 +144,24 @@ export function Progress({
 }
 
 /** Rings behind the counter: brighter while counting, dimmer while getting into position. */
-export function CounterRings({ ready, desktop }: { ready: boolean; desktop?: boolean }) {
+/**
+ * Ember rings behind the counter. They breathe slowly on rest (about 4 s in, 4 s out), and a
+ * ripple runs out through them on every beat: each second of a running timer (rest: only the
+ * 3-2-1) and each rep change. A new beat key remounts the ripple, so its animation plays once.
+ * z-index -1 keeps them behind every other part of the player. Motion is CSS-only and off under
+ * prefers-reduced-motion.
+ */
+export function CounterRings({
+  ready,
+  desktop,
+  resting,
+  beat,
+}: {
+  ready: boolean
+  desktop?: boolean
+  resting?: boolean
+  beat?: PlayerScreen['beat']
+}) {
   const radii = desktop ? [110, 160, 210, 260, 310, 360, 378] : [92, 132, 172, 212, 252, 292]
   const size = desktop ? 760 : 600
   const [start, step] = desktop
@@ -154,17 +171,49 @@ export function CounterRings({ ready, desktop }: { ready: boolean; desktop?: boo
     : ready
       ? [0.18, 0.028]
       : [0.32, 0.05]
+  const inner = radii[0]!
+  const outer = radii.at(-1)!
+  const place = { left: '50%', top: '50%', margin: `${-size / 2}px 0 0 ${-size / 2}px`, zIndex: -1 }
   return (
-    <Rings
-      radii={radii}
-      size={size}
-      startOpacity={start}
-      step={step}
-      color="var(--g-accent)"
-      // z-index -1: behind every other part of the player (name, bar, buttons, video card), not
-      // just the counter. Absolutely positioned, they would otherwise paint over in-flow content.
-      style={{ left: '50%', top: '50%', margin: `${-size / 2}px 0 0 ${-size / 2}px`, zIndex: -1 }}
-    />
+    <>
+      <Rings
+        radii={radii}
+        size={size}
+        startOpacity={start}
+        step={step}
+        color="var(--g-accent)"
+        className={resting ? styles.breathe : undefined}
+        style={place}
+      />
+      {beat && (
+        <svg
+          key={beat.key}
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          aria-hidden="true"
+          className={styles.ripple}
+          data-strong={beat.strong || undefined}
+          style={{
+            ...place,
+            position: 'absolute',
+            maxWidth: 'none',
+            pointerEvents: 'none',
+            color: 'var(--g-accent)',
+          }}
+        >
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={inner}
+            fill="none"
+            stroke="currentColor"
+            vectorEffect="non-scaling-stroke"
+            style={{ '--spread': outer / inner } as CSSProperties}
+          />
+        </svg>
+      )}
+    </>
   )
 }
 

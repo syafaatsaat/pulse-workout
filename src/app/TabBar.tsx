@@ -12,6 +12,7 @@ export function TabBar() {
           key={item.to}
           to={item.to}
           end={item.to === '/'}
+          viewTransition
           aria-label={item.label}
           className={styles.item}
         >

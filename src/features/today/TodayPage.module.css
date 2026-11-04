@@ -503,3 +503,32 @@
     }
   }
 }
+
+/* Motion: the hero rings breathe slowly; Start and quick-start cards give under a press. */
+@media (prefers-reduced-motion: no-preference) {
+  .heroRings {
+    transform-origin: center;
+    animation: hero-breathe 6s ease-in-out infinite alternate;
+  }
+
+  .start,
+  .quickCard {
+    transition: transform 120ms ease-out;
+  }
+
+  .start:active,
+  .quickCard:active {
+    transform: scale(0.97);
+  }
+}
+
+@keyframes hero-breathe {
+  from {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}

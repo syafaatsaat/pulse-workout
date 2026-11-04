@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
+import { useCountUp } from '../../app/useCountUp'
 import { Rings } from '../../components/Rings'
 import { db } from '../../data/db'
 import { useLiveQuery } from '../../data/useLiveQuery'
@@ -45,10 +46,23 @@ function Check({ size, strokeWidth }: { size: number; strokeWidth: number }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <polyline points="5 12.5 10 17.5 19 7" />
+      <polyline points="5 12.5 10 17.5 19 7" pathLength={1} />
     </svg>
   )
 }
+
+/** Celebration count-up: the animating number is hidden from screen readers, the final one isn't. */
+function Counted({ shown, final }: { shown: ReactNode; final: ReactNode }) {
+  return (
+    <>
+      <span aria-hidden="true">{shown}</span>
+      <span className="visually-hidden">{final}</span>
+    </>
+  )
+}
+
+/** Order for the cards' staggered rise in the celebration. */
+const rise = (i: number) => ({ '--i': i }) as CSSProperties
 
 /** Session complete (G-Summary): check badge, stats, new-best card, moves, Done. */
 export function SummaryPage() {
@@ -56,6 +70,15 @@ export function SummaryPage() {
   const justFinished = (useLocation().state as { justFinished?: boolean } | null)?.justFinished === true
   const data = useLiveQuery(() => load(id), [id])
   const [allMoves, setAllMoves] = useState(false)
+  // Count up only right after a session; a summary opened from Progress is just a record.
+  const finished = data && data.session.endedAt !== undefined ? data.session : undefined
+  const totalMs = finished ? activeMs(finished) : 0
+  const totalSets = finished?.sets.length ?? 0
+  const totalReps = finished?.sets.reduce((sum, x) => sum + (x.reps ?? 0), 0) ?? 0
+  const ready = finished !== undefined
+  const timeShown = useCountUp(totalMs, 900, justFinished && ready)
+  const setsShown = useCountUp(totalSets, 900, justFinished && ready)
+  const repsShown = useCountUp(totalReps, 900, justFinished && ready)
 
   if (data === undefined) return <div className={styles.page} />
   if (data === null || data.session.endedAt === undefined) {
@@ -70,7 +93,6 @@ export function SummaryPage() {
   }
 
   const { session, workout, ids, names, results } = data
-  const reps = session.sets.reduce((sum, x) => sum + (x.reps ?? 0), 0)
   const newBest = results.find((r) => r.isNew)
   const byId = new Map(results.map((r) => [r.exerciseId, r]))
   const moves = ids.map((exerciseId) => ({
@@ -82,7 +104,7 @@ export function SummaryPage() {
   const hidden = moves.length - shown.length
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} data-celebrate={justFinished || undefined}>
       <div className={styles.inner}>
         <div className={styles.badge}>
           <Rings
@@ -92,6 +114,7 @@ export function SummaryPage() {
             color="var(--accent)"
             size={600}
             className={styles.badgeRings}
+            circleClassName={styles.burst}
           />
           <span className={styles.check}>
             <Check size={34} strokeWidth={2.4} />
@@ -105,23 +128,29 @@ export function SummaryPage() {
           </time>
         </p>
 
-        <dl className={styles.stats}>
+        <dl className={`${styles.stats} ${styles.rise}`} style={rise(0)}>
           <div>
             <dt>Time</dt>
-            <dd>{elapsed(activeMs(session))}</dd>
+            <dd>
+              <Counted shown={elapsed(timeShown)} final={elapsed(totalMs)} />
+            </dd>
           </div>
           <div>
             <dt>Sets</dt>
-            <dd>{session.sets.length}</dd>
+            <dd>
+              <Counted shown={Math.round(setsShown)} final={totalSets} />
+            </dd>
           </div>
           <div>
             <dt>Reps</dt>
-            <dd>{reps}</dd>
+            <dd>
+              <Counted shown={Math.round(repsShown)} final={totalReps} />
+            </dd>
           </div>
         </dl>
 
         {newBest?.previous && (
-          <div className={styles.best}>
+          <div className={`${styles.best} ${styles.rise}`} style={rise(1)}>
             <Rings
               radii={[30, 55, 80, 105]}
               startOpacity={0.5}
@@ -144,7 +173,7 @@ export function SummaryPage() {
           </div>
         )}
 
-        <div className={styles.movesCard}>
+        <div className={`${styles.movesCard} ${styles.rise}`} style={rise(2)}>
           <ul className={styles.moves} id="summary-moves">
             {shown.map((m) => (
               <li key={m.exerciseId} className={styles.move}>

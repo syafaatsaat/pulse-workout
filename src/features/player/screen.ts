@@ -52,6 +52,11 @@ export interface PlayerScreen {
   primary: PrimaryAction
   /** 3, 2, 1 in the last seconds of a running countdown (the beeps); null otherwise. Keys the pulse. */
   pulse: number | null
+  /**
+   * One ring ripple per beat; a new key plays it. Timers: every second (rest: only the last 3,
+   * since rest breathes instead). Reps: every change. Strong on the 3-2-1. Null when paused.
+   */
+  beat: { key: number; strong: boolean } | null
 }
 
 /** "10 reps" / "00:35". */
@@ -95,7 +100,27 @@ export function playerScreen(
       : 0
   const pulse =
     state.status === 'running' && shownMs > 0 && shownMs <= 3000 ? Math.ceil(shownMs / 1000) : null
-  const common = { resting, paused, position, primary, pulse, adjust: null, addTime: false, newBest: false }
+  // Keys include the step, so a new step always ripples even if its number repeats.
+  const keyed = (n: number) => state.index * 10_000 + n
+  const beat: PlayerScreen['beat'] =
+    state.status !== 'running'
+      ? null
+      : !resting && step.mode === 'reps'
+        ? { key: keyed(state.reps), strong: false }
+        : shownMs > 0 && (!resting || shownMs <= 3000)
+          ? { key: keyed(Math.ceil(shownMs / 1000)), strong: shownMs <= 3000 }
+          : null
+  const common = {
+    resting,
+    paused,
+    position,
+    primary,
+    pulse,
+    beat,
+    adjust: null,
+    addTime: false,
+    newBest: false,
+  }
 
   if (resting) {
     const next = state.steps.slice(state.index + 1).find((s) => s.kind === 'work')

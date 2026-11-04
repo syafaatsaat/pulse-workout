@@ -374,7 +374,8 @@
 }
 
 /* Moments: short motion with a purpose. Off under reduced motion. */
-.sweep {
+.sweep,
+.ripple {
   display: none;
 }
 
@@ -409,6 +410,69 @@
 
   .line[data-new-best] {
     animation: pop 260ms cubic-bezier(0.3, 0, 0.2, 1.4);
+  }
+
+  /* Counter rings: a ripple runs from the inner ring to the outer one on each beat. */
+  .ripple {
+    display: block;
+  }
+
+  .ripple circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ripple 900ms cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+  }
+
+  /* 3-2-1: stronger, with the beeps. */
+  .ripple[data-strong] circle {
+    stroke-width: 2;
+    animation-name: ripple-strong;
+  }
+
+  /* Rest: the rings breathe, about 4 s in and 4 s out. */
+  .breathe {
+    animation: breathe 4s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes ripple {
+  from {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  /* Hold the stroke longer than the ease-out spread, so the ripple reads from 2 m away. */
+  50% {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0;
+    transform: scale(var(--spread));
+  }
+}
+
+@keyframes ripple-strong {
+  from {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  /* Hold the stroke longer than the ease-out spread, so the ripple reads from 2 m away. */
+  50% {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 0;
+    transform: scale(var(--spread));
+  }
+}
+
+@keyframes breathe {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.06);
   }
 }
 

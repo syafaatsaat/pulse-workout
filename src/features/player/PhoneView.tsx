@@ -57,7 +57,7 @@ export function PhoneView({ state, screen, dispatch, onEnd, onInfo, infoRef, not
         <h1 className={styles.name}>{screen.title}</h1>
 
         <div className={styles.counterRow}>
-          <CounterRings ready={screen.counter.kind === 'ready'} />
+          <CounterRings ready={screen.counter.kind === 'ready'} resting={resting} beat={screen.beat} />
           <Counter screen={screen} reps={state.reps} className={styles.counter} />
         </div>
 

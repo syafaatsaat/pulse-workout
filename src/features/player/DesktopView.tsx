@@ -63,7 +63,12 @@ export function DesktopView(props: DesktopViewProps) {
           <h1 className={styles.name}>{screen.title}</h1>
 
           <div className={styles.counterRow}>
-            <CounterRings ready={screen.counter.kind === 'ready'} desktop />
+            <CounterRings
+              ready={screen.counter.kind === 'ready'}
+              resting={resting}
+              beat={screen.beat}
+              desktop
+            />
             <Counter screen={screen} reps={state.reps} className={styles.counter} />
           </div>
 

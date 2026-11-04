@@ -12,6 +12,8 @@ interface RingsProps {
   /** Box size in px; defaults to the outermost diameter + 20. */
   size?: number
   className?: string
+  /** Class on every circle, for per-ring animation; each circle also gets --i (0 = innermost). */
+  circleClassName?: string
   /** Position it here (or via className); it is always absolutely positioned. */
   style?: CSSProperties
 }
@@ -20,7 +22,16 @@ interface RingsProps {
  * Pulse's only decoration: thin concentric circles fading outward (REDESIGN.md §3).
  * Decorative, so hidden from assistive tech and never in the way of a click.
  */
-export function Rings({ radii, startOpacity, step, color, size, className, style }: RingsProps) {
+export function Rings({
+  radii,
+  startOpacity,
+  step,
+  color,
+  size,
+  className,
+  circleClassName,
+  style,
+}: RingsProps) {
   const box = size ?? Math.ceil(Math.max(...radii) * 2 + 20)
   const c = box / 2
   return (
@@ -43,6 +54,8 @@ export function Rings({ radii, startOpacity, step, color, size, className, style
           stroke="currentColor"
           strokeWidth={1}
           strokeOpacity={Math.max(0, startOpacity - i * step)}
+          className={circleClassName}
+          style={{ '--i': i } as CSSProperties}
         />
       ))}
     </svg>

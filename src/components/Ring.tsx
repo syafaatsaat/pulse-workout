@@ -39,6 +39,7 @@ export function Ring({ value, max, size = 40, stroke = 4, className, style }: Ri
           strokeWidth={stroke}
           strokeDasharray={`${c * frac} ${c}`}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          style={{ '--len': c * frac } as CSSProperties}
         />
       )}
     </svg>
