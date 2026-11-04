@@ -2,9 +2,10 @@ import { createBrowserRouter } from 'react-router'
 import { RouterProvider } from 'react-router/dom'
 import { useStorageStatus } from '../data/storage'
 import { StorageError } from './ErrorScreen'
-import { routes } from './routes'
+import { preloadRoutes, routes } from './routes'
 
 const router = createBrowserRouter(routes)
+preloadRoutes()
 
 export function App() {
   const storage = useStorageStatus((s) => s.status)
