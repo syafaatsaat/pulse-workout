@@ -7,6 +7,7 @@ import styles from './InfoSheet.module.css'
 import { CloseIcon, Kbd } from './parts'
 import ground from './Player.module.css'
 import { useModal } from './useModal'
+import { useSwipeToClose } from './useSwipeToClose'
 
 interface InfoSheetProps {
   open: boolean
@@ -37,6 +38,8 @@ const bestText = (b: Best) => (b.measure === 'reps' ? `${b.value} reps` : timer(
  */
 export function InfoSheet({ open, exercise, best, resting, desktop, returnFocus, onClose }: InfoSheetProps) {
   const ref = useModal(open, returnFocus)
+  // Phone sheet: the handle means "swipe down to close". (✕ and Esc close it for everyone else.)
+  useSwipeToClose(ref, open && !desktop, onClose)
   const cue = formCue(exercise)
   return (
     <dialog

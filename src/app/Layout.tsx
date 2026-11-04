@@ -49,7 +49,7 @@ export function Layout() {
 /** Full-screen pushes with no chrome at any width (Player, Summary). */
 export function FullScreen() {
   return (
-    <main className={styles.fullscreen}>
+    <main className={styles.fullscreen} data-fullscreen>
       <Outlet />
     </main>
   )

@@ -126,6 +126,12 @@ a {
   }
 }
 
+/* Full-screen pages (player, summary): no rubber band or pull-to-refresh, so a stray pull can
+   never reload the app mid-workout. Other pages keep the browser's behaviour. */
+html:has([data-fullscreen]) {
+  overscroll-behavior: none;
+}
+
 /* Switching tabs (NavLink viewTransition): a quick crossfade. Browsers without the View
    Transitions API just switch. */
 ::view-transition-old(root),

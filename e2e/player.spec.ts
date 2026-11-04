@@ -100,3 +100,65 @@ test('voice cues say "Go" as the first set starts, not just on later ones', asyn
   await tryIt(page, 'Pushups')
   await expect.poll(spoken).toEqual([' ', 'Go']) // the silent iOS unlock, then the cue
 })
+
+/** A one-finger drag on `selector` from y to y + dy, over `ms`, as real touch events. */
+async function swipe(page: Page, selector: string, dy: number, ms: number) {
+  await page.evaluate(
+    async ({ selector, dy, ms }) => {
+      const el = document.querySelector(selector)!
+      const box = el.getBoundingClientRect()
+      const x = box.left + box.width / 2
+      const y0 = box.top + 40
+      const touch = (y: number) => new Touch({ identifier: 1, target: el, clientX: x, clientY: y })
+      const fire = (type: string, y: number) => {
+        const t = touch(y)
+        el.dispatchEvent(
+          new TouchEvent(type, {
+            bubbles: true,
+            cancelable: true,
+            touches: type === 'touchend' ? [] : [t],
+            changedTouches: [t],
+          }),
+        )
+      }
+      fire('touchstart', y0)
+      const steps = 8
+      for (let i = 1; i <= steps; i++) {
+        await new Promise((r) => setTimeout(r, ms / steps))
+        fire('touchmove', y0 + (dy * i) / steps)
+      }
+      fire('touchend', y0 + dy)
+    },
+    { selector, dy, ms },
+  )
+}
+
+test('phone: swiping the info sheet down closes it; a small drag springs back', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(!isMobile, 'The desktop panel has no drag handle')
+  await tryIt(page, 'Pushups')
+  // No pull-to-refresh while the player is open.
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).overscrollBehaviorY)).toBe(
+    'none',
+  )
+
+  await infoButton(page).click()
+  const sheet = page.getByRole('dialog', { name: 'Pushups' })
+  await expect(sheet).toBeVisible()
+
+  await swipe(page, 'dialog[open]', 30, 400)
+  await page.waitForTimeout(300)
+  await expect(sheet).toBeVisible()
+
+  await swipe(page, 'dialog[open]', 220, 300)
+  await expect(sheet).toBeHidden()
+  await expect(infoButton(page)).toBeFocused()
+
+  // Other pages keep the browser's normal pull behaviour.
+  await page.goto('/')
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).overscrollBehaviorY)).toBe(
+    'auto',
+  )
+})
