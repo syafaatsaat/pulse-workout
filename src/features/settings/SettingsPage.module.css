@@ -4,12 +4,12 @@
   max-width: 480px;
 }
 
-/* Wide desktop: two columns. Workout, Appearance and Reset on the left; the taller
-   During a session group on the right. */
+/* Wide desktop: the groups fill the width. Two columns from 1500px (Workout, Appearance and
+   Reset on the left; the taller During a session on the right), three from 1800px. */
 @media (min-width: 1500px) {
   .groups {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 480px));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
       'workout session'
       'appearance session'
@@ -18,6 +18,10 @@
     column-gap: var(--s-6);
     row-gap: 18px;
     align-items: start;
+  }
+
+  .groups .group {
+    max-width: none;
   }
 
   .groups .group + .group {
@@ -38,6 +42,16 @@
 
   .reset {
     grid-area: reset;
+  }
+}
+
+@media (min-width: 1800px) {
+  .groups {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      'workout session appearance'
+      'workout session reset';
+    grid-template-rows: auto 1fr;
   }
 }
 
