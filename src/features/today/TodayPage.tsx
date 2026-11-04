@@ -80,7 +80,9 @@ export function TodayPage() {
     </header>
   )
 
-  if (!data) return header(0, DEFAULT_SETTINGS.weeklyGoal)
+  // On a first visit the database is empty until seeding has fetched the exercise list. Wait for
+  // the workouts rather than drawing the aside alone and pushing it aside when Up next arrives.
+  if (!data || data.workouts.length === 0) return header(0, DEFAULT_SETTINGS.weeklyGoal)
 
   const { workouts, sessions, goal, exercises } = data
   const done = weekProgress(sessions, now)
