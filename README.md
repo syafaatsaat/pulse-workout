@@ -33,6 +33,11 @@ npm run e2e               # Playwright: every route and player phase, phone + de
 npm run import:exercises  # re-import free-exercise-db into src/data/exercises.json + public/exercises/
 ```
 
+## Deploy
+Vercel, from `main`. `vercel.json` sets the Vite build (`npm run build` → `dist/`), rewrites every
+path to `index.html` so deep links and reloads work (static files are served first), and caches the
+hashed `assets/` for a year. No environment variables are needed.
+
 ## Data
 Everything lives in the browser's IndexedDB. To start over, use Settings → Reset demo data. The
 database is still named `field-manual` (the app's earlier name) so existing data carries over.

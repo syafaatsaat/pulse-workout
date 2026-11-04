@@ -52,7 +52,8 @@ Done when: any exercise is 3 taps away and any ready-made workout starts from To
 - [x] Empty and error states; fix issues from real-phone tests
 
 ### Day 7 — Ship
-- [ ] Lighthouse 90+ on all four scores; one Playwright test (start → finish → see it in Log)
+- [x] Lighthouse 90+ on all four scores; one Playwright test (start → finish → see it in Log)
+      (Log is now Progress: `e2e/journey.spec.ts`. Lighthouse 91–100 on every route, phone + desktop.)
 - [ ] README, case study draft, 30–60 s screen recording
 Done when: a stranger opens the link and finishes a workout without instructions.
 
