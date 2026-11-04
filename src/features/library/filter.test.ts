@@ -1,5 +1,5 @@
 import type { Exercise } from '../../data/exerciseTypes'
-import { filterExercises, levelBadge, muscleLine, parseEquipment } from './filter'
+import { filterExercises, muscleLine, muscleSummary, parseEquipment } from './filter'
 
 const ex = (id: string, extra: Partial<Exercise>): Exercise => ({
   id,
@@ -24,6 +24,7 @@ const ALL = [
   ex('Good_Morning', { primaryMuscles: ['hamstrings'], secondaryMuscles: ['lower back'] }),
 ]
 const names = (list: Exercise[]) => list.map((e) => e.id)
+const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1)
 
 describe('filterExercises', () => {
   test('no filters: everything, A–Z', () => {
@@ -66,16 +67,17 @@ describe('filterExercises', () => {
   })
 })
 
-test('muscleLine: first primary · first secondary, capitalised', () => {
-  expect(muscleLine(ALL[0]!)).toBe('Chest · Shoulders')
-  expect(muscleLine(ALL[1]!)).toBe('Chest')
-  expect(muscleLine(ALL[6]!)).toBe('Hamstrings · Lower back')
+test('muscleLine: first primary, first secondary and the level, sentence case', () => {
+  expect(muscleLine(ALL[0]!)).toBe(`Chest, shoulders · ${cap(ALL[0]!.level)}`)
+  expect(muscleLine(ALL[1]!)).toBe(`Chest · ${cap(ALL[1]!.level)}`)
+  expect(muscleLine(ALL[6]!)).toBe(`Hamstrings, lower back · ${cap(ALL[6]!.level)}`)
 })
 
-test('levelBadge', () => {
-  expect(levelBadge('beginner')).toBe('BEG')
-  expect(levelBadge('intermediate')).toBe('INT')
-  expect(levelBadge('expert')).toBe('EXP')
+test('muscleSummary: primary, then "also" the secondaries joined with "and"', () => {
+  expect(
+    muscleSummary({ ...ALL[0]!, primaryMuscles: ['chest'], secondaryMuscles: ['shoulders', 'triceps'] }),
+  ).toBe('Chest · also shoulders and triceps')
+  expect(muscleSummary({ ...ALL[0]!, primaryMuscles: ['chest'], secondaryMuscles: [] })).toBe('Chest')
 })
 
 test('parseEquipment drops unknown values; empty means all', () => {

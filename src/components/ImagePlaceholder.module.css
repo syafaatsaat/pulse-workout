@@ -1,9 +1,9 @@
+/* Flat stand-in for an exercise photo (G-Player video card): soft fill + faint icon, no hatch.
+   Override --ph-fill / --ph-ink on the player grounds. */
 .placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ph-ink, var(--dim));
-  background:
-    repeating-linear-gradient(135deg, var(--ph-hatch, var(--hatch)) 0 8px, transparent 8px 16px),
-    var(--ph-fill, var(--fill));
+  color: var(--ph-ink, var(--placeholder));
+  background: var(--ph-fill, var(--fill));
 }

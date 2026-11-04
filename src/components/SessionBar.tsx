@@ -8,15 +8,15 @@ interface SessionBarProps {
   current: number
   label: string
   /**
-   * player: past / current / future in currentColor. summary: done steps solid, the rest faint.
-   * preview (Today): the session's shape; work tall in ink, rest short, warm-up / cool-down dim.
+   * player: past / future in currentColor, current in accent. preview (Today hero): the session's
+   * shape in hero tints; work bright, rest faint.
    */
-  variant?: 'player' | 'summary' | 'preview'
+  variant?: 'player' | 'preview'
 }
 
 /**
- * Player variant: one segment per step, coloured from `currentColor` (work ink on orange,
- * white on blue). Past 55%, current solid, future 16%.
+ * One segment per step, width by stepWeight. Player variant: past ink 55%, current accent,
+ * future ink 12% (ink = currentColor).
  */
 export function SessionBar({ steps, current, label, variant = 'player' }: SessionBarProps) {
   return (

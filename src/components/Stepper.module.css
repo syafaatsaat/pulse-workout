@@ -1,34 +1,40 @@
+/* G-Settings stepper: two 34px circles on --bg, value between them. */
 .stepper {
-  display: grid;
-  grid-template-columns: 40px 64px 40px;
+  display: flex;
   align-items: center;
-  height: 36px;
-  border-radius: var(--r-sm);
-  background: var(--fill);
+  gap: var(--s-1);
 }
 
 .stepper button {
   position: relative;
-  height: 36px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--bg);
   color: var(--ink);
   font-size: 18px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 36px visual, 44px hit area. */
+/* 34px visual, 44px hit area. */
 .stepper button::after {
   content: '';
   position: absolute;
-  inset: -4px 0;
+  inset: -5px;
 }
 
 .stepper button:disabled {
-  color: var(--dim);
+  color: var(--faint);
+  cursor: default;
 }
 
 .stepper output {
+  min-width: 60px;
   text-align: center;
-  font-family: var(--font-mono);
-  font-size: var(--t-small);
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }

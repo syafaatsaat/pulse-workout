@@ -1,6 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie'
 import type { Exercise, Session, Settings, Workout } from './types'
 
+// The database keeps its Field Manual name: renaming it would drop existing visitors' data.
 export const db = new Dexie('field-manual') as Dexie & {
   exercises: EntityTable<Exercise, 'id'>
   workouts: EntityTable<Workout, 'id'>
@@ -22,4 +23,5 @@ export const DEFAULT_SETTINGS: Settings = {
   weeklyGoal: 4,
   beeps: true,
   wakeLock: true,
+  voice: false,
 }

@@ -93,3 +93,13 @@ test('demo sessions log exactly the work steps of the compiled workout', async (
     )
   }
 })
+
+describe('exercise reload', () => {
+  test('a stored list from before the needsSetup flag is replaced', async () => {
+    await ensureSeeded(NOW)
+    await db.exercises.update('Plank', { needsSetup: undefined })
+    await ensureSeeded(NOW)
+    expect((await db.exercises.get('Plank'))?.needsSetup).toBe(true)
+    expect((await db.exercises.get('Pushups'))?.needsSetup).toBeUndefined()
+  })
+})

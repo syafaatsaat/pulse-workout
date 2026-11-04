@@ -20,4 +20,9 @@ export interface Exercise {
   instructions: string[]
   /** Paths under /exercises/, e.g. "Pushups/0.webp" (start) and "Pushups/1.webp" (end). */
   images: string[]
+  /**
+   * A hold that takes a moment to set up (plank, side bridge, isometric holds): the player gives
+   * it a 5 s "get into position" lead-in before the timer. Omitted = false.
+   */
+  needsSetup?: boolean
 }

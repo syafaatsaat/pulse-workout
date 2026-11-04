@@ -7,7 +7,7 @@ interface SwitchProps {
   onChange: (checked: boolean) => void
 }
 
-/** On / off switch (DESIGN_SYSTEM: Switch): 50×30, accent when on. */
+/** On / off switch (G-Settings): 48×28, ember when on. */
 export function Switch({ labelledBy, checked, onChange }: SwitchProps) {
   return (
     <button

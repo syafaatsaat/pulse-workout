@@ -1,5 +1,5 @@
 {
-  "name": "field-manual",
+  "name": "pulse",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,12 +11,11 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "import:exercises": "tsx scripts/import-exercises.ts"
+    "import:exercises": "tsx scripts/import-exercises.ts",
+    "e2e": "playwright test"
   },
   "dependencies": {
-    "@fontsource/barlow-condensed": "^5.3.0",
-    "@fontsource/ibm-plex-mono": "^5.3.0",
-    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/geist": "^5.3.0",
     "dexie": "^4.4.7",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -25,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",

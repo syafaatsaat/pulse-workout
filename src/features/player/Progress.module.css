@@ -1,25 +1,28 @@
-/* Bar under the player counter: ink on a faint ink track, with a tick at last time's mark. */
+/* Bar under the player counter (REDESIGN §3): 4px track, the filled part, and an ember dot at last
+   time's best, ringed in the ground colour. --pb-dot sets the dot size (10px phone, 12px desktop). */
 
 .track {
   position: relative;
-  height: 6px;
-  border-radius: 3px;
-  background: color-mix(in srgb, currentColor 16%, transparent);
+  height: 4px;
+  border-radius: 2px;
+  background: var(--g-track);
 }
 
 .fill {
   position: absolute;
   inset: 0 auto 0 0;
   border-radius: inherit;
-  background: currentColor;
+  background: var(--g-bar);
 }
 
 .marker {
+  --size: var(--pb-dot, 10px);
   position: absolute;
-  top: -4px;
-  bottom: -4px;
-  width: 2px;
-  margin-left: -1px;
-  border-radius: 1px;
-  background: currentColor;
+  top: calc(2px - var(--size) / 2);
+  width: var(--size);
+  height: var(--size);
+  margin-left: calc(var(--size) / -2);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--g-bg);
 }

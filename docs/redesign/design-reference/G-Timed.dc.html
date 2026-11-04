@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pulse — Timed exercise</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F4F2EE}a:hover{opacity:0.85}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #121417; color: #F4F2EE; font-family: 'Geist', sans-serif; padding: 60px 24px 30px; display: flex; flex-direction: column">
+  <div style="display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center">
+    <a href="G-Today.dc.html" aria-label="End session" style="width: 44px; height: 44px; border-radius: 50%; background: rgba(244,242,238,0.08); display: flex; align-items: center; justify-content: center">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </a>
+    <span style="text-align: center; font-size: 14px; color: rgba(244,242,238,0.6)">Move 5 of 9 · Set 1 of 4</span>
+    <span></span>
+  </div>
+  <div style="margin-top: 14px; display: flex; gap: 3px; height: 3px" role="img" aria-label="Session progress">
+    <sc-for list="{{shape}}" as="s" hint-placeholder-count="18">
+      <span style="flex-grow: {{s.grow}}; flex-basis: 0; border-radius: 2px; background: {{s.fill}}"></span>
+    </sc-for>
+  </div>
+
+  <div role="img" aria-label="Looping demo video of a plank" style="position: relative; margin-top: 20px; flex: 1 1 auto; min-height: 0; border-radius: 28px; background: rgba(244,242,238,0.05); box-shadow: inset 0 0 0 1px rgba(244,242,238,0.06); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: rgba(244,242,238,0.35)">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="19" cy="9" r="2"></circle><path d="M3 15h4l10-3M7 15v3M17 12v3"></path></svg>
+    <span style="font-size: 13px">Exercise video</span>
+    <button onClick="{{openInfo}}" aria-label="Exercise info: Plank" style="position: absolute; right: 14px; top: 14px; width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(244,242,238,0.1); color: #F4F2EE; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16.5"></line><circle cx="12" cy="7.6" r="0.6" fill="currentColor"></circle></svg></button>
+  </div>
+
+  <h1 style="margin: 22px 0 0; text-align: center; font-size: 30px; font-weight: 500; letter-spacing: -0.02em">Plank</h1>
+
+  <div style="position: relative; margin-top: 4px; height: 140px; display: flex; align-items: center; justify-content: center">
+    <svg width="600" height="600" viewBox="0 0 600 600" aria-hidden="true" style="position: absolute; left: 50%; top: 50%; margin: -300px 0 0 -300px; pointer-events: none">
+      <sc-for list="{{rings}}" as="r" hint-placeholder-count="6"><circle cx="300" cy="300" r="{{r.r}}" fill="none" stroke="#F2542D" stroke-opacity="{{r.o}}" stroke-width="1"></circle></sc-for>
+    </svg>
+    <sc-if value="{{ready}}" hint-placeholder-val="{{ true }}">
+      <span style="position: relative; text-align: center; font-size: 36px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.1">Get into<br>position</span>
+    </sc-if>
+    <sc-if value="{{timing}}" hint-placeholder-val="{{ false }}">
+      <span style="position: relative; text-align: center; font-size: min(112px, 28vw); font-weight: 300; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums">{{clock}}</span>
+    </sc-if>
+  </div>
+
+  <div style="position: relative; margin-top: 6px; height: 40px; display: flex; align-items: center; justify-content: center">
+  <div style="position: relative; width: 180px; height: 4px; border-radius: 2px; background: rgba(244,242,238,0.12)" role="img" aria-label="{{barLabel}}">
+    <div style="width: {{barWidth}}; height: 100%; border-radius: 2px; background: #F4F2EE; transition: width 100ms linear"></div>
+    <sc-if value="{{timing}}" hint-placeholder-val="{{ false }}">
+      <span style="position: absolute; left: 87.5%; top: -3px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #F2542D; box-shadow: 0 0 0 3px #121417"></span>
+    </sc-if>
+  </div>
+  </div>
+  <p style="position: relative; margin: 12px 0 0; height: 21px; text-align: center; font-size: 14px; line-height: 21px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: rgba(244,242,238,0.6)">{{subline}}</p>
+
+  <div style="position: relative; margin-top: 22px; display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px">
+    <button aria-label="Pause" style="height: 64px; border-radius: 32px; border: none; background: rgba(244,242,238,0.08); color: #F4F2EE; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="9" y1="6" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="18"></line></svg>
+    </button>
+    <div style="display: flex; flex-direction: column">
+      <sc-if value="{{ready}}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{startNow}}" style="width: 100%; height: 64px; border-radius: 32px; border: none; background: #F4F2EE; color: #121417; font-family: 'Geist', sans-serif; font-size: 17px; font-weight: 600">Start now</button>
+      </sc-if>
+      <sc-if value="{{timing}}" hint-placeholder-val="{{ false }}">
+        <a href="G-Rest.dc.html" style="width: 100%; box-sizing: border-box; height: 64px; border-radius: 32px; background: #F2542D; color: #121417; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-size: 17px; font-weight: 600">Set done</a>
+      </sc-if>
+    </div>
+  </div>
+  <sc-if value="{{info}}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{closeInfo}}" style="position: absolute; inset: 0; background: rgba(8,9,11,0.55)"></div>
+    <section role="dialog" aria-modal="true" aria-label="Plank info" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 78%; overflow: auto; border-radius: 28px 28px 0 0; padding: 12px 24px 34px; box-sizing: border-box; background: #1C1E22; color: #F4F2EE; box-shadow: 0 -10px 40px rgba(0,0,0,0.25)">
+      <span style="display: block; margin: 0 auto 16px; width: 36px; height: 4px; border-radius: 2px; background: rgba(244,242,238,0.2)"></span>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 13px; color: rgba(244,242,238,0.6)">Beginner · No equipment</span>
+          <h2 style="margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -0.02em">Plank</h2>
+        </div>
+        <button onClick="{{closeInfo}}" aria-label="Close exercise info" style="flex-shrink: 0; height: 40px; min-width: 40px; padding: 0 0; border-radius: 20px; border: none; background: rgba(244,242,238,0.08); color: #F4F2EE; font-family: 'Geist', sans-serif; font-size: 13px; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
+      </div>
+      <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px"><span style="height: 30px; padding: 0 12px; border-radius: 15px; background: rgba(244,242,238,0.08); display: flex; align-items: center; font-size: 13px; font-weight: 500">Core</span><span style="height: 30px; padding: 0 12px; border-radius: 15px; background: rgba(244,242,238,0.08); display: flex; align-items: center; font-size: 13px; font-weight: 500">Shoulders</span><span style="height: 30px; padding: 0 12px; border-radius: 15px; background: rgba(244,242,238,0.08); display: flex; align-items: center; font-size: 13px; font-weight: 500">Glutes</span></div>
+      <div style="margin-top: 20px; border-radius: 18px; background: rgba(244,242,238,0.08); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 12px; color: rgba(244,242,238,0.6)">Key cue</span>
+        <span style="font-size: 15px; font-weight: 500">Elbows under shoulders, body in one line</span>
+      </div>
+      <h3 style="margin: 22px 0 12px; font-size: 15px; font-weight: 500">How to do it</h3>
+      <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px"><li style="display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(244,242,238,0.2); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">1</span><span style="font-size: 15px; line-height: 1.5">Forearms on the floor, elbows directly under your shoulders.</span></li><li style="display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(244,242,238,0.2); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">2</span><span style="font-size: 15px; line-height: 1.5">Lift your hips, squeeze your glutes and brace so your body forms one line.</span></li><li style="display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(244,242,238,0.2); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">3</span><span style="font-size: 15px; line-height: 1.5">Breathe steadily. Don’t let your hips drop or pike up.</span></li></ol>
+      <div style="margin-top: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(244,242,238,0.6)"><span style="width: 8px; height: 8px; border-radius: 50%; background: #F2542D"></span>Your best 00:35</div>
+    </section>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"phase":{"editor":"enum","options":["live","get-ready","holding"],"default":"live"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { t: 0, info: false }; }
+  componentDidMount() {
+    this.t0 = Date.now();
+    this.iv = setInterval(() => {
+      if ((this.props.phase ?? 'live') === 'live') this.setState({ t: (Date.now() - this.t0) % 45000 });
+    }, 100);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  renderVals() {
+    const READY = 5000, HOLD = 40000;
+    const phase = this.props.phase ?? 'live';
+    const t = phase === 'get-ready' ? 3000 : (phase === 'holding' ? READY + 16000 : this.state.t);
+    const ready = t < READY;
+    const pct = ready ? t / READY : Math.min(1, (t - READY) / HOLD);
+    const left = Math.max(0, Math.ceil((HOLD - (t - READY)) / 1000));
+    const clock = String(Math.floor(left / 60)).padStart(2, '0') + ':' + String(left % 60).padStart(2, '0');
+    const rings = [92, 132, 172, 212, 252, 292].map((r, i) => ({ r, o: ((ready ? 0.18 : 0.32) - i * (ready ? 0.028 : 0.05)).toFixed(3) }));
+    const grows = [4, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3];
+    const shape = grows.map((g, i) => ({ grow: g, fill: i < 9 ? 'rgba(244,242,238,0.55)' : (i === 9 ? '#F2542D' : 'rgba(244,242,238,0.12)') }));
+    return {
+      rings, shape, ready, timing: !ready, clock,
+      info: this.state.info, openInfo: () => this.setState({ info: true }), closeInfo: () => this.setState({ info: false }),
+      barWidth: (pct * 100).toFixed(1) + '%',
+      barLabel: ready ? 'Getting into position; the timer starts when the line is full' : clock + ' left of 00:40; last time you held 00:35',
+      subline: ready ? 'Timer starts when the line fills' : '● Last time 00:35',
+      startNow: () => { this.t0 = Date.now() - READY; this.setState({ t: READY }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

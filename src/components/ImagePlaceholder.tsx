@@ -6,7 +6,7 @@ interface ImagePlaceholderProps extends Omit<HTMLAttributes<HTMLDivElement>, 'ro
   label: string
 }
 
-/** Hatched stand-in for an exercise photo. Override --ph-hatch / --ph-fill / --ph-ink on dark grounds. */
+/** Flat stand-in for an exercise photo. Override --ph-fill / --ph-ink on dark grounds. */
 export function ImagePlaceholder({ label, className, ...rest }: ImagePlaceholderProps) {
   return (
     <div

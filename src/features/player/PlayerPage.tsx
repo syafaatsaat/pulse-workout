@@ -3,7 +3,6 @@ import { Link, useLocation, useParams } from 'react-router'
 import { db } from '../../data/db'
 import { compile, moveCount } from '../../engine/compile'
 import { lastTime, personalBests, type Best, type SetValue } from '../../engine/stats'
-import { blockLabels } from './blockLabels'
 import { Player } from './Player'
 import styles from './Player.module.css'
 
@@ -12,10 +11,11 @@ async function load(sessionId: string) {
   if (!session) return null
   const workout = await db.workouts.get(session.workoutId)
   if (!workout) return null
-  const steps = compile(workout)
-  const ids = [...new Set(steps.map((s) => s.exerciseId))]
+  const ids = [...new Set(workout.blocks.flatMap((b) => b.items.map((i) => i.exerciseId)))]
   const found = await db.exercises.bulkGet(ids)
   const exercises = new Map(found.flatMap((e) => (e ? [[e.id, e] as const] : [])))
+  // With the exercises, so timed holds flagged needsSetup get their lead-in.
+  const steps = compile(workout, exercises)
   const history = await db.sessions.where('startedAt').below(session.startedAt).toArray()
   const lastTimes = new Map<string, SetValue>()
   for (const id of ids) {
@@ -43,10 +43,10 @@ export function PlayerPage() {
     }
   }, [id])
 
-  if (!data || data.id !== id) return <div className={styles.player} data-mode="work" />
+  if (!data || data.id !== id) return <div className={`${styles.ground} ${styles.player}`} data-mode="work" />
   if (!data.d || data.d.session.endedAt !== undefined) {
     return (
-      <div className={styles.player} data-mode="work">
+      <div className={`${styles.ground} ${styles.player}`} data-mode="work">
         <div className={styles.message}>
           <h1 className={styles.name}>{data.d ? 'Session finished' : 'Session not found'}</h1>
           <Link to="/">Back to Today</Link>
@@ -62,7 +62,6 @@ export function PlayerPage() {
       sessionId={id}
       session={autoStart ? null : { sets: session.sets, startedAt: session.startedAt, openedAt }}
       workoutName={workout.name}
-      blocks={blockLabels(workout)}
       steps={steps}
       moveCount={moveCount(workout)}
       exercises={exercises}

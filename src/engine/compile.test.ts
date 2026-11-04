@@ -125,8 +125,23 @@ describe('tempoMs', () => {
   })
 })
 
+describe('needsSetup', () => {
+  test('flows from the exercise to its timed work steps only', () => {
+    const exercises = new Map([
+      ['Plank', { needsSetup: true }],
+      ['Pushups', { needsSetup: true }],
+    ])
+    const steps = compile(straight, exercises)
+    expect(steps.filter((s) => s.needsSetup).map((s) => [s.exerciseId, s.kind])).toEqual([['Plank', 'work']])
+  })
+
+  test('without exercises no step gets one', () => {
+    expect(compile(straight).some((s) => s.needsSetup)).toBe(false)
+  })
+})
+
 describe('estimateMs', () => {
-  test('sums step lengths plus a lead-in before each timed work set', () => {
+  test('sums step lengths plus a lead-in before each set flagged needsSetup', () => {
     const base = {
       exerciseId: 'x',
       setIndex: 0,
@@ -138,8 +153,9 @@ describe('estimateMs', () => {
     const steps: Step[] = [
       { ...base, kind: 'work', mode: 'reps', target: 10, durationMs: 30_000 },
       { ...base, kind: 'rest', mode: 'time', target: 30, durationMs: 30_000 },
-      { ...base, kind: 'work', mode: 'time', target: 40, durationMs: 40_000 },
+      { ...base, kind: 'work', mode: 'time', target: 40, durationMs: 40_000, needsSetup: true },
+      { ...base, kind: 'work', mode: 'time', target: 30, durationMs: 30_000 },
     ]
-    expect(estimateMs(steps)).toBe(100_000 + LEAD_IN_MS)
+    expect(estimateMs(steps)).toBe(130_000 + LEAD_IN_MS)
   })
 })

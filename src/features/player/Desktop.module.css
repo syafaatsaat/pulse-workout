@@ -1,37 +1,23 @@
-/* Desktop full-screen player — "Desktop · Player (full screen).png". Same grounds as the phone player; tints are the
-   ink (currentColor) at the mock-up's opacities. */
+/* Desktop full-screen player — GD-Player.dc.html. Colours come from the shared .ground variables
+   in Player.module.css (work dark in both themes, rest mist / navy). */
 
 .desk {
-  --focus-ring: var(--work-ink);
-  --chip: color-mix(in srgb, currentColor 10%, transparent);
-  --hair: color-mix(in srgb, currentColor 15%, transparent);
-  --gap: var(--s-5);
   position: relative;
   height: 100dvh;
   min-height: 640px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: var(--gap);
+  gap: 22px;
   padding: 28px 40px var(--s-8);
-  background: var(--work);
-  color: var(--work-ink);
-}
-
-.desk[data-mode='rest'] {
-  --focus-ring: var(--rest-ink);
-  --chip: color-mix(in srgb, currentColor 12%, transparent);
-  --hair: color-mix(in srgb, currentColor 20%, transparent);
-  background: var(--rest-bg);
-  color: var(--rest-ink);
 }
 
 /* Above the work ⇄ rest sweep. */
-.desk > :not(.sweep) {
+.desk > :not(:first-child) {
   position: relative;
   z-index: 1;
 }
 
-/* Header */
 .header {
   display: flex;
   flex-direction: column;
@@ -40,453 +26,193 @@
 
 .top {
   display: grid;
-  /* 1fr | auto | 1fr keeps the position text centred on the screen, whatever the chip's width. */
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: 200px minmax(0, 1fr) 200px;
   align-items: center;
-  gap: var(--s-4);
-}
-
-.top .chip {
-  justify-self: start;
 }
 
 .chip {
+  justify-self: start;
   height: 44px;
+  padding: 0 14px 0 var(--s-3);
   border-radius: 22px;
-  background: var(--chip);
+  background: var(--g-tint);
   display: flex;
   align-items: center;
-}
-
-.chip {
-  padding: 0 var(--s-4) 0 var(--s-3);
   gap: var(--s-2);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--t-body);
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .position {
   text-align: center;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--t-body);
+  color: var(--g-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.kbd {
-  padding: 1px 6px;
-  border-radius: 5px;
-  background: var(--chip);
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-/* Labels share the bar's flex weights; the last one hugs the right edge. */
-.blocks {
-  display: flex;
-  gap: var(--s-1);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-.blocks span {
-  flex-basis: 0;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* A short last block (one cool-down step) would truncate: let it spill left, into free space. */
-.blocks span:last-child:not(:first-child) {
-  display: flex;
-  justify-content: flex-end;
-  overflow: visible;
-}
-
-.notice {
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-/* Main: large slideshow | name, counter, cards. */
+/* Video (flex 3) | counter column (flex 2, ≤540px). Only the video stretches. */
 .main {
-  flex: 1;
+  flex-grow: 1;
   min-height: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 11fr) minmax(0, 8fr);
-  gap: var(--s-8);
+  display: flex;
+  gap: 40px;
+  align-items: stretch;
 }
 
 .media {
-  position: relative;
-  min-height: 0;
-  display: flex;
-}
-
-.slideshow {
-  --ph-hatch: var(--chip);
-  --ph-fill: var(--chip);
-  --ph-ink: currentColor;
-  flex: 1;
-  border-radius: 28px;
-}
-
-/* "Up next · Push-up · Set 3 of 4" / "Get into position" */
-.tag {
-  position: absolute;
-  left: var(--s-4);
-  top: var(--s-4);
-  max-width: calc(100% - 2 * var(--s-4));
-  height: 32px;
-  padding: 0 14px;
-  border-radius: 16px;
-  display: block;
-  line-height: 32px;
-  background: var(--work-ink);
-  color: var(--work);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Name on top, counter in the middle, cards at the bottom: edges line up with the slideshow's. */
-.side {
+  flex: 3 1 520px;
   min-width: 0;
-  min-height: 0;
+  min-height: 360px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: var(--s-4);
+}
+
+.side {
+  position: relative;
+  flex: 2 1 420px;
+  min-width: 0;
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .name {
-  margin-top: var(--s-6);
-  font-family: var(--font-display);
-  font-size: clamp(56px, min(5.6vw, 9dvh), 96px);
-  font-weight: 800;
-  line-height: 0.95;
+  max-width: 100%;
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
   text-align: center;
-  text-transform: uppercase;
-  overflow-wrap: anywhere;
-}
-
-.name[data-long] {
-  font-size: clamp(44px, min(4vw, 7dvh), 72px);
-}
-
-.count {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .counterRow {
-  align-self: stretch;
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) 72px;
-  gap: var(--s-2);
-  align-items: center;
-}
-
-.counter {
-  display: block;
-  text-align: center;
-  font-family: var(--font-display);
-  font-size: clamp(112px, min(11vw, 18dvh), 220px);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.025em;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  margin: -0.076em 0 -0.093em;
-}
-
-.adjust {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: var(--chip);
-  font-size: 34px;
-  line-height: 1;
-}
-
-.adjust[data-adjust='time'] {
-  font-size: 18px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.progress {
-  margin-top: var(--s-6);
-  width: min(400px, 72%);
-  height: 8px;
-  border-radius: 4px;
-}
-
-.hint {
-  margin-top: 18px;
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.cards {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-}
-
-/* Form cue | last time (work), next target | last set (rest) */
-.info {
-  margin: 0;
-  display: flex;
-  border-radius: var(--r-lg);
-  background: var(--chip);
-}
-
-.card {
-  flex: 1.7 1 0;
-  min-width: 0;
-  min-height: 74px;
-  padding: 14px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-1);
-}
-
-.card + .card {
-  flex: 1 1 0;
-  border-left: 1px solid var(--hair);
-}
-
-.card dt,
-.comingTitle {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.9;
-}
-
-.card dd {
-  margin: 0;
-  min-width: 0;
-}
-
-.cardValue {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.05;
-  text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* The cue opens the form overlay; it reads as text. */
-.cue {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  text-align: left;
-  font-size: 16px;
-  line-height: 1.3;
-}
-
-.coming {
-  padding: 14px 18px var(--s-1);
-  border-radius: var(--r-lg);
-  background: var(--chip);
-}
-
-.comingTitle {
-  padding-bottom: var(--s-2);
-}
-
-.comingList {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.comingList li {
-  min-height: 43px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-4);
-  border-top: 1px solid var(--hair);
-}
-
-.comingName {
-  min-width: 0;
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 600;
-  text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.comingDose {
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Footer: pause | primary. */
-.footer {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
-  gap: var(--s-3);
-}
-
-.pause,
-.cta {
-  height: 80px;
-  border-radius: 40px;
+  position: relative;
+  margin-top: var(--s-2);
+  width: 100%;
+  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.pause {
-  min-width: 0;
-  gap: var(--s-3);
-  background: var(--chip);
-  font-size: 16px;
-  font-weight: 600;
+.counter {
+  position: relative;
+  font-size: var(--t-counter-desk);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  text-align: center;
+}
+
+.counter[data-kind='ready'] {
+  font-size: 52px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  white-space: normal;
+}
+
+.barRow {
+  position: relative;
+  margin-top: var(--s-2);
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-5);
+}
+
+.adjust {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--g-tint);
+  font-size: 22px;
+  font-weight: 300;
+}
+
+.progress {
+  --pb-dot: 12px;
+  width: 260px;
+  flex-shrink: 1;
+}
+
+.line {
+  position: relative;
+  margin-top: var(--s-4);
+  height: 24px;
+  max-width: 100%;
+  text-align: center;
+  font-size: 16px;
+  line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--g-muted);
+}
+
+/* Footer: Pause P · +15s ↑ (rest) · main action Space */
+.footer {
+  display: flex;
+  gap: var(--s-3);
+}
+
+.secondary,
+.cta {
+  height: 76px;
+  border-radius: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secondary {
+  flex: 1 1 160px;
+  gap: var(--s-3);
+  background: var(--g-tint);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.kbd {
+  padding: 1px 7px;
 }
 
 .cta {
-  gap: var(--s-6);
-  background: var(--work-ink);
-  color: var(--work);
-  font-family: var(--font-display);
-  font-size: 40px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.desk[data-mode='rest'] :is(.cta, .tag) {
-  background: var(--rest-ink);
-  color: var(--rest-bg);
-}
-
-.cta .kbd {
-  padding: 3px 10px;
-  border-radius: 6px;
-  background: none;
-  box-shadow: inset 0 0 0 1.5px currentColor;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-
-/* Moments: short motion with a purpose. Off under reduced motion; the New best card stays. */
-.card[data-new-best] {
-  border-radius: var(--r-lg);
-  border-left-color: transparent;
+  flex: 4 1 360px;
+  gap: var(--s-4);
   background: var(--accent);
   color: var(--accent-ink);
+  font-size: 20px;
+  font-weight: 600;
 }
 
-.sweep {
-  display: none;
+.cta[data-action='startNow'] {
+  background: var(--work-ink);
+  color: var(--work);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  /* Work ⇄ rest: the old colour drops away to the top, the new one rises from the buttons. */
-  .sweep {
-    display: block;
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    animation: sweep 380ms cubic-bezier(0.3, 0, 0.2, 1) forwards;
-  }
-
-  .sweep[data-from='work'] {
-    background: var(--work);
-  }
-
-  .sweep[data-from='rest'] {
-    background: var(--rest-bg);
-  }
-
-  /* 3-2-1 with the beeps. */
-  .counter[data-pulse] {
-    animation: pulse 450ms cubic-bezier(0.2, 0, 0.2, 1);
-  }
-
-  /* − / + on reps. */
-  .counter:not([data-timer]) {
-    animation: tick 120ms ease-out;
-  }
-
-  .card[data-new-best] {
-    animation: pop 260ms cubic-bezier(0.3, 0, 0.2, 1.4);
-  }
+.desk[data-mode='rest'] .cta {
+  background: var(--rest-btn);
+  color: var(--rest-on-btn);
 }
 
-@keyframes sweep {
-  from {
-    clip-path: inset(0);
-  }
-  to {
-    clip-path: inset(0 0 100% 0);
-  }
-}
-
-/* A beat: lands big, then settles. */
-@keyframes pulse {
-  from {
-    transform: scale(1.1);
-  }
-}
-
-@keyframes tick {
-  from {
-    opacity: 0.6;
-    transform: scale(0.94);
-  }
-}
-
-@keyframes pop {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
+.ctaKbd {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 2px 10px;
+  box-shadow: inset 0 0 0 1.5px currentColor; /* full ink: at 80% it fell below 4.5:1 on ember */
 }

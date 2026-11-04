@@ -3950,7 +3950,8 @@
     "images": [
       "Isometric_Chest_Squeezes/0.webp",
       "Isometric_Chest_Squeezes/1.webp"
-    ]
+    ],
+    "needsSetup": true
   },
   {
     "id": "Isometric_Neck_Exercise_-_Front_And_Back",
@@ -3974,7 +3975,8 @@
     "images": [
       "Isometric_Neck_Exercise_-_Front_And_Back/0.webp",
       "Isometric_Neck_Exercise_-_Front_And_Back/1.webp"
-    ]
+    ],
+    "needsSetup": true
   },
   {
     "id": "Isometric_Neck_Exercise_-_Sides",
@@ -3998,7 +4000,8 @@
     "images": [
       "Isometric_Neck_Exercise_-_Sides/0.webp",
       "Isometric_Neck_Exercise_-_Sides/1.webp"
-    ]
+    ],
+    "needsSetup": true
   },
   {
     "id": "Isometric_Wipers",
@@ -6150,7 +6153,8 @@
     "images": [
       "Plank/0.webp",
       "Plank/1.webp"
-    ]
+    ],
+    "needsSetup": true
   },
   {
     "id": "Plie_Dumbbell_Squat",
@@ -7339,7 +7343,8 @@
     "images": [
       "Side_Bridge/0.webp",
       "Side_Bridge/1.webp"
-    ]
+    ],
+    "needsSetup": true
   },
   {
     "id": "Side_Hop-Sprint",

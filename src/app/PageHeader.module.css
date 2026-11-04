@@ -1,6 +1,20 @@
+/* G-Settings: 14px muted kicker, 4px gap, 30px/500 title. GD-Today: 15px / 40px. */
 .header {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-bottom: var(--s-6);
+  gap: var(--s-1);
+  margin-bottom: 22px;
+}
+
+.kicker {
+  font-size: var(--t-body);
+  line-height: normal; /* as in the refs, not the body's */
+  color: var(--muted);
+}
+
+@media (min-width: 1024px) {
+  .kicker {
+    font-size: 15px;
+  }
 }

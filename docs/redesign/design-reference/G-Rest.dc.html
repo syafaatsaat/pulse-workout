@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pulse — Player, rest</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.rt-light{--bg:#E6ECF4;--surface:#FFFFFF;--ink:#121417;--muted:#5B6472;--chip:#E6ECF4;--accent:#3D5AD8;--tint:rgba(18,20,23,0.06);--track:rgba(18,20,23,0.1);--past:rgba(18,20,23,0.45);--card:0 1px 2px rgba(18,20,23,0.04);--video-ink:rgba(18,20,23,0.3);--btn:#121417;--on-btn:#F4F2EE;color-scheme:light}
+.rt-dark{--bg:#121A2B;--surface:#1A2438;--ink:#EEF1F7;--muted:#9AA6BC;--chip:#22304A;--accent:#6F8CFF;--tint:rgba(238,241,247,0.08);--track:rgba(238,241,247,0.12);--past:rgba(238,241,247,0.45);--card:0 0 0 1px rgba(238,241,247,0.06);--video-ink:rgba(238,241,247,0.35);--btn:#EEF1F7;--on-btn:#121A2B;color-scheme:dark}
+a{color:var(--ink)}a:hover{opacity:0.85}
+</style>
+</helmet>
+<div class="rt-{{theme}}" style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: var(--bg); color: var(--ink); font-family: 'Geist', sans-serif; padding: 60px 24px 30px; display: flex; flex-direction: column">
+  <div style="display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center">
+    <a href="G-Today.dc.html" aria-label="End session" style="width: 44px; height: 44px; border-radius: 50%; background: var(--tint); display: flex; align-items: center; justify-content: center">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </a>
+    <span style="text-align: center; font-size: 14px; color: var(--muted)">Set 2 of 4 done</span>
+    <span></span>
+  </div>
+  <div style="margin-top: 14px; display: flex; gap: 3px; height: 3px" role="img" aria-label="Session progress">
+    <sc-for list="{{shape}}" as="s" hint-placeholder-count="18">
+      <span style="flex-grow: {{s.grow}}; flex-basis: 0; border-radius: 2px; background: {{s.fill}}"></span>
+    </sc-for>
+  </div>
+
+  <div role="img" aria-label="Looping demo video of the next exercise, push-up" style="position: relative; margin-top: 20px; flex: 1 1 auto; min-height: 0; border-radius: 28px; background: var(--surface); box-shadow: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--video-ink)">
+    <span style="position: absolute; left: 14px; top: 14px; height: 30px; padding: 0 12px; border-radius: 15px; background: var(--chip); color: var(--ink); display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent)"></span>Up next · Push-up</span>
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="6" r="2"></circle><path d="M3 17h4l4-3 6 1M11 14l-1-5 5 1"></path></svg>
+    <span style="font-size: 13px">Exercise video</span>
+    <button onClick="{{openInfo}}" aria-label="Exercise info: Push-up, up next" style="position: absolute; right: 14px; top: 14px; width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--tint); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16.5"></line><circle cx="12" cy="7.6" r="0.6" fill="currentColor"></circle></svg></button>
+  </div>
+
+  <h1 style="margin: 22px 0 0; text-align: center; font-size: 30px; font-weight: 500; letter-spacing: -0.02em">Rest</h1>
+
+  <div style="position: relative; margin-top: 4px; height: 140px; display: flex; align-items: center; justify-content: center">
+    <svg width="600" height="600" viewBox="0 0 600 600" aria-hidden="true" style="position: absolute; left: 50%; top: 50%; margin: -300px 0 0 -300px; pointer-events: none">
+      <sc-for list="{{rings}}" as="r" hint-placeholder-count="6"><circle cx="300" cy="300" r="{{r.r}}" fill="none" stroke="currentColor" style="color: var(--accent)" stroke-opacity="{{r.o}}" stroke-width="1"></circle></sc-for>
+    </svg>
+    <span style="position: relative; text-align: center; font-size: min(112px, 28vw); font-weight: 300; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums">00:24</span>
+  </div>
+
+  <div style="position: relative; margin-top: 6px; height: 40px; display: flex; align-items: center; justify-content: center">
+  <div style="position: relative; width: 180px; height: 4px; border-radius: 2px; background: var(--track)" role="img" aria-label="24 of 30 seconds of rest left">
+    <div style="width: 80%; height: 100%; border-radius: 2px; background: var(--accent)"></div>
+  </div>
+  </div>
+  <p style="position: relative; margin: 12px 0 0; height: 21px; text-align: center; font-size: 14px; line-height: 21px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted)">Next set: 12 reps</p>
+
+  <div style="position: relative; margin-top: 22px; display: grid; grid-template-columns: 64px 76px minmax(0, 1fr); gap: 10px">
+    <button aria-label="Pause" style="height: 64px; border-radius: 32px; border: none; background: var(--tint); color: var(--ink); display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="9" y1="6" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="18"></line></svg>
+    </button>
+    <button aria-label="Add 15 seconds of rest" style="height: 64px; border-radius: 32px; border: none; background: var(--tint); color: var(--ink); font-family: 'Geist', sans-serif; font-size: 15px; font-weight: 600">+15s</button>
+    <a href="G-Player.dc.html" style="height: 64px; border-radius: 32px; background: var(--btn); color: var(--on-btn); display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-size: 17px; font-weight: 600">
+      Skip rest
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 5 13 12 6 19"></polyline><line x1="18" y1="5" x2="18" y2="19"></line></svg>
+    </a>
+  </div>
+  <sc-if value="{{info}}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{closeInfo}}" style="position: absolute; inset: 0; background: rgba(8,9,11,0.55)"></div>
+    <section role="dialog" aria-modal="true" aria-label="Push-up info" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 78%; overflow: auto; border-radius: 28px 28px 0 0; padding: 12px 24px 34px; box-sizing: border-box; background: var(--surface); color: var(--ink); box-shadow: 0 -10px 40px rgba(0,0,0,0.25)">
+      <span style="display: block; margin: 0 auto 16px; width: 36px; height: 4px; border-radius: 2px; background: var(--track)"></span>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 13px; color: var(--muted)">Beginner · No equipment</span>
+          <h2 style="margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -0.02em">Push-up</h2>
+        </div>
+        <button onClick="{{closeInfo}}" aria-label="Close exercise info" style="flex-shrink: 0; height: 40px; min-width: 40px; padding: 0 0; border-radius: 20px; border: none; background: var(--tint); color: var(--ink); font-family: 'Geist', sans-serif; font-size: 13px; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
+      </div>
+      <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px"><span style="height: 30px; padding: 0 12px; border-radius: 15px; background: var(--tint); display: flex; align-items: center; font-size: 13px; font-weight: 500">Chest</span><span style="height: 30px; padding: 0 12px; border-radius: 15px; background: var(--tint); display: flex; align-items: center; font-size: 13px; font-weight: 500">Triceps</span><span style="height: 30px; padding: 0 12px; border-radius: 15px; background: var(--tint); display: flex; align-items: center; font-size: 13px; font-weight: 500">Shoulders</span></div>
+      <div style="margin-top: 20px; border-radius: 18px; background: var(--tint); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 12px; color: var(--muted)">Key cue</span>
+        <span style="font-size: 15px; font-weight: 500">Elbows at 45°, hips level</span>
+      </div>
+      <h3 style="margin: 22px 0 12px; font-size: 15px; font-weight: 500">How to do it</h3>
+      <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px"><li style="display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--track); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">1</span><span style="font-size: 15px; line-height: 1.5">Hands slightly wider than your shoulders, body in one straight line from head to heels.</span></li><li style="display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--track); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">2</span><span style="font-size: 15px; line-height: 1.5">Lower until your chest is just above the floor, elbows at about 45° from your body.</span></li><li style="display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start"><span style="width: 26px; height: 26px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--track); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">3</span><span style="font-size: 15px; line-height: 1.5">Press back up to straight arms without letting your hips sag.</span></li></ol>
+      <div style="margin-top: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted)"><span style="width: 8px; height: 8px; border-radius: 50%; background: #F2542D"></span>Your best 12 reps</div>
+    </section>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { info: false }; }
+  renderVals() {
+    return Object.assign(this.baseVals(), { theme: this.props.theme === 'dark' ? 'dark' : 'light' });
+  }
+  baseVals() {
+    const rings = [92, 132, 172, 212, 252, 292].map((r, i) => ({ r, o: (0.3 - i * 0.045).toFixed(3) }));
+    const grows = [4, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3];
+    const current = 8;
+    const shape = grows.map((g, i) => ({ grow: g, fill: i < current ? 'var(--past)' : (i === current ? 'var(--accent)' : 'var(--track)') }));
+    return { rings, shape, info: this.state.info, openInfo: () => this.setState({ info: true }), closeInfo: () => this.setState({ info: false }) };
+  }
+}
+</script>
+</body>
+</html>

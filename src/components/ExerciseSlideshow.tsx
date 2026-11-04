@@ -17,7 +17,7 @@ interface ExerciseSlideshowProps {
 
 /**
  * Shows how a move is done by alternating its start and end photos. With one photo, reduced motion
- * or `still`, it holds a single frame; with none, the hatched placeholder.
+ * or `still`, it holds a single frame; with none, the placeholder.
  */
 export function ExerciseSlideshow({
   images = [],

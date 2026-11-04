@@ -29,7 +29,7 @@ export interface Block {
 export interface Workout {
   id: string
   name: string
-  /** Short eyebrow tag, e.g. "Upper". */
+  /** Short tag, e.g. "Upper". */
   focus: string
   blocks: Block[]
   /** Single-exercise workout made by "Try it" on Exercise detail; kept out of Today's lists. */
@@ -64,4 +64,6 @@ export interface Settings {
   weeklyGoal: number
   beeps: boolean
   wakeLock: boolean
+  /** Spoken "Set done / Rest / Go". Optional: settings saved before it existed lack it (= off). */
+  voice?: boolean
 }

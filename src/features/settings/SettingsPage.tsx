@@ -8,7 +8,8 @@ import { db, DEFAULT_SETTINGS } from '../../data/db'
 import { resetDemoData } from '../../data/seed'
 import type { Settings } from '../../data/types'
 import { useLiveQuery } from '../../data/useLiveQuery'
-import { seconds } from '../player/format'
+import { timer } from '../player/format'
+import { speak, unlockSpeech } from '../player/voice'
 import dialog from '../player/Dialog.module.css'
 import { useModal } from '../player/useModal'
 import styles from './SettingsPage.module.css'
@@ -45,7 +46,7 @@ export function SettingsPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Stored on this device" title="Settings" />
+      <PageHeader kicker="Saved on this device" title="Settings" />
 
       <section className={styles.group} aria-labelledby="settings-workout">
         <h2 id="settings-workout" className={styles.heading}>
@@ -53,17 +54,14 @@ export function SettingsPage() {
         </h2>
         <div className={styles.card}>
           <div className={styles.row}>
-            <span className={styles.text}>
-              <span className={styles.label}>Default rest</span>
-              <span className={styles.hint}>Between sets in Try it</span>
-            </span>
+            <span className={styles.label}>Default rest</span>
             <Stepper
               label="Default rest"
               value={settings.defaultRest}
               min={0}
               max={180}
               step={15}
-              format={seconds}
+              format={(s) => timer(s * 1000)}
               onChange={(defaultRest) => update({ defaultRest })}
             />
           </div>
@@ -74,7 +72,6 @@ export function SettingsPage() {
               value={settings.weeklyGoal}
               min={1}
               max={7}
-              format={(n) => `${n} / wk`}
               onChange={(weeklyGoal) => update({ weeklyGoal })}
             />
           </div>
@@ -98,12 +95,29 @@ export function SettingsPage() {
           </div>
           <div className={styles.row}>
             <span id="settings-beeps" className={styles.label}>
-              Beeps · 3-2-1
+              Countdown beeps
             </span>
             <Switch
               labelledBy="settings-beeps"
               checked={settings.beeps}
               onChange={(beeps) => update({ beeps })}
+            />
+          </div>
+          <div className={styles.row}>
+            <span id="settings-voice" className={styles.label}>
+              Voice cues
+            </span>
+            <Switch
+              labelledBy="settings-voice"
+              checked={settings.voice ?? false}
+              onChange={(voice) => {
+                update({ voice })
+                // The tap unlocks speech on iOS, and a sample confirms the volume.
+                if (voice) {
+                  unlockSpeech()
+                  speak('Voice cues on')
+                }
+              }}
             />
           </div>
         </div>
@@ -116,10 +130,7 @@ export function SettingsPage() {
         <Segmented label="Appearance" options={THEME_OPTIONS} value={theme} onChange={setTheme} />
       </section>
 
-      <section className={styles.group} aria-labelledby="settings-data">
-        <h2 id="settings-data" className={styles.heading}>
-          Data
-        </h2>
+      <section className={styles.group} aria-label="Demo data">
         <div className={styles.card}>
           <button type="button" className={styles.danger} onClick={() => setConfirming(true)}>
             Reset demo data

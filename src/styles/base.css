@@ -17,7 +17,7 @@ body {
   min-height: 100dvh;
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-body);
+  font-family: var(--font);
   font-size: var(--t-body);
   line-height: 1.4;
   font-variant-numeric: tabular-nums;
@@ -67,28 +67,34 @@ a {
   text-decoration: none;
 }
 
-/* --focus-ring: the player grounds set their own ink (orange / blue are fixed in both themes). */
+/* --focus-ring: the player grounds set their own ink (dark work / rest grounds). */
 :focus-visible {
   outline: 2px solid var(--focus-ring, var(--ink));
   outline-offset: 2px;
 }
 
-/* Shared type roles from DESIGN_SYSTEM.md */
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+/* Shared type roles (REDESIGN.md §1–2): sentence case, no mono, no letter-spaced caps. */
+
+/* Small muted line above a title or section ("Saved on this device", "Workout"). */
+.kicker {
+  font-size: var(--t-small);
+  font-weight: 400;
   color: var(--muted);
 }
 
 .page-title {
-  font-family: var(--font-display);
   font-size: var(--t-title);
-  font-weight: 700;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: normal; /* as in the refs: sets the gap to whatever comes next */
+}
+
+/* Big numbers: light weight, tight tracking, never clipped. */
+.num {
+  font-weight: 300;
+  letter-spacing: -0.04em;
   line-height: 1;
-  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
 }
 
 .visually-hidden {
@@ -114,9 +120,9 @@ a {
   }
 }
 
-/* DT-Today / DT-Library: page titles grow on desktop. */
+/* GD-Today: page titles grow on desktop. */
 @media (min-width: 1024px) {
   .page-title {
-    font-size: 44px;
+    font-size: 40px;
   }
 }

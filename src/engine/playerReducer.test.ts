@@ -23,6 +23,7 @@ const STEPS: Step[] = [
     target: 40,
     durationMs: 40_000,
     mode: 'time',
+    needsSetup: true,
     moveIndex: 1,
   },
 ]
@@ -154,7 +155,7 @@ describe('lead-in', () => {
       { type: 'skipRest', now: T0 + 40_000 },
     )
 
-  test('a timed work set gets a 5 s lead-in before its own countdown', () => {
+  test('a timed set flagged needsSetup gets a 5 s lead-in before its own countdown', () => {
     const s = planking()
     expect(leadInMs(s, T0 + 40_000)).toBe(LEAD_IN_MS)
     expect(leadInMs(s, T0 + 43_000)).toBe(2000)
@@ -169,6 +170,14 @@ describe('lead-in', () => {
     const rest = playerReducer(work, { type: 'setDone', now: T0 + 30_000 })
     expect(leadInMs(rest, T0 + 30_000)).toBe(0)
     expect(rest.endsAt).toBe(T0 + 60_000)
+  })
+
+  test('a timed set without needsSetup starts its timer straight away', () => {
+    const kicks: Step = { ...STEPS[2]!, exerciseId: 'Flutter_Kicks', needsSetup: undefined }
+    const s = playerReducer(initPlayer([kicks]), { type: 'start', now: T0 })
+    expect(s.endsAt).toBe(T0 + 40_000)
+    expect(leadInMs(s, T0)).toBe(0)
+    expect(playerReducer(s, { type: 'startNow', now: T0 + 1000 })).toBe(s)
   })
 
   test('a timed first step also starts with the lead-in', () => {

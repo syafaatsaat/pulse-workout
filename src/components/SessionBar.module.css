@@ -1,79 +1,56 @@
+/* Session bar (REDESIGN §3): thin segmented line, 3px phone / 4px desktop.
+   Player: past = ink 55%, current = accent, future = ink 12%; ink is currentColor, so it follows
+   the screen. A screen can override --bar-past / --bar-current / --bar-future (e.g. rest). */
 .bar {
   display: flex;
   gap: 3px;
-  height: 6px;
+  height: 3px;
 }
 
 .segment {
   flex-basis: 0;
   min-width: 2px;
-  border-radius: 3px;
-  background: color-mix(in srgb, currentColor 16%, transparent);
+  border-radius: 2px;
+  background: var(--bar-future, color-mix(in srgb, currentColor 12%, transparent));
 }
 
 .segment[data-state='past'] {
-  background: color-mix(in srgb, currentColor 55%, transparent);
+  background: var(--bar-past, color-mix(in srgb, currentColor 55%, transparent));
 }
 
 .segment[data-state='current'] {
-  background: currentColor;
+  background: var(--bar-current, var(--accent));
 }
 
-.bar[data-variant='summary'] .segment[data-state='past'] {
-  background: currentColor;
-}
-
-.bar[data-variant='summary'] .segment[data-state='current'] {
-  background: color-mix(in srgb, currentColor 16%, transparent);
-}
-
-/* Preview (F-Today): heights carry the shape; colours are fixed, not currentColor. */
+/* Preview (G-Today hero): the session's shape on the dark hero card, 4px tall. */
 .bar[data-variant='preview'] {
-  height: 30px;
-  align-items: flex-end;
+  height: 4px;
 }
 
 .bar[data-variant='preview'] .segment {
-  height: 30px;
-  background: var(--ink);
+  background: var(--on-hero-strong);
 }
 
 .bar[data-variant='preview'] .segment[data-kind='rest'] {
-  height: 10px;
-  background: var(--rest);
+  background: var(--on-hero-faint);
 }
 
 .bar[data-variant='preview'] .segment:is([data-kind='warmup'], [data-kind='cooldown']) {
-  height: 16px;
-  background: var(--dim);
+  background: var(--on-hero-dim);
 }
 
 @media (min-width: 1024px) {
-  /* DT-Today shape: taller bars. */
-  .bar[data-variant='preview'] {
-    height: 44px;
+  /* GD-Player: 4px; GD-Today hero shape: 5px, radius 3. */
+  .bar {
     gap: var(--s-1);
+    height: 4px;
+  }
+
+  .bar[data-variant='preview'] {
+    height: 5px;
   }
 
   .bar[data-variant='preview'] .segment {
-    height: 44px;
-    border-radius: var(--s-1);
-  }
-
-  .bar[data-variant='preview'] .segment[data-kind='rest'] {
-    height: 14px;
-  }
-
-  .bar[data-variant='preview'] .segment:is([data-kind='warmup'], [data-kind='cooldown']) {
-    height: 22px;
-  }
-
-  .bar:not([data-variant='preview']) {
-    gap: var(--s-1);
-    height: 10px;
-  }
-
-  .segment {
-    border-radius: 5px;
+    border-radius: 3px;
   }
 }

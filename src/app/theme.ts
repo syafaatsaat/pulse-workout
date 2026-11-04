@@ -4,6 +4,7 @@ export type ThemePref = 'light' | 'dark' | 'auto'
 
 // Lives in localStorage, not the Dexie settings row: index.html must read it synchronously
 // before first paint to avoid a theme flash, and IndexedDB is async.
+// Keeps its Field Manual name: renaming it would reset existing visitors' theme choice.
 export const THEME_KEY = 'fm-theme'
 
 function readPref(): ThemePref {

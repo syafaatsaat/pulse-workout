@@ -1,17 +1,38 @@
-# Field Manual — handoff kit
+# Pulse
 
-Drop this folder's contents into an empty project folder, open it in VS Code, start Claude Code, and paste
-`prompts/day-1.md`.
+A local-first web app for home workouts. Pick a workout, press Start, and the player walks you
+through every set and rest with a timer you can read from the floor. Your sessions, personal
+bests and weekly goal stay on your device; there is no sign-up, and demo data is seeded on the
+first visit so everything works straight away.
 
-| Path | What it is |
-|---|---|
-| `CLAUDE.md` | Project rules Claude Code reads automatically every session |
-| `docs/BUILD_PLAN.md` | 7-day lean build + add-ons, with checklists |
-| `docs/DESIGN_SYSTEM.md` | Colours, type, layout, component specs |
-| `docs/SCREENS.md` | Contents, routes and links for every screen |
-| `docs/design-reference/` | Approved mock-up source files (phone `F-*`, desktop `DT-*`) |
-| `src/styles/tokens.css` | Ready-to-use CSS variables, light + dark |
-| `prompts/day-1.md` | Kickoff prompt for Day 1 |
+## Features
+- **Today:** the next workout, your weekly goal and quick-start workouts.
+- **Player:** reps and timed holds, rests with +15 s, a 5 s "get into position" lead-in for
+  holds, countdown beeps, optional voice cues and the screen kept awake. Exercise instructions
+  are one tap away in the info sheet.
+- **Library:** about 380 exercises from free-exercise-db with photos, filtered by muscle and
+  equipment.
+- **Progress:** a month calendar, goal streak, sessions per week, and personal bests with
+  six-week sparklines.
+- Light and dark themes, phone and desktop layouts, keyboard shortcuts in the desktop player.
 
-Tip: export PNGs of the screens from the design canvas (Share → Export) into `docs/design-reference/`
-so Claude Code can look at the visuals too, not just the markup.
+## Stack
+React, TypeScript, Vite, CSS Modules, React Router, Zustand, Dexie (IndexedDB) and Vitest. The
+font is Geist, self-hosted via Fontsource. Exercise data and photos come from
+[free-exercise-db](https://github.com/yuhonas/free-exercise-db) (Unlicense).
+
+## Commands
+```sh
+npm install
+npm run dev               # dev server
+npm run build             # type-check and production build to dist/
+npm run preview           # serve dist/
+npm run test              # unit tests
+npm run lint              # ESLint
+npm run e2e               # Playwright: every route and player phase, phone + desktop, light + dark
+npm run import:exercises  # re-import free-exercise-db into src/data/exercises.json + public/exercises/
+```
+
+## Data
+Everything lives in the browser's IndexedDB. To start over, use Settings → Reset demo data. The
+database is still named `field-manual` (the app's earlier name) so existing data carries over.

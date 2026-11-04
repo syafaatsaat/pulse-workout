@@ -13,7 +13,7 @@ interface ExercisePhotoProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, '
   fallback?: 'placeholder' | 'none'
 }
 
-/** An exercise photo that falls back to the hatched placeholder when it's missing or fails to load. */
+/** An exercise photo that falls back to the placeholder when it's missing or fails to load. */
 export function ExercisePhoto({
   path,
   alt,

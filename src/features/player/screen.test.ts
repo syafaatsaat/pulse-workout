@@ -16,6 +16,7 @@ const STEPS: Step[] = [
     target: 40,
     durationMs: 40_000,
     mode: 'time',
+    needsSetup: true,
     moveIndex: 4,
   },
 ]
@@ -35,38 +36,39 @@ function at(now: number, ...actions: PlayerAction[]) {
   return playerScreen(state, state.steps[state.index]!, now, 9, exercises, lastTimes, bests)
 }
 
-test('reps: counter, fill of the target, marker at last time, cue and last-time cards', () => {
+test('reps: counter, fill of the target, marker at last time, one line with last time', () => {
   const s = at(T0, { type: 'start', now: T0 }, { type: 'adjustReps', delta: -4 })
   expect(s).toMatchObject({
     position: 'Move 4 of 9 · Set 2 of 4',
+    header: 'Move 4 of 9 · Set 2 of 4',
     title: 'Push-up',
-    counter: { text: '08' },
+    counter: { kind: 'reps', text: '08' },
     adjust: 'reps',
+    addTime: false,
     primary: 'setDone',
+    line: { text: 'Last time 10 reps', dot: 'accent' },
   })
   expect(s.progress.fill).toBeCloseTo(8 / 12)
   expect(s.progress.marker).toBeCloseTo(10 / 12)
-  expect(s.cards).toEqual([
-    { label: 'Form cue', value: 'Elbows at 45°, hips level', cue: true },
-    { label: 'Last time', value: '10 reps' },
-  ])
+  expect(s.progress.label).toBe('8 of 12 reps; last time 10')
 })
 
-test('rest: the next move with its target, the set just logged, the bar drains', () => {
+test('rest: the next move in the chip, its target in the line, +15s only, the bar drains', () => {
   const s = at(T0 + 36_000, { type: 'start', now: T0 }, { type: 'setDone', now: T0 + 30_000 })
   expect(s).toMatchObject({
     position: 'Move 4 of 9 · Set 2 of 4 done',
+    header: 'Set 2 of 4 done',
     title: 'Rest',
-    tag: 'Up next · Plank · Set 1 of 4',
-    counter: { text: '00:24' },
-    adjust: 'time',
+    media: { name: 'Plank' },
+    tag: 'Up next · Plank',
+    counter: { kind: 'time', text: '00:24' },
+    adjust: null,
+    addTime: true,
     primary: 'skipRest',
     progress: { fill: 0.8 },
+    line: { text: 'Next set: 00:40' },
+    newBest: false,
   })
-  expect(s.cards).toEqual([
-    { label: 'Next target', value: '00:40' },
-    { label: 'Last set', value: '12 reps', newBest: false },
-  ])
 })
 
 test('rest after a set that beats the best: New best on the last set', () => {
@@ -76,7 +78,8 @@ test('rest after a set that beats the best: New best on the last set', () => {
     { type: 'adjustReps', delta: 2 },
     { type: 'setDone', now: T0 + 30_000 },
   )
-  expect(s.cards.at(-1)).toEqual({ label: 'Last set', value: '14 reps', newBest: true })
+  expect(s.newBest).toBe(true)
+  expect(s.line).toEqual({ text: 'New best · 14 reps', dot: 'accent' })
 })
 
 test('pulse counts 3-2-1 at the end of a running countdown, never while paused or on reps', () => {
@@ -91,24 +94,33 @@ test('pulse counts 3-2-1 at the end of a running countdown, never while paused o
   expect(at(T0, { type: 'start', now: T0 }).pulse).toBeNull()
 })
 
-test('hold: lead-in first with nothing to adjust, then the hold fills toward last time', () => {
+test('hold: get into position first, filling over 5 s, then the hold fills toward last time', () => {
   const actions: PlayerAction[] = [
     { type: 'start', now: T0 },
     { type: 'setDone', now: T0 + 30_000 },
     { type: 'skipRest', now: T0 + 40_000 },
   ]
   const lead = at(T0 + 42_000, ...actions)
-  expect(lead).toMatchObject({ tag: 'Get into position', counter: { text: '00:03' }, adjust: null })
-  expect(lead.progress.fill).toBe(0)
+  expect(lead.tag).toBeUndefined()
+  expect(lead).toMatchObject({
+    counter: { kind: 'ready', text: 'Get into position' },
+    adjust: null,
+    addTime: false,
+    primary: 'startNow',
+    line: { text: 'Timer starts when the line fills' },
+  })
+  expect(lead.progress.fill).toBeCloseTo(2 / 5)
+  expect(lead.progress.marker).toBeUndefined()
 
   const hold = at(T0 + 40_000 + LEAD_IN_MS + 6000, ...actions)
+  expect(hold.tag).toBeUndefined()
   expect(hold).toMatchObject({
-    tag: undefined,
-    counter: { text: '00:34' },
-    adjust: 'time',
+    counter: { kind: 'time', text: '00:34' },
+    adjust: null,
+    addTime: false,
     primary: 'setDone',
   })
   expect(hold.progress.fill).toBeCloseTo(6 / 40)
   expect(hold.progress.marker).toBeCloseTo(35 / 40)
-  expect(hold.cards.at(-1)).toEqual({ label: 'Last time', value: '00:35' })
+  expect(hold.line).toEqual({ text: 'Last time 00:35', dot: 'accent' })
 })

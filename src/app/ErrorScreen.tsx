@@ -7,7 +7,7 @@ export function ErrorScreen({ title, children }: { title: string; children: Reac
   return (
     <main className={styles.screen}>
       <div className={styles.inner}>
-        <span className="eyebrow">Field Manual</span>
+        <span className="kicker">Pulse</span>
         <h1 className="page-title">{title}</h1>
         {children}
         <div className={styles.actions}>
@@ -41,8 +41,8 @@ export function StorageError() {
   return (
     <ErrorScreen title="Storage is blocked">
       <p className={styles.body}>
-        Field Manual keeps workouts and your log on this device, in the browser's storage, and this browser
-        won't open it. Private or incognito windows in some browsers do this, as does blocking site data in
+        Pulse keeps workouts and your log on this device, in the browser's storage, and this browser won't
+        open it. Private or incognito windows in some browsers do this, as does blocking site data in
         settings.
       </p>
       <p className={styles.body}>Try a normal window, or allow site data for this page, then reload.</p>

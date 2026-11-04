@@ -116,7 +116,7 @@ export function remainingMs(state: PlayerState, now: number): number | null {
 /** What is left of the "get into position" lead-in of a timed work set; 0 otherwise. */
 export function leadInMs(state: PlayerState, now: number): number {
   const step = currentStep(state)
-  if (step?.kind !== 'work' || step.mode !== 'time') return 0
+  if (step?.kind !== 'work' || !step.needsSetup) return 0
   return Math.max(0, (remainingMs(state, now) ?? 0) - state.stepMs)
 }
 
@@ -134,7 +134,7 @@ function enter(state: PlayerState, index: number, now: number): PlayerState {
     return { ...state, index, status: 'finished', endedAt: now, endsAt: null, remainingMs: null, stepMs: 0 }
   }
   const timed = isTimed(step)
-  const leadIn = step.kind === 'work' && timed ? LEAD_IN_MS : 0
+  const leadIn = step.kind === 'work' && step.needsSetup ? LEAD_IN_MS : 0
   return {
     ...state,
     index,

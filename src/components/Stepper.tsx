@@ -12,7 +12,7 @@ interface StepperProps {
   onChange: (value: number) => void
 }
 
-/** − value + on a --fill rounded rect (DESIGN_SYSTEM: Stepper). Buttons stop at min / max. */
+/** − value + with round buttons (G-Settings). Buttons stop at min / max. */
 export function Stepper({ label, value, min, max, step = 1, format = String, onChange }: StepperProps) {
   return (
     <div className={styles.stepper} role="group" aria-label={label}>

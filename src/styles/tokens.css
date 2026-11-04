@@ -1,90 +1,191 @@
-/* Field Manual design tokens — from the approved canvas.
-   Theme: data-theme="light" | "dark" on <html>; with no attribute, follows the OS. */
+/* Pulse design tokens (docs/redesign/REDESIGN.md §2).
+   Theme: data-theme="light" | "dark" on <html>; with no attribute, follows the OS.
+   Colours that the mock-ups use inline but the original token sheet left out are added below
+   (MIGRATION_PLAN.md §0), so components never need a raw hex. */
 
 :root {
-  /* Fonts */
-  --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif; /* headings, numbers — uppercase */
-  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;          /* labels, eyebrows, data */
+  /* Font — one family. Self-host with @fontsource/geist (300, 400, 500, 600). */
+  --font: 'Geist', system-ui, sans-serif;
 
-  /* Accent + player (same in both themes) */
-  --accent: #FF5A1F;
-  --accent-ink: #111113;
-  --work: #FF5A1F;
-  --work-ink: #111113;
-  --work-tint: rgba(17, 17, 19, 0.12);
-  --rest-bg: #1E3FAE;
-  --rest-ink: #FFFFFF;
-  --rest-tint: rgba(255, 255, 255, 0.14);
+  /* Accent (same in both themes) */
+  --accent: #F2542D;             /* ember: Start, active tab dot, PB marker, current session segment, switches */
+  --accent-ink: #131518;         /* text/icons ON ember — stays dark in both themes */
+  --accent-tint: rgba(242, 84, 45, 0.12);     /* "Best" tag background */
+  --accent-glow: 0 10px 30px rgba(242, 84, 45, 0.3); /* Summary check badge */
+
+  /* Player — work + timed screens are dark in BOTH themes */
+  --work: #121417;
+  --work-ink: #F4F2EE;
+  --work-muted: rgba(244, 242, 238, 0.6);
+  --work-tint: rgba(244, 242, 238, 0.08);     /* round buttons, chips */
+  --work-track: rgba(244, 242, 238, 0.12);    /* progress-bar track */
+  --work-video: rgba(244, 242, 238, 0.05);    /* video card fill */
+  --work-video-edge: rgba(244, 242, 238, 0.06);
+  --work-sheet: #1C1E22;                      /* exercise-info sheet on work screens */
+  --work-faint: rgba(244, 242, 238, 0.35);    /* video placeholder icon + caption */
+  --work-btn: rgba(244, 242, 238, 0.1);       /* ⓘ button on the video card */
+  --work-handle: rgba(244, 242, 238, 0.2);    /* sheet drag handle, outlined step numbers */
+  --work-past: rgba(244, 242, 238, 0.55);     /* session bar: done segments */
+
+  /* Overlays */
+  --scrim: rgba(8, 9, 11, 0.55);
+  --sheet-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
+
+  /* Tab bar ink — the bar is dark in both themes */
+  --tab-ink: rgba(244, 242, 238, 0.45);
+  --tab-ink-active: #F1EFEA;
+
+  /* Ink on the hero card — the hero is dark in both themes */
+  --on-hero-muted: rgba(244, 242, 238, 0.6);  /* meta line */
+  --on-hero-label: rgba(244, 242, 238, 0.55); /* "Up next" label, move doses */
+  --on-hero-strong: rgba(244, 242, 238, 0.9); /* session shape: work segments */
+  --on-hero-dim: rgba(244, 242, 238, 0.35);   /* session shape: warm-up / cool-down */
+  --on-hero-faint: rgba(244, 242, 238, 0.2);  /* session shape: rest segments */
+  --on-hero-line: rgba(244, 242, 238, 0.1);   /* dividers inside the hero */
+
+  /* Controls */
+  --knob: var(--surface);                     /* switch knob */
+  --knob-shadow: 0 1px 3px rgba(18, 20, 23, 0.2);
+  --seg-shadow: 0 1px 3px rgba(18, 20, 23, 0.1); /* selected segment */
 
   /* Radii */
-  --r-sm: 10px;   /* small buttons, steppers */
-  --r-md: 14px;   /* primary buttons, inputs, segmented */
-  --r-lg: 18px;   /* list cards */
-  --r-xl: 20px;   /* hero cards */
-  --r-pill: 999px;
+  --r-sm: 13px;     /* small chips */
+  --r-md: 22px;     /* list cards, quick-start cards */
+  --r-lg: 28px;     /* hero card, video card, bottom sheet */
+  --r-xl: 32px;     /* desktop video card, tab bar */
+  --r-pill: 999px;  /* every button is a pill or a circle */
 
-  /* Spacing (8pt-ish) */
-  --gutter: 20px;
+  /* Spacing */
+  --gutter: 24px;
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-8: 32px;
 
-  /* Type scale */
-  --t-eyebrow: 11px;  /* mono, 500, letter-spacing 0.08em, uppercase */
+  /* Type scale (Geist) */
   --t-small: 13px;
-  --t-body: 15px;
-  --t-title: 36px;    /* tab page titles */
-  --t-hero: 52px;     /* session name on Today */
-  --t-counter: 180px; /* player counter and timers (phone), scaled down by screen height */
+  --t-body: 14px;
+  --t-list: 17px;      /* card titles */
+  --t-title: 30px;     /* page titles, player exercise name */
+  --t-hero: 36px;      /* session name in the Today hero */
+  --t-counter: min(112px, 28vw);              /* phone player: reps AND time, every phase */
+  --t-counter-desk: clamp(120px, 11vw, 168px);/* desktop player */
+
+  /* Player layout constants — keep the video the same size on every phase */
+  --player-counter-row: 140px;
+  --player-bar-row: 40px;
+  --player-bar-w: 180px;
+  --player-line: 21px;   /* exactly ONE line of text under the bar */
 
   /* Light (default) */
-  --bg: #F4F3EF;
-  --ink: #111113;
-  --muted: #66666D;
-  --line: #DCDAD3;
-  --line2: #C9C6BE;
-  --fill: #E9E7E1;
-  --dim: #9C9AA1;
-  --rest: #CFCCC4;      /* rest segments in the session bar */
-  --bar: #BDBAB2;       /* past values in sparklines */
+  --bg: #F4F2EE;
   --surface: #FFFFFF;
-  --danger: #B42318;
-  --card: 0 1px 2px rgba(17, 17, 19, 0.05), 0 0 0 1px rgba(17, 17, 19, 0.06);
-  --hatch: rgba(17, 17, 19, 0.06);
+  --ink: #121417;
+  --muted: #6B6E76;
+  --faint: #9A9DA4;
+  --placeholder: #8A8D94;
+  --fill: #F4F2EE;        /* chips inside white cards */
+  --fill2: #ECE9E3;       /* segmented-control track, inactive chips */
+  --line: rgba(18, 20, 23, 0.08);
+  --line2: rgba(18, 20, 23, 0.17);
+  --dot: rgba(18, 20, 23, 0.13);   /* empty week dots, future calendar days */
+  --ring: #121417;                 /* decorative rings: stroke with low opacity */
+  --card-shadow: 0 1px 2px rgba(18, 20, 23, 0.04);
+  --hero: #121417;                 /* "Up next" hero card, builder name card, PB card */
+  --on-hero: #F4F2EE;
+  --tabbar: #121417;
+  --tabbar-shadow: 0 10px 30px rgba(18, 20, 23, 0.18);
+  --danger: #C2361B;
+  --pb-ink: #B5371A;               /* text inside the ember-tinted "Best" tag */
+
+  /* Rest screen (light) */
+  --rest-bg: #E6ECF4;
+  --rest-surface: #FFFFFF;
+  --rest-ink: #121417;
+  --rest-muted: #5B6472;
+  --rest-accent: #3D5AD8;
+  --rest-tint: rgba(18, 20, 23, 0.06);
+  --rest-track: rgba(18, 20, 23, 0.1);
+  --rest-btn: #121417;
+  --rest-on-btn: #F4F2EE;
+  --rest-chip: #E6ECF4;           /* "Up next" chip on the video card */
+  --rest-past: rgba(18, 20, 23, 0.45);
+  --rest-video-ink: rgba(18, 20, 23, 0.3);
+
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #121214;
-    --ink: #EDEBE6;
-    --muted: #9D9CA3;
-    --line: #2A2A2E;
-    --line2: #3A3A40;
-    --fill: #232328;
-    --dim: #6C6C73;
-    --rest: #3A3A40;
-    --bar: #4A4A50;
-    --surface: #1A1A1D;
-    --danger: #FF7A6B;
-    --card: 0 0 0 1px rgba(255, 255, 255, 0.07);
-    --hatch: rgba(255, 255, 255, 0.05);
-    color-scheme: dark;
-  }
+/* Dark — applied by attribute, or by the OS when no attribute is set.
+   The same block appears twice on purpose (attribute + media query); keep them in sync. */
+:root[data-theme='dark'] {
+  --bg: #0F1012;
+  --surface: #1A1C20;
+  --ink: #F1EFEA;
+  --muted: #9C9EA6;
+  --faint: #6E7179;
+  --placeholder: #7C7F86;
+  --fill: #26282D;
+  --fill2: #24262B;
+  --line: rgba(241, 239, 234, 0.08);
+  --line2: rgba(241, 239, 234, 0.18);
+  --dot: rgba(241, 239, 234, 0.14);
+  --ring: #F1EFEA;
+  --card-shadow: 0 0 0 1px rgba(241, 239, 234, 0.06);   /* shadows vanish on dark: use a hairline */
+  --hero: #202228;
+  --on-hero: #F1EFEA;
+  --tabbar: #202228;
+  --tabbar-shadow: 0 0 0 1px rgba(241, 239, 234, 0.08), 0 10px 30px rgba(0, 0, 0, 0.4);
+  --danger: #FF7A63;
+  --pb-ink: #FF8A6B;
+
+  --rest-bg: #121A2B;            /* night rest: no bright flash between sets */
+  --rest-surface: #1A2438;
+  --rest-ink: #EEF1F7;
+  --rest-muted: #9AA6BC;
+  --rest-accent: #6F8CFF;
+  --rest-tint: rgba(238, 241, 247, 0.08);
+  --rest-track: rgba(238, 241, 247, 0.12);
+  --rest-btn: #EEF1F7;
+  --rest-on-btn: #121A2B;
+  --rest-chip: #22304A;
+  --rest-past: rgba(238, 241, 247, 0.45);
+  --rest-video-ink: rgba(238, 241, 247, 0.35);
+
+  color-scheme: dark;
 }
 
-:root[data-theme="dark"] {
-  --bg: #121214;
-  --ink: #EDEBE6;
-  --muted: #9D9CA3;
-  --line: #2A2A2E;
-  --line2: #3A3A40;
-  --fill: #232328;
-  --dim: #6C6C73;
-  --rest: #3A3A40;
-  --bar: #4A4A50;
-  --surface: #1A1A1D;
-  --danger: #FF7A6B;
-  --card: 0 0 0 1px rgba(255, 255, 255, 0.07);
-  --hatch: rgba(255, 255, 255, 0.05);
-  color-scheme: dark;
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0F1012;
+    --surface: #1A1C20;
+    --ink: #F1EFEA;
+    --muted: #9C9EA6;
+    --faint: #6E7179;
+    --placeholder: #7C7F86;
+    --fill: #26282D;
+    --fill2: #24262B;
+    --line: rgba(241, 239, 234, 0.08);
+    --line2: rgba(241, 239, 234, 0.18);
+    --dot: rgba(241, 239, 234, 0.14);
+    --ring: #F1EFEA;
+    --card-shadow: 0 0 0 1px rgba(241, 239, 234, 0.06);
+    --hero: #202228;
+    --on-hero: #F1EFEA;
+    --tabbar: #202228;
+    --tabbar-shadow: 0 0 0 1px rgba(241, 239, 234, 0.08), 0 10px 30px rgba(0, 0, 0, 0.4);
+    --danger: #FF7A63;
+    --pb-ink: #FF8A6B;
+
+    --rest-bg: #121A2B;
+    --rest-surface: #1A2438;
+    --rest-ink: #EEF1F7;
+    --rest-muted: #9AA6BC;
+    --rest-accent: #6F8CFF;
+    --rest-tint: rgba(238, 241, 247, 0.08);
+    --rest-track: rgba(238, 241, 247, 0.12);
+    --rest-btn: #EEF1F7;
+    --rest-on-btn: #121A2B;
+    --rest-chip: #22304A;
+    --rest-past: rgba(238, 241, 247, 0.45);
+    --rest-video-ink: rgba(238, 241, 247, 0.35);
+
+    color-scheme: dark;
+  }
 }

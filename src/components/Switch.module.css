@@ -1,20 +1,21 @@
+/* G-Settings switch: 48×28 pill, ember when on, 22px knob. */
 .switch {
   position: relative;
   flex-shrink: 0;
-  width: 50px;
-  height: 30px;
-  border-radius: 15px;
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
   padding: 3px;
   background: var(--line2);
   display: flex;
   transition: background-color 150ms ease;
 }
 
-/* 30px visual, 44px hit area. */
+/* 28px visual, 44px hit area. */
 .switch::after {
   content: '';
   position: absolute;
-  inset: -7px 0;
+  inset: -8px 0;
 }
 
 .switch[aria-checked='true'] {
@@ -22,11 +23,11 @@
 }
 
 .knob {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: #ffffff; /* DESIGN_SYSTEM: white knob in both themes */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  background: var(--knob);
+  box-shadow: var(--knob-shadow);
   transition: transform 150ms ease;
 }
 

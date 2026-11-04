@@ -2,6 +2,7 @@ import { useDeferredValue, useEffect, useRef, useState, type Ref } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { PageHeader } from '../../app/PageHeader'
 import { ExercisePhoto } from '../../components/ExercisePhoto'
+import { Rings } from '../../components/Rings'
 import { db } from '../../data/db'
 import type { Equipment } from '../../data/exerciseTypes'
 import type { Exercise } from '../../data/types'
@@ -11,7 +12,6 @@ import {
   EQUIPMENT,
   filterExercises,
   isMuscleGroup,
-  levelBadge,
   MUSCLE_GROUPS,
   muscleLine,
   parseEquipment,
@@ -66,32 +66,36 @@ function SearchField({
   lib,
   inputRef,
   hint,
+  showEquipment,
+  onToggleEquipment,
 }: {
   lib: Library
   inputRef?: Ref<HTMLInputElement>
   hint?: boolean
+  showEquipment: boolean
+  onToggleEquipment: () => void
 }) {
   return (
-    <label className={styles.search}>
+    <div className={styles.search}>
       <svg
         width="18"
         height="18"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1.8"
         strokeLinecap="round"
         aria-hidden="true"
       >
         <circle cx="11" cy="11" r="7" />
         <line x1="20" y1="20" x2="16" y2="16" />
       </svg>
-      <span className="visually-hidden">Search exercises</span>
       <input
         ref={inputRef}
         type="search"
         value={lib.query}
-        placeholder={`Search ${lib.exercises?.length ?? ''} exercises`}
+        aria-label="Search exercises"
+        placeholder="Search exercises"
         aria-keyshortcuts={hint ? '/' : undefined}
         onChange={(e) => lib.update('q', e.target.value)}
       />
@@ -100,7 +104,29 @@ function SearchField({
           /
         </kbd>
       )}
-    </label>
+      <button
+        type="button"
+        className={styles.filterButton}
+        data-active={lib.equipment.length > 0 || undefined}
+        aria-label={`Equipment filter: ${lib.equipmentText}`}
+        aria-expanded={showEquipment}
+        aria-controls="library-equipment"
+        onClick={onToggleEquipment}
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
+          <path d="M4 6h16M7 12h10M10 18h4" />
+        </svg>
+      </button>
+    </div>
   )
 }
 
@@ -124,19 +150,22 @@ function MuscleChips({ lib, className }: { lib: Library; className?: string }) {
 
 function EquipmentChips({ lib }: { lib: Library }) {
   return (
-    <div className={styles.chips}>
-      {EQUIPMENT.map((e) => (
-        <button
-          key={e}
-          type="button"
-          className={styles.chip}
-          aria-pressed={lib.equipment.includes(e)}
-          onClick={() => lib.toggleEquipment(e)}
-        >
-          {cap(e)}
-        </button>
-      ))}
-    </div>
+    <fieldset className={styles.equipment} id="library-equipment">
+      <legend className={styles.legend}>Equipment</legend>
+      <div className={styles.chips}>
+        {EQUIPMENT.map((e) => (
+          <button
+            key={e}
+            type="button"
+            className={styles.chip}
+            aria-pressed={lib.equipment.includes(e)}
+            onClick={() => lib.toggleEquipment(e)}
+          >
+            {cap(e)}
+          </button>
+        ))}
+      </div>
+    </fieldset>
   )
 }
 
@@ -151,96 +180,77 @@ function Empty({ lib }: { lib: Library }) {
   )
 }
 
-function RowContent({ e, chevron }: { e: Exercise; chevron: boolean }) {
+/** Thumbnail: the start photo, or rings + a figure when there is none. */
+function Thumb({ e }: { e: Exercise }) {
   return (
-    <>
+    <span className={styles.thumb} aria-hidden="true">
+      <Rings radii={[12, 20]} size={56} startOpacity={0.06} step={0.02} color="var(--ring)" />
       <ExercisePhoto
         path={e.images[0]}
-        className={styles.thumb}
+        className={styles.thumbPhoto}
+        placeholderClassName={styles.thumbPlaceholder}
         alt=""
-        width={52}
-        height={52}
+        width={56}
+        height={56}
         loading="lazy"
         decoding="async"
       />
+    </span>
+  )
+}
+
+function RowContent({ e }: { e: Exercise }) {
+  return (
+    <>
+      <Thumb e={e} />
       <span className={styles.text}>
         <span className={styles.name}>{e.name}</span>
         <span className={styles.meta}>{muscleLine(e)}</span>
       </span>
-      <span className={styles.level} title={cap(e.level)}>
-        <span aria-hidden="true">{levelBadge(e.level)}</span>
-        <span className="visually-hidden">{e.level}</span>
-      </span>
-      {chevron && (
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          className={styles.chevron}
-          aria-hidden="true"
-        >
-          <polyline points="9 6 15 12 9 18" />
-        </svg>
-      )}
     </>
   )
 }
 
-/** F-Library: search + filter button, scrolling muscle chips, results pushing to the detail page. */
+function Chevron() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      className={styles.chevron}
+      aria-hidden="true"
+    >
+      <polyline points="9 6 15 12 9 18" />
+    </svg>
+  )
+}
+
+const countText = (lib: Library) =>
+  `${lib.group ?? 'All muscles'} · ${lib.equipmentText} · ${lib.results.length} exercises`
+
+/** G-Library: search pill (with the equipment filter), muscle chips, row cards pushing to the detail. */
 export function LibraryPage() {
   const lib = useLibrary()
   const [showEquipment, setShowEquipment] = useState(false)
-  const { equipment, equipmentText, exercises, results, group } = lib
+  const { exercises, results } = lib
 
   return (
     <>
-      <PageHeader eyebrow="free-exercise-db" title="Library" />
-
-      <div className={styles.searchRow}>
-        <SearchField lib={lib} />
-        <button
-          type="button"
-          className={styles.filterButton}
-          data-active={equipment.length > 0 || undefined}
-          aria-label={`Equipment filter: ${equipmentText}`}
-          aria-expanded={showEquipment}
-          aria-controls="library-equipment"
-          onClick={() => setShowEquipment((v) => !v)}
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <path d="M4 6h16M7 12h10M10 18h4" />
-          </svg>
-        </button>
-      </div>
-
-      {showEquipment && (
-        <fieldset className={styles.equipment} id="library-equipment">
-          <legend className="eyebrow">Equipment</legend>
-          <EquipmentChips lib={lib} />
-        </fieldset>
-      )}
-
+      <PageHeader kicker={`${exercises?.length ?? ''} exercises`} title="Library" />
+      <SearchField
+        lib={lib}
+        showEquipment={showEquipment}
+        onToggleEquipment={() => setShowEquipment((v) => !v)}
+      />
+      {showEquipment && <EquipmentChips lib={lib} />}
       <MuscleChips lib={lib} className={styles.muscles} />
-
-      <div className={styles.resultsHead}>
-        <h2 className="eyebrow" aria-live="polite">
-          {group ?? 'All muscles'} · {equipmentText} · {results.length}
-        </h2>
-        <span className={styles.sorted}>Sorted A–Z</span>
-      </div>
+      <h2 className="visually-hidden" aria-live="polite">
+        {countText(lib)}
+      </h2>
 
       {exercises && results.length === 0 ? (
         <Empty lib={lib} />
@@ -249,7 +259,8 @@ export function LibraryPage() {
           {results.map((e) => (
             <li key={e.id}>
               <Link to={`/library/${e.id}`} className={styles.row}>
-                <RowContent e={e} chevron />
+                <RowContent e={e} />
+                <Chevron />
               </Link>
             </li>
           ))}
@@ -260,14 +271,15 @@ export function LibraryPage() {
 }
 
 /**
- * DT-Library: list pane | detail pane. The selection lives in the URL (/library/:exerciseId),
+ * GD-Library: list pane | detail pane. The selection lives in the URL (/library/:exerciseId),
  * with the filters carried along; /library alone shows the first result. "/" focuses search.
  */
 export function LibraryTwoPane() {
   const lib = useLibrary()
   const { exerciseId } = useParams()
   const search = useRef<HTMLInputElement>(null)
-  const { exercises, results, group, equipmentText, params } = lib
+  const [showEquipment, setShowEquipment] = useState(false)
+  const { exercises, results, params } = lib
   const selected = exerciseId ?? results[0]?.id
   const qs = params.toString()
 
@@ -292,17 +304,18 @@ export function LibraryTwoPane() {
   return (
     <div className={styles.twoPane}>
       <section className={styles.listPane} aria-label="Exercise list">
-        <PageHeader eyebrow="free-exercise-db" title="Library" />
-        <div className={styles.paneSearch}>
-          <SearchField lib={lib} inputRef={search} hint />
-        </div>
-        <fieldset className={styles.paneFilters}>
-          <legend className="visually-hidden">Equipment</legend>
-          <EquipmentChips lib={lib} />
-        </fieldset>
+        <PageHeader kicker={`${exercises?.length ?? ''} exercises`} title="Library" />
+        <SearchField
+          lib={lib}
+          inputRef={search}
+          hint
+          showEquipment={showEquipment}
+          onToggleEquipment={() => setShowEquipment((v) => !v)}
+        />
+        {showEquipment && <EquipmentChips lib={lib} />}
         <MuscleChips lib={lib} className={styles.paneMuscles} />
         <h2 className="visually-hidden" aria-live="polite">
-          {group ?? 'All muscles'} · {equipmentText} · {results.length} exercises
+          {countText(lib)}
         </h2>
         {exercises && results.length === 0 ? (
           <Empty lib={lib} />
@@ -315,7 +328,7 @@ export function LibraryTwoPane() {
                   className={styles.paneRow}
                   aria-current={e.id === selected ? 'page' : undefined}
                 >
-                  <RowContent e={e} chevron={false} />
+                  <RowContent e={e} />
                 </Link>
               </li>
             ))}

@@ -1,4 +1,4 @@
-import type { Equipment, Exercise, Level } from '../../data/exerciseTypes'
+import type { Equipment, Exercise } from '../../data/exerciseTypes'
 
 // Library filtering: pure, so the page just renders the result.
 
@@ -51,16 +51,20 @@ export function filterExercises(
 
 const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1)
 
-/** "Chest · Shoulders": first primary and first secondary muscle. */
-export const muscleLine = (e: Exercise) =>
-  [e.primaryMuscles[0], e.secondaryMuscles[0]]
-    .filter((m) => m !== undefined)
-    .map(cap)
-    .join(' · ')
+/** Row meta (G-Library): "Chest, shoulders · Beginner": first primary, first secondary, level. */
+export const muscleLine = (e: Exercise) => {
+  const muscles = [e.primaryMuscles[0], e.secondaryMuscles[0]].filter((m) => m !== undefined).join(', ')
+  return [muscles && cap(muscles), cap(e.level)].filter(Boolean).join(' · ')
+}
 
-export const levelBadge = (level: Level) => ({ beginner: 'BEG', intermediate: 'INT', expert: 'EXP' })[level]
+const and = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`)
 
-/** ?eq=dumbbell,bands → known equipment only. */
+/** Detail subtitle (G-Detail): "Chest · also shoulders and triceps". */
+export const muscleSummary = (e: Exercise) => {
+  const primary = cap(e.primaryMuscles.join(', '))
+  return e.secondaryMuscles.length > 0 ? `${primary} · also ${and(e.secondaryMuscles)}` : primary
+}
+
 export const parseEquipment = (param: string | null): Equipment[] =>
   (param ?? '').split(',').filter((e): e is Equipment => (EQUIPMENT as string[]).includes(e))
 
