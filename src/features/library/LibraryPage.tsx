@@ -18,6 +18,7 @@ import {
   type MuscleGroup,
 } from './filter'
 import styles from './LibraryPage.module.css'
+import { useProgressiveCount } from './useProgressiveCount'
 
 const GROUPS = Object.keys(MUSCLE_GROUPS) as MuscleGroup[]
 const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1)
@@ -53,6 +54,8 @@ function useLibrary() {
     equipment,
     exercises,
     results: exercises ? filterExercises(exercises, { query: deferredQuery, group, equipment }) : [],
+    /** Changes whenever the filters do: the list then renders from the top again. */
+    listKey: `${deferredQuery}|${group ?? ''}|${equipment.join(',')}`,
     equipmentText: equipment.length === 0 ? 'All equipment' : equipment.map(cap).join(', '),
     update,
     toggleEquipment,
@@ -237,6 +240,7 @@ export function LibraryPage() {
   const lib = useLibrary()
   const [showEquipment, setShowEquipment] = useState(false)
   const { exercises, results } = lib
+  const count = useProgressiveCount(results.length, 0, lib.listKey)
 
   return (
     <>
@@ -256,7 +260,7 @@ export function LibraryPage() {
         <Empty lib={lib} />
       ) : (
         <ul className={styles.results}>
-          {results.map((e) => (
+          {results.slice(0, count).map((e) => (
             <li key={e.id}>
               <Link to={`/library/${e.id}`} className={styles.row}>
                 <RowContent e={e} />
@@ -282,6 +286,12 @@ export function LibraryTwoPane() {
   const { exercises, results, params } = lib
   const selected = exerciseId ?? results[0]?.id
   const qs = params.toString()
+  // Render down to the selected row at once, so it can be scrolled into view.
+  const count = useProgressiveCount(
+    results.length,
+    results.findIndex((e) => e.id === selected) + 1,
+    lib.listKey,
+  )
 
   // Keep the selected row in view, e.g. after opening /library/:id directly or using Back.
   const list = useRef<HTMLUListElement>(null)
@@ -321,7 +331,7 @@ export function LibraryTwoPane() {
           <Empty lib={lib} />
         ) : (
           <ul className={styles.paneResults} ref={list}>
-            {results.map((e) => (
+            {results.slice(0, count).map((e) => (
               <li key={e.id}>
                 <Link
                   to={`/library/${e.id}${qs ? `?${qs}` : ''}`}
