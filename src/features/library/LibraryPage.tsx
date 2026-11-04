@@ -312,7 +312,7 @@ export function LibraryTwoPane() {
   }, [])
 
   return (
-    <div className={styles.twoPane}>
+    <div className={styles.twoPane} data-bleed>
       <section className={styles.listPane} aria-label="Exercise list">
         <PageHeader kicker={`${exercises?.length ?? ''} exercises`} title="Library" />
         <SearchField

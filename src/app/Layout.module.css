@@ -40,7 +40,7 @@
   }
 }
 
-/* Desktop (GD-Today): 220px sidebar, 40px 56px 56px padding, content max-width 1120px. */
+/* Desktop (GD-Today): 220px sidebar, 40px 56px 56px padding. */
 @media (min-width: 1024px) {
   .shell {
     display: grid;
@@ -70,8 +70,15 @@
   }
 }
 
+/* GD-* is 1440 wide (content ≈1108px). Wider screens use the room up to 1600px, then centre it. */
 .content {
-  max-width: 1120px;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+/* Pages that run edge to edge beside the sidebar (GD-Library's two panes). */
+.content:has(> [data-bleed]) {
+  max-width: none;
 }
 
 .fullscreen {

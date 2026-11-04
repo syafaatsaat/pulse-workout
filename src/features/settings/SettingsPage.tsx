@@ -48,98 +48,100 @@ export function SettingsPage() {
     <>
       <PageHeader kicker="Saved on this device" title="Settings" />
 
-      <section className={styles.group} aria-labelledby="settings-workout">
-        <h2 id="settings-workout" className={styles.heading}>
-          Workout
-        </h2>
-        <div className={styles.card}>
-          <div className={styles.row}>
-            <span className={styles.label}>Default rest</span>
-            <Stepper
-              label="Default rest"
-              value={settings.defaultRest}
-              min={0}
-              max={180}
-              step={15}
-              format={(s) => timer(s * 1000)}
-              onChange={(defaultRest) => update({ defaultRest })}
-            />
+      <div className={styles.groups}>
+        <section className={`${styles.group} ${styles.workout}`} aria-labelledby="settings-workout">
+          <h2 id="settings-workout" className={styles.heading}>
+            Workout
+          </h2>
+          <div className={styles.card}>
+            <div className={styles.row}>
+              <span className={styles.label}>Default rest</span>
+              <Stepper
+                label="Default rest"
+                value={settings.defaultRest}
+                min={0}
+                max={180}
+                step={15}
+                format={(s) => timer(s * 1000)}
+                onChange={(defaultRest) => update({ defaultRest })}
+              />
+            </div>
+            <div className={styles.row}>
+              <span className={styles.label}>Weekly goal</span>
+              <Stepper
+                label="Weekly goal"
+                value={settings.weeklyGoal}
+                min={1}
+                max={7}
+                onChange={(weeklyGoal) => update({ weeklyGoal })}
+              />
+            </div>
           </div>
-          <div className={styles.row}>
-            <span className={styles.label}>Weekly goal</span>
-            <Stepper
-              label="Weekly goal"
-              value={settings.weeklyGoal}
-              min={1}
-              max={7}
-              onChange={(weeklyGoal) => update({ weeklyGoal })}
-            />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className={styles.group} aria-labelledby="settings-session">
-        <h2 id="settings-session" className={styles.heading}>
-          During a session
-        </h2>
-        <div className={styles.card}>
-          <div className={styles.row}>
-            <span id="settings-wake" className={styles.label}>
-              Keep screen awake
-            </span>
-            <Switch
-              labelledBy="settings-wake"
-              checked={settings.wakeLock}
-              onChange={(wakeLock) => update({ wakeLock })}
-            />
+        <section className={`${styles.group} ${styles.session}`} aria-labelledby="settings-session">
+          <h2 id="settings-session" className={styles.heading}>
+            During a session
+          </h2>
+          <div className={styles.card}>
+            <div className={styles.row}>
+              <span id="settings-wake" className={styles.label}>
+                Keep screen awake
+              </span>
+              <Switch
+                labelledBy="settings-wake"
+                checked={settings.wakeLock}
+                onChange={(wakeLock) => update({ wakeLock })}
+              />
+            </div>
+            <div className={styles.row}>
+              <span id="settings-beeps" className={styles.label}>
+                Countdown beeps
+              </span>
+              <Switch
+                labelledBy="settings-beeps"
+                checked={settings.beeps}
+                onChange={(beeps) => update({ beeps })}
+              />
+            </div>
+            <div className={styles.row}>
+              <span id="settings-voice" className={styles.label}>
+                Voice cues
+              </span>
+              <Switch
+                labelledBy="settings-voice"
+                checked={settings.voice ?? false}
+                onChange={(voice) => {
+                  update({ voice })
+                  // The tap unlocks speech on iOS, and a sample confirms the volume.
+                  if (voice) {
+                    unlockSpeech()
+                    speak('Voice cues on')
+                  }
+                }}
+              />
+            </div>
           </div>
-          <div className={styles.row}>
-            <span id="settings-beeps" className={styles.label}>
-              Countdown beeps
-            </span>
-            <Switch
-              labelledBy="settings-beeps"
-              checked={settings.beeps}
-              onChange={(beeps) => update({ beeps })}
-            />
-          </div>
-          <div className={styles.row}>
-            <span id="settings-voice" className={styles.label}>
-              Voice cues
-            </span>
-            <Switch
-              labelledBy="settings-voice"
-              checked={settings.voice ?? false}
-              onChange={(voice) => {
-                update({ voice })
-                // The tap unlocks speech on iOS, and a sample confirms the volume.
-                if (voice) {
-                  unlockSpeech()
-                  speak('Voice cues on')
-                }
-              }}
-            />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className={styles.group} aria-labelledby="settings-appearance">
-        <h2 id="settings-appearance" className={styles.heading}>
-          Appearance
-        </h2>
-        <Segmented label="Appearance" options={THEME_OPTIONS} value={theme} onChange={setTheme} />
-      </section>
+        <section className={`${styles.group} ${styles.appearance}`} aria-labelledby="settings-appearance">
+          <h2 id="settings-appearance" className={styles.heading}>
+            Appearance
+          </h2>
+          <Segmented label="Appearance" options={THEME_OPTIONS} value={theme} onChange={setTheme} />
+        </section>
 
-      <section className={styles.group} aria-label="Demo data">
-        <div className={styles.card}>
-          <button type="button" className={styles.danger} onClick={() => setConfirming(true)}>
-            Reset demo data
-          </button>
-        </div>
-        <p className={styles.status} role="status">
-          {status}
-        </p>
-      </section>
+        <section className={`${styles.group} ${styles.reset}`} aria-label="Demo data">
+          <div className={styles.card}>
+            <button type="button" className={styles.danger} onClick={() => setConfirming(true)}>
+              Reset demo data
+            </button>
+          </div>
+          <p className={styles.status} role="status">
+            {status}
+          </p>
+        </section>
+      </div>
 
       <dialog
         ref={modal}

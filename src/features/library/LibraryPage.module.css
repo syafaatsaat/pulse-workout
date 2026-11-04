@@ -222,7 +222,7 @@
 /* Desktop (GD-Library): two panes, each scrolling on its own, filling the viewport. */
 .twoPane {
   margin: -40px -56px -56px;
-  /* Full width beside the 220px sidebar: past the content's 1120px cap, as in GD-Library. */
+  /* Full width beside the 220px sidebar, as in GD-Library (the layout lifts its width cap). */
   width: calc(100vw - 220px);
   height: 100dvh;
   display: grid;

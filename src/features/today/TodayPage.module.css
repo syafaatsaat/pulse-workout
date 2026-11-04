@@ -532,3 +532,11 @@
     transform: scale(1.04);
   }
 }
+
+/* Wider than GD-Today: the hero card grows, so its moves and session shape grow with it. */
+@media (min-width: 1500px) {
+  .shape,
+  .moves {
+    max-width: 640px;
+  }
+}
